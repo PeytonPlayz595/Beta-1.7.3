@@ -237,7 +237,6 @@ public abstract class GuiSlot {
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glDisable(GL11.GL_ALPHA_TEST);
-		GL11.glShadeModel(GL11.GL_SMOOTH);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		var16.startDrawingQuads();
 		var16.setColorRGBA_I(0, 0);
@@ -296,7 +295,6 @@ public abstract class GuiSlot {
 
 		this.func_27257_b(var1, var2);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glShadeModel(GL11.GL_FLAT);
 		GL11.glEnable(GL11.GL_ALPHA_TEST);
 		GL11.glDisable(GL11.GL_BLEND);
 	}

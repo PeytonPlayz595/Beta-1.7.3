@@ -1,32 +1,39 @@
 package net.lax1dude.eaglercraft;
 
-public class EaglerImage {
+public class BufferedImage {
 
 	public final int[] data;
 	public final int w;
 	public final int h;
 	public final boolean alpha;
 
-	public EaglerImage(int width, int height, int[] pixels, boolean alpha) {
+	public BufferedImage(int width, int height, int[] pixels, boolean alpha) {
 		this.w = width;
 		this.h = height;
 		this.data = pixels;
 		this.alpha = alpha;
 	}
 	
-	public EaglerImage(int width, int height, boolean alpha) {
+	public BufferedImage(int width, int height, boolean alpha) {
 		this.w = width;
 		this.h = height;
 		this.data = new int[width * height];
 		this.alpha = alpha;
 	}
 	
-	public EaglerImage getSubImage(int x, int y, int pw, int ph) {
+	public BufferedImage(int w, int h, int k) {
+		this.w = w;
+		this.h = h;
+		this.alpha = true;
+		this.data = new int[w * h];
+	}
+
+	public BufferedImage getSubImage(int x, int y, int pw, int ph) {
 		int[] img = new int[pw * ph];
 		for(int i = 0; i < ph; ++i) {
 			System.arraycopy(data, (i + y) * this.w + x, img, i * pw, pw);
 		}
-		return new EaglerImage(pw, ph, img, alpha);
+		return new BufferedImage(pw, ph, img, alpha);
 	}
 	
 	public int[] data() {
@@ -55,5 +62,13 @@ public class EaglerImage {
 		}
 
 		return rgbArray;
+	}
+	
+	public int getWidth() {
+		return w;
+	}
+	
+	public int getHeight() {
+		return h;
 	}
 }

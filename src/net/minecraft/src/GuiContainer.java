@@ -140,7 +140,7 @@ public abstract class GuiContainer extends GuiScreen {
 			}
 
 			if(var8 != -1) {
-				boolean var9 = var8 != -999 && (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT));
+				boolean var9 = var8 != -999 && (Keyboard.isKeyDown(42) || Keyboard.isKeyDown(54));
 				this.mc.playerController.func_27174_a(this.inventorySlots.windowId, var8, var3, var9, this.mc.thePlayer);
 			}
 		}

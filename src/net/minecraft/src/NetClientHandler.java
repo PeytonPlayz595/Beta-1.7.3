@@ -1,12 +1,10 @@
 package net.minecraft.src;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.URL;
-import java.net.UnknownHostException;
+//import java.net.InetAddress;
+//import java.net.Socket;
+//import java.net.URL;
+//import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Random;
 import net.minecraft.client.Minecraft;
@@ -21,10 +19,10 @@ public class NetClientHandler extends NetHandler {
 	public MapStorage field_28118_b = new MapStorage((ISaveHandler)null);
 	Random rand = new Random();
 
-	public NetClientHandler(Minecraft var1, String var2, int var3) throws IOException, UnknownHostException {
+	public NetClientHandler(Minecraft var1, String var2, int var3) throws IOException {
 		this.mc = var1;
-		Socket var4 = new Socket(InetAddress.getByName(var2), var3);
-		this.netManager = new NetworkManager(var4, "Client", this);
+		//Socket var4 = new Socket(InetAddress.getByName(var2), var3);
+		//this.netManager = new NetworkManager(var4, "Client", this);
 	}
 
 	public void processReadPackets() {
@@ -379,25 +377,7 @@ public class NetClientHandler extends NetHandler {
 	}
 
 	public void handleHandshake(Packet2Handshake var1) {
-		if(var1.username.equals("-")) {
-			this.addToSendQueue(new Packet1Login(this.mc.session.username, 14));
-		} else {
-			try {
-				URL var2 = new URL("http://www.minecraft.net/game/joinserver.jsp?user=" + this.mc.session.username + "&sessionId=" + this.mc.session.sessionId + "&serverId=" + var1.username);
-				BufferedReader var3 = new BufferedReader(new InputStreamReader(var2.openStream()));
-				String var4 = var3.readLine();
-				var3.close();
-				if(var4.equalsIgnoreCase("ok")) {
-					this.addToSendQueue(new Packet1Login(this.mc.session.username, 14));
-				} else {
-					this.netManager.networkShutdown("disconnect.loginFailedInfo", new Object[]{var4});
-				}
-			} catch (Exception var5) {
-				var5.printStackTrace();
-				this.netManager.networkShutdown("disconnect.genericReason", new Object[]{"Internal client error: " + var5.toString()});
-			}
-		}
-
+		this.addToSendQueue(new Packet1Login(this.mc.session.username, 14));
 	}
 
 	public void disconnect() {

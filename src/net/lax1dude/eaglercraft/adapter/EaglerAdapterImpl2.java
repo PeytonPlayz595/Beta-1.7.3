@@ -71,7 +71,7 @@ import net.PeytonPlayz585.storage.LocalStorageManager;
 import net.lax1dude.eaglercraft.AssetRepository;
 import net.lax1dude.eaglercraft.Base64;
 import net.lax1dude.eaglercraft.Client;
-import net.lax1dude.eaglercraft.EaglerImage;
+import net.lax1dude.eaglercraft.BufferedImage;
 import net.lax1dude.eaglercraft.JSONObject;
 import net.lax1dude.eaglercraft.adapter.teavm.IndexedDBFilesystem;
 import net.lax1dude.eaglercraft.adapter.teavm.IndexedDBFilesystem.OpenState;
@@ -896,7 +896,7 @@ public class EaglerAdapterImpl2 {
 	@JSBody(params = { "url" }, script = "URL.revokeObjectURL(url);")
 	private static native void freeDataURL(String url);
 
-	public static final EaglerImage loadPNG(byte[] data) {
+	public static final BufferedImage loadPNG(byte[] data) {
 		ArrayBuffer arr = ArrayBuffer.create(data.length);
 		Uint8Array.create(arr).set(data);
 		return loadPNG0(arr);
@@ -906,9 +906,9 @@ public class EaglerAdapterImpl2 {
 	private static native void setImageSmoothingMode(CanvasRenderingContext2D cc, boolean en);
 
 	@Async
-	private static native EaglerImage loadPNG0(ArrayBuffer data);
+	private static native BufferedImage loadPNG0(ArrayBuffer data);
 
-	private static void loadPNG0(ArrayBuffer data, final AsyncCallback<EaglerImage> ret) {
+	private static void loadPNG0(ArrayBuffer data, final AsyncCallback<BufferedImage> ret) {
 		final HTMLImageElement toLoad = (HTMLImageElement) doc.createElement("img");
 		toLoad.addEventListener("load", new EventListener<Event>() {
 			public void handleEvent(Event evt) {
@@ -941,7 +941,7 @@ public class EaglerAdapterImpl2 {
 					j = dv.getUint32(i << 2, false);
 					pixels[i] = ((j >> 8) & 0xFFFFFF) | ((j & 0xFF) << 24);
 				}
-				ret.complete(new EaglerImage(pxlsDat.getWidth(), pxlsDat.getHeight(), pixels, true));
+				ret.complete(new BufferedImage(pxlsDat.getWidth(), pxlsDat.getHeight(), pixels, true));
 			}
 		});
 		toLoad.addEventListener("error", new EventListener<Event>() {

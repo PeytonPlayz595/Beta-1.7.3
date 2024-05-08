@@ -4,9 +4,9 @@ import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.Socket;
-import java.net.SocketAddress;
-import java.net.SocketException;
+//import java.net.Socket;
+//import java.net.SocketAddress;
+//import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,8 +16,8 @@ public class NetworkManager {
 	public static int numReadThreads;
 	public static int numWriteThreads;
 	private Object sendQueueLock = new Object();
-	private Socket networkSocket;
-	private final SocketAddress remoteSocketAddress;
+	//private Socket networkSocket;
+	//private final SocketAddress remoteSocketAddress;
 	private DataInputStream socketInputStream;
 	private DataOutputStream socketOutputStream;
 	private boolean isRunning = true;
@@ -38,25 +38,25 @@ public class NetworkManager {
 	public int chunkDataSendCounter = 0;
 	private int field_20100_w = 50;
 
-	public NetworkManager(Socket var1, String var2, NetHandler var3) throws IOException {
-		this.networkSocket = var1;
-		this.remoteSocketAddress = var1.getRemoteSocketAddress();
-		this.netHandler = var3;
-
-		try {
-			var1.setSoTimeout(30000);
-			var1.setTrafficClass(24);
-		} catch (SocketException var5) {
-			System.err.println(var5.getMessage());
-		}
-
-		this.socketInputStream = new DataInputStream(var1.getInputStream());
-		this.socketOutputStream = new DataOutputStream(new BufferedOutputStream(var1.getOutputStream(), 5120));
-		this.readThread = new NetworkReaderThread(this, var2 + " read thread");
-		this.writeThread = new NetworkWriterThread(this, var2 + " write thread");
-		this.readThread.start();
-		this.writeThread.start();
-	}
+//	public NetworkManager(Socket var1, String var2, NetHandler var3) throws IOException {
+//		this.networkSocket = var1;
+//		this.remoteSocketAddress = var1.getRemoteSocketAddress();
+//		this.netHandler = var3;
+//
+//		try {
+//			var1.setSoTimeout(30000);
+//			var1.setTrafficClass(24);
+//		} catch (SocketException var5) {
+//			System.err.println(var5.getMessage());
+//		}
+//
+//		this.socketInputStream = new DataInputStream(var1.getInputStream());
+//		this.socketOutputStream = new DataOutputStream(new BufferedOutputStream(var1.getOutputStream(), 5120));
+//		this.readThread = new NetworkReaderThread(this, var2 + " read thread");
+//		this.writeThread = new NetworkWriterThread(this, var2 + " write thread");
+//		this.readThread.start();
+//		this.writeThread.start();
+//	}
 
 	public void addToSendQueue(Packet var1) {
 		if(!this.isServerTerminating) {
@@ -160,7 +160,7 @@ public class NetworkManager {
 			this.isTerminating = true;
 			this.terminationReason = var1;
 			this.field_20101_t = var2;
-			(new NetworkMasterThread(this)).start();
+			//(new NetworkMasterThread(this)).start();
 			this.isRunning = false;
 
 			try {
@@ -176,8 +176,8 @@ public class NetworkManager {
 			}
 
 			try {
-				this.networkSocket.close();
-				this.networkSocket = null;
+				//this.networkSocket.close();
+				//this.networkSocket = null;
 			} catch (Throwable var4) {
 			}
 
@@ -215,7 +215,7 @@ public class NetworkManager {
 		this.wakeThreads();
 		this.isServerTerminating = true;
 		this.readThread.interrupt();
-		(new ThreadCloseConnection(this)).start();
+		//(new ThreadCloseConnection(this)).start();
 	}
 
 	static boolean isRunning(NetworkManager var0) {

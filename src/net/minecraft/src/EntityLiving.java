@@ -75,7 +75,7 @@ public abstract class EntityLiving extends Entity {
 	}
 
 	public String getEntityTexture() {
-		return this.texture;
+		return "mob/char.png";
 	}
 
 	public boolean canBeCollidedWith() {

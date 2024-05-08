@@ -546,6 +546,14 @@ public class EaglerAdapterGL30 extends EaglerAdapterImpl2 {
 			throw new IllegalArgumentException("matrix is not supported while recording display list use tessellator class instead");
 		}
 	}
+	
+	public static final void glScaled(double p1, double p2, double p3) {
+		deevis.set((float)p1, (float)p2, (float)p3);
+		getMatrix().scale(deevis);
+		if (isCompilingDisplayList) {
+			throw new IllegalArgumentException("matrix is not supported while recording display list use tessellator class instead");
+		}
+	}
 
 	public static final void glBlendFunc(int p1, int p2) {
 		fogPremultiply = (p1 == GL_ONE && p2 == GL_ONE_MINUS_SRC_ALPHA);

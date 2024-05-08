@@ -71,7 +71,6 @@ public class Gui {
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_ALPHA_TEST);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GL11.glShadeModel(GL11.GL_SMOOTH);
 		Tessellator var15 = Tessellator.instance;
 		var15.startDrawingQuads();
 		var15.setColorRGBA_F(var8, var9, var10, var7);
@@ -81,7 +80,6 @@ public class Gui {
 		var15.addVertex((double)var1, (double)var4, 0.0D);
 		var15.addVertex((double)var3, (double)var4, 0.0D);
 		var15.draw();
-		GL11.glShadeModel(GL11.GL_FLAT);
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glEnable(GL11.GL_ALPHA_TEST);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);

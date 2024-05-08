@@ -5,10 +5,7 @@ import java.util.List;
 import java.util.Random;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GLContext;
-import org.lwjgl.opengl.NVFogDistance;
 import org.lwjgl.util.glu.GLU;
 
 public class EntityRenderer {
@@ -327,7 +324,7 @@ public class EntityRenderer {
 	}
 
 	public void updateCameraAndRender(float var1) {
-		if(!Display.isActive()) {
+		if(!GL11.hasBeenActive()) {
 			if(System.currentTimeMillis() - this.prevFrameTime > 500L) {
 				this.mc.displayInGameMenu();
 			}
@@ -475,9 +472,6 @@ public class EntityRenderer {
 
 			GL11.glEnable(GL11.GL_FOG);
 			this.setupFog(1, var1);
-			if(this.mc.gameSettings.ambientOcclusion) {
-				GL11.glShadeModel(GL11.GL_SMOOTH);
-			}
 
 			Frustrum var19 = new Frustrum();
 			var19.setPosition(var7, var9, var11);
@@ -496,7 +490,6 @@ public class EntityRenderer {
 			GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.mc.renderEngine.getTexture("/terrain.png"));
 			RenderHelper.disableStandardItemLighting();
 			var5.sortAndRender(var4, 0, (double)var1);
-			GL11.glShadeModel(GL11.GL_FLAT);
 			RenderHelper.enableStandardItemLighting();
 			var5.renderEntities(var4.getPosition(var1), var19, var1);
 			var6.func_1187_b(var4, var1);
@@ -518,10 +511,6 @@ public class EntityRenderer {
 			GL11.glDisable(GL11.GL_CULL_FACE);
 			GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.mc.renderEngine.getTexture("/terrain.png"));
 			if(this.mc.gameSettings.fancyGraphics) {
-				if(this.mc.gameSettings.ambientOcclusion) {
-					GL11.glShadeModel(GL11.GL_SMOOTH);
-				}
-
 				GL11.glColorMask(false, false, false, false);
 				var16 = var5.sortAndRender(var4, 1, (double)var1);
 				if(this.mc.gameSettings.anaglyph) {
@@ -537,8 +526,6 @@ public class EntityRenderer {
 				if(var16 > 0) {
 					var5.renderAllRenderLists(1, (double)var1);
 				}
-
-				GL11.glShadeModel(GL11.GL_FLAT);
 			} else {
 				var5.sortAndRender(var4, 1, (double)var1);
 			}
@@ -902,10 +889,6 @@ public class EntityRenderer {
 			if(var1 < 0) {
 				GL11.glFogf(GL11.GL_FOG_START, 0.0F);
 				GL11.glFogf(GL11.GL_FOG_END, this.farPlaneDistance * 0.8F);
-			}
-
-			if(GLContext.getCapabilities().GL_NV_fog_distance) {
-				GL11.glFogi(NVFogDistance.GL_FOG_DISTANCE_MODE_NV, NVFogDistance.GL_EYE_RADIAL_NV);
 			}
 
 			if(this.mc.theWorld.worldProvider.isNether) {

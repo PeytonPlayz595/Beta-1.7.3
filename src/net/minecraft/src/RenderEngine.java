@@ -1,9 +1,6 @@
 package net.minecraft.src;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -13,8 +10,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import javax.imageio.ImageIO;
 import org.lwjgl.opengl.GL11;
+
+import net.lax1dude.eaglercraft.BufferedImage;
+import net.lax1dude.eaglercraft.adapter.EaglerAdapterImpl2.TextureGL;
 
 public class RenderEngine {
 	public static boolean useMipmaps = false;
@@ -24,44 +23,39 @@ public class RenderEngine {
 	private IntBuffer singleIntBuffer = GLAllocation.createDirectIntBuffer(1);
 	private ByteBuffer imageData = GLAllocation.createDirectByteBuffer(1048576);
 	private List textureList = new ArrayList();
-	private Map urlToImageDataMap = new HashMap();
 	private GameSettings options;
 	private boolean clampTexture = false;
 	private boolean blurTexture = false;
-	private TexturePackList texturePack;
-	private BufferedImage missingTextureImage = new BufferedImage(64, 64, 2);
+	
+	private BufferedImage missingTextureImage;
 
-	public RenderEngine(TexturePackList var1, GameSettings var2) {
-		this.texturePack = var1;
+	public RenderEngine(GameSettings var2) {
 		this.options = var2;
-		Graphics var3 = this.missingTextureImage.getGraphics();
-		var3.setColor(Color.WHITE);
-		var3.fillRect(0, 0, 64, 64);
-		var3.setColor(Color.BLACK);
-		var3.drawString("missingtex", 1, 10);
-		var3.dispose();
+		
+		int[] missingTexture = new int[256];
+		for(int i = 0; i < 256; ++i) {
+			missingTexture[i] = ((i / 16 + (i % 16)) % 2 == 0) ? 0xffff00ff : 0xff000000;
+		}
+		this.missingTextureImage = new BufferedImage(16, 16, missingTexture, true);
 	}
 
 	public int[] func_28149_a(String var1) {
-		TexturePackBase var2 = this.texturePack.selectedTexturePack;
 		int[] var3 = (int[])this.field_28151_c.get(var1);
 		if(var3 != null) {
 			return var3;
 		} else {
 			try {
 				Object var6 = null;
-				if(var1.startsWith("##")) {
-					var3 = this.func_28148_b(this.unwrapImageByColumns(this.readTextureImage(var2.getResourceAsStream(var1.substring(2)))));
-				} else if(var1.startsWith("%clamp%")) {
+				if(var1.startsWith("%clamp%")) {
 					this.clampTexture = true;
-					var3 = this.func_28148_b(this.readTextureImage(var2.getResourceAsStream(var1.substring(7))));
+					var3 = this.func_28148_b(this.readTextureImage(GL11.getResourceAsStream(var1.substring(7))));
 					this.clampTexture = false;
 				} else if(var1.startsWith("%blur%")) {
 					this.blurTexture = true;
-					var3 = this.func_28148_b(this.readTextureImage(var2.getResourceAsStream(var1.substring(6))));
+					var3 = this.func_28148_b(this.readTextureImage(GL11.getResourceAsStream(var1.substring(6))));
 					this.blurTexture = false;
 				} else {
-					InputStream var7 = var2.getResourceAsStream(var1);
+					InputStream var7 = GL11.getResourceAsStream(var1);
 					if(var7 == null) {
 						var3 = this.func_28148_b(this.missingTextureImage);
 					} else {
@@ -96,7 +90,6 @@ public class RenderEngine {
 	}
 
 	public int getTexture(String var1) {
-		TexturePackBase var2 = this.texturePack.selectedTexturePack;
 		Integer var3 = (Integer)this.textureMap.get(var1);
 		if(var3 != null) {
 			return var3.intValue();
@@ -105,18 +98,16 @@ public class RenderEngine {
 				this.singleIntBuffer.clear();
 				GLAllocation.generateTextureNames(this.singleIntBuffer);
 				int var6 = this.singleIntBuffer.get(0);
-				if(var1.startsWith("##")) {
-					this.setupTexture(this.unwrapImageByColumns(this.readTextureImage(var2.getResourceAsStream(var1.substring(2)))), var6);
-				} else if(var1.startsWith("%clamp%")) {
+				if(var1.startsWith("%clamp%")) {
 					this.clampTexture = true;
-					this.setupTexture(this.readTextureImage(var2.getResourceAsStream(var1.substring(7))), var6);
+					this.setupTexture(this.readTextureImage(GL11.getResourceAsStream(var1.substring(7))), var6);
 					this.clampTexture = false;
 				} else if(var1.startsWith("%blur%")) {
 					this.blurTexture = true;
-					this.setupTexture(this.readTextureImage(var2.getResourceAsStream(var1.substring(6))), var6);
+					this.setupTexture(this.readTextureImage(GL11.getResourceAsStream(var1.substring(6))), var6);
 					this.blurTexture = false;
 				} else {
-					InputStream var7 = var2.getResourceAsStream(var1);
+					InputStream var7 = GL11.getResourceAsStream(var1);
 					if(var7 == null) {
 						this.setupTexture(this.missingTextureImage, var6);
 					} else {
@@ -136,20 +127,7 @@ public class RenderEngine {
 			}
 		}
 	}
-
-	private BufferedImage unwrapImageByColumns(BufferedImage var1) {
-		int var2 = var1.getWidth() / 16;
-		BufferedImage var3 = new BufferedImage(16, var1.getHeight() * var2, 2);
-		Graphics var4 = var3.getGraphics();
-
-		for(int var5 = 0; var5 < var2; ++var5) {
-			var4.drawImage(var1, -var5 * 16, var5 * var1.getHeight(), (ImageObserver)null);
-		}
-
-		var4.dispose();
-		return var3;
-	}
-
+	
 	public int allocateAndSetupTexture(BufferedImage var1) {
 		this.singleIntBuffer.clear();
 		GLAllocation.generateTextureNames(this.singleIntBuffer);
@@ -299,48 +277,7 @@ public class RenderEngine {
 		this.singleIntBuffer.clear();
 		this.singleIntBuffer.put(var1);
 		this.singleIntBuffer.flip();
-		GL11.glDeleteTextures(this.singleIntBuffer);
-	}
-
-	public int getTextureForDownloadableImage(String var1, String var2) {
-		ThreadDownloadImageData var3 = (ThreadDownloadImageData)this.urlToImageDataMap.get(var1);
-		if(var3 != null && var3.image != null && !var3.textureSetupComplete) {
-			if(var3.textureName < 0) {
-				var3.textureName = this.allocateAndSetupTexture(var3.image);
-			} else {
-				this.setupTexture(var3.image, var3.textureName);
-			}
-
-			var3.textureSetupComplete = true;
-		}
-
-		return var3 != null && var3.textureName >= 0 ? var3.textureName : (var2 == null ? -1 : this.getTexture(var2));
-	}
-
-	public ThreadDownloadImageData obtainImageData(String var1, ImageBuffer var2) {
-		ThreadDownloadImageData var3 = (ThreadDownloadImageData)this.urlToImageDataMap.get(var1);
-		if(var3 == null) {
-			this.urlToImageDataMap.put(var1, new ThreadDownloadImageData(var1, var2));
-		} else {
-			++var3.referenceCount;
-		}
-
-		return var3;
-	}
-
-	public void releaseImageData(String var1) {
-		ThreadDownloadImageData var2 = (ThreadDownloadImageData)this.urlToImageDataMap.get(var1);
-		if(var2 != null) {
-			--var2.referenceCount;
-			if(var2.referenceCount == 0) {
-				if(var2.textureName >= 0) {
-					this.deleteTexture(var2.textureName);
-				}
-
-				this.urlToImageDataMap.remove(var1);
-			}
-		}
-
+		GL11.glDeleteTextures(var1);
 	}
 
 	public void registerTextureFX(TextureFX var1) {
@@ -457,7 +394,6 @@ public class RenderEngine {
 	}
 
 	public void refreshTextures() {
-		TexturePackBase var1 = this.texturePack.selectedTexturePack;
 		Iterator var2 = this.textureNameToImageMap.keySet().iterator();
 
 		BufferedImage var4;
@@ -467,11 +403,6 @@ public class RenderEngine {
 			this.setupTexture(var4, var3);
 		}
 
-		ThreadDownloadImageData var8;
-		for(var2 = this.urlToImageDataMap.values().iterator(); var2.hasNext(); var8.textureSetupComplete = false) {
-			var8 = (ThreadDownloadImageData)var2.next();
-		}
-
 		var2 = this.textureMap.keySet().iterator();
 
 		String var9;
@@ -479,16 +410,14 @@ public class RenderEngine {
 			var9 = (String)var2.next();
 
 			try {
-				if(var9.startsWith("##")) {
-					var4 = this.unwrapImageByColumns(this.readTextureImage(var1.getResourceAsStream(var9.substring(2))));
-				} else if(var9.startsWith("%clamp%")) {
+				if(var9.startsWith("%clamp%")) {
 					this.clampTexture = true;
-					var4 = this.readTextureImage(var1.getResourceAsStream(var9.substring(7)));
+					var4 = this.readTextureImage(GL11.getResourceAsStream(var9.substring(7)));
 				} else if(var9.startsWith("%blur%")) {
 					this.blurTexture = true;
-					var4 = this.readTextureImage(var1.getResourceAsStream(var9.substring(6)));
+					var4 = this.readTextureImage(GL11.getResourceAsStream(var9.substring(6)));
 				} else {
-					var4 = this.readTextureImage(var1.getResourceAsStream(var9));
+					var4 = this.readTextureImage(GL11.getResourceAsStream(var9));
 				}
 
 				int var5 = ((Integer)this.textureMap.get(var9)).intValue();
@@ -506,16 +435,14 @@ public class RenderEngine {
 			var9 = (String)var2.next();
 
 			try {
-				if(var9.startsWith("##")) {
-					var4 = this.unwrapImageByColumns(this.readTextureImage(var1.getResourceAsStream(var9.substring(2))));
-				} else if(var9.startsWith("%clamp%")) {
+				if(var9.startsWith("%clamp%")) {
 					this.clampTexture = true;
-					var4 = this.readTextureImage(var1.getResourceAsStream(var9.substring(7)));
+					var4 = this.readTextureImage(GL11.getResourceAsStream(var9.substring(7)));
 				} else if(var9.startsWith("%blur%")) {
 					this.blurTexture = true;
-					var4 = this.readTextureImage(var1.getResourceAsStream(var9.substring(6)));
+					var4 = this.readTextureImage(GL11.getResourceAsStream(var9.substring(6)));
 				} else {
-					var4 = this.readTextureImage(var1.getResourceAsStream(var9));
+					var4 = this.readTextureImage(GL11.getResourceAsStream(var9));
 				}
 
 				this.func_28147_a(var4, (int[])this.field_28151_c.get(var9));
@@ -529,14 +456,17 @@ public class RenderEngine {
 	}
 
 	private BufferedImage readTextureImage(InputStream var1) throws IOException {
-		BufferedImage var2 = ImageIO.read(var1);
-		var1.close();
-		return var2;
+		return GL11.loadPNG(((ByteArrayInputStream)var1).readAllBytes());
 	}
 
 	public void bindTexture(int var1) {
 		if(var1 >= 0) {
 			GL11.glBindTexture(GL11.GL_TEXTURE_2D, var1);
 		}
+	}
+
+	public int getTextureForDownloadableImage(String skinUrl, String entityTexture) {
+		int i = this.getTexture(entityTexture);
+		return i;
 	}
 }

@@ -20,12 +20,11 @@ public class GLAllocation {
 	}
 
 	public static synchronized void generateTextureNames(IntBuffer var0) {
-		GL11.glGenTextures(var0);
-
-		for(int var1 = var0.position(); var1 < var0.limit(); ++var1) {
-			textureNames.add(Integer.valueOf(var0.get(var1)));
+		for (int i = var0.position(); i < var0.limit(); i++) {
+			int tx = GL11.glGenTextures();
+			var0.put(i, tx);
+			textureNames.add(Integer.valueOf(tx));
 		}
-
 	}
 
 	public static synchronized void func_28194_b(int var0) {
@@ -36,34 +35,28 @@ public class GLAllocation {
 	}
 
 	public static synchronized void deleteTexturesAndDisplayLists() {
-		for(int var0 = 0; var0 < displayLists.size(); var0 += 2) {
-			GL11.glDeleteLists(((Integer)displayLists.get(var0)).intValue(), ((Integer)displayLists.get(var0 + 1)).intValue());
+		for (int i = 0; i < displayLists.size(); i += 2) {
+			GL11.glDeleteLists(((Integer) displayLists.get(i)).intValue(),
+					((Integer) displayLists.get(i + 1)).intValue());
 		}
-
-		IntBuffer var2 = createDirectIntBuffer(textureNames.size());
-		var2.flip();
-		GL11.glDeleteTextures(var2);
-
-		for(int var1 = 0; var1 < textureNames.size(); ++var1) {
-			var2.put(((Integer)textureNames.get(var1)).intValue());
+		
+		for (int j = 0; j < textureNames.size(); j++) {
+			GL11.glDeleteTextures(((Integer) textureNames.get(j)).intValue());
 		}
-
-		var2.flip();
-		GL11.glDeleteTextures(var2);
+		
 		displayLists.clear();
 		textureNames.clear();
 	}
 
-	public static synchronized ByteBuffer createDirectByteBuffer(int var0) {
-		ByteBuffer var1 = ByteBuffer.allocateDirect(var0).order(ByteOrder.nativeOrder());
-		return var1;
+	public static ByteBuffer createDirectByteBuffer(int par0) {
+		return GL11.isWebGL ? ByteBuffer.wrap(new byte[par0]).order(ByteOrder.nativeOrder()) : ByteBuffer.allocateDirect(par0).order(ByteOrder.nativeOrder());
 	}
-
-	public static IntBuffer createDirectIntBuffer(int var0) {
-		return createDirectByteBuffer(var0 << 2).asIntBuffer();
+	
+	public static IntBuffer createDirectIntBuffer(int par0) {
+		return GL11.isWebGL ? IntBuffer.wrap(new int[par0]) : createDirectByteBuffer(par0 << 2).asIntBuffer();
 	}
-
-	public static FloatBuffer createDirectFloatBuffer(int var0) {
-		return createDirectByteBuffer(var0 << 2).asFloatBuffer();
+	
+	public static FloatBuffer createDirectFloatBuffer(int par0) {
+		return GL11.isWebGL ? FloatBuffer.wrap(new float[par0]) : createDirectByteBuffer(par0 << 2).asFloatBuffer();
 	}
 }

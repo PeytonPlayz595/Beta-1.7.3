@@ -1,15 +1,12 @@
 package net.minecraft.src;
 
-import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import net.minecraft.client.Minecraft;
-import org.lwjgl.opengl.ARBOcclusionQuery;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL15;
 
 public class RenderGlobal implements IWorldAccess {
 	public List tileEntities = new ArrayList();
@@ -24,8 +21,6 @@ public class RenderGlobal implements IWorldAccess {
 	private int glRenderListBase;
 	private Minecraft mc;
 	private RenderBlocks globalRenderBlocks;
-	private IntBuffer glOcclusionQueryBase;
-	private boolean occlusionEnabled = false;
 	private int cloudOffsetX = 0;
 	private int starGLCallList;
 	private int glSkyList;
@@ -42,7 +37,6 @@ public class RenderGlobal implements IWorldAccess {
 	private int countEntitiesRendered;
 	private int countEntitiesHidden;
 	int[] dummyBuf50k = new int['\uc350'];
-	IntBuffer occlusionResult = GLAllocation.createDirectIntBuffer(64);
 	private int renderersLoaded;
 	private int renderersBeingClipped;
 	private int renderersBeingOccluded;
@@ -64,16 +58,6 @@ public class RenderGlobal implements IWorldAccess {
 		this.renderEngine = var2;
 		byte var3 = 64;
 		this.glRenderListBase = GLAllocation.generateDisplayLists(var3 * var3 * var3 * 3);
-		this.occlusionEnabled = var1.getOpenGlCapsChecker().checkARBOcclusion();
-		if(this.occlusionEnabled) {
-			this.occlusionResult.clear();
-			this.glOcclusionQueryBase = GLAllocation.createDirectIntBuffer(var3 * var3 * var3);
-			this.glOcclusionQueryBase.clear();
-			this.glOcclusionQueryBase.position(0);
-			this.glOcclusionQueryBase.limit(var3 * var3 * var3);
-			ARBOcclusionQuery.glGenQueriesARB(this.glOcclusionQueryBase);
-		}
-
 		this.starGLCallList = GLAllocation.generateDisplayLists(3);
 		GL11.glPushMatrix();
 		GL11.glNewList(this.starGLCallList, GL11.GL_COMPILE);
@@ -225,10 +209,6 @@ public class RenderGlobal implements IWorldAccess {
 			for(int var5 = 0; var5 < this.renderChunksTall; ++var5) {
 				for(int var6 = 0; var6 < this.renderChunksDeep; ++var6) {
 					this.worldRenderers[(var6 * this.renderChunksTall + var5) * this.renderChunksWide + var4] = new WorldRenderer(this.worldObj, this.tileEntities, var4 * 16, var5 * 16, var6 * 16, 16, this.glRenderListBase + var2);
-					if(this.occlusionEnabled) {
-						this.worldRenderers[(var6 * this.renderChunksTall + var5) * this.renderChunksWide + var4].glOcclusionQuery = this.glOcclusionQueryBase.get(var3);
-					}
-
 					this.worldRenderers[(var6 * this.renderChunksTall + var5) * this.renderChunksWide + var4].isWaitingOnOcclusionQuery = false;
 					this.worldRenderers[(var6 * this.renderChunksTall + var5) * this.renderChunksWide + var4].isVisible = true;
 					this.worldRenderers[(var6 * this.renderChunksTall + var5) * this.renderChunksWide + var4].isInFrustum = true;
@@ -421,110 +401,7 @@ public class RenderGlobal implements IWorldAccess {
 
 		RenderHelper.disableStandardItemLighting();
 		byte var17 = 0;
-		int var34;
-		if(this.occlusionEnabled && this.mc.gameSettings.advancedOpengl && !this.mc.gameSettings.anaglyph && var2 == 0) {
-			byte var18 = 0;
-			int var19 = 16;
-			this.checkOcclusionQueryResult(var18, var19);
-
-			for(int var20 = var18; var20 < var19; ++var20) {
-				this.sortedWorldRenderers[var20].isVisible = true;
-			}
-
-			var34 = var17 + this.renderSortedRenderers(var18, var19, var2, var3);
-
-			do {
-				int var35 = var19;
-				var19 *= 2;
-				if(var19 > this.sortedWorldRenderers.length) {
-					var19 = this.sortedWorldRenderers.length;
-				}
-
-				GL11.glDisable(GL11.GL_TEXTURE_2D);
-				GL11.glDisable(GL11.GL_LIGHTING);
-				GL11.glDisable(GL11.GL_ALPHA_TEST);
-				GL11.glDisable(GL11.GL_FOG);
-				GL11.glColorMask(false, false, false, false);
-				GL11.glDepthMask(false);
-				this.checkOcclusionQueryResult(var35, var19);
-				GL11.glPushMatrix();
-				float var36 = 0.0F;
-				float var21 = 0.0F;
-				float var22 = 0.0F;
-
-				for(int var23 = var35; var23 < var19; ++var23) {
-					if(this.sortedWorldRenderers[var23].skipAllRenderPasses()) {
-						this.sortedWorldRenderers[var23].isInFrustum = false;
-					} else {
-						if(!this.sortedWorldRenderers[var23].isInFrustum) {
-							this.sortedWorldRenderers[var23].isVisible = true;
-						}
-
-						if(this.sortedWorldRenderers[var23].isInFrustum && !this.sortedWorldRenderers[var23].isWaitingOnOcclusionQuery) {
-							float var24 = MathHelper.sqrt_float(this.sortedWorldRenderers[var23].distanceToEntitySquared(var1));
-							int var25 = (int)(1.0F + var24 / 128.0F);
-							if(this.cloudOffsetX % var25 == var23 % var25) {
-								WorldRenderer var26 = this.sortedWorldRenderers[var23];
-								float var27 = (float)((double)var26.posXMinus - var33);
-								float var28 = (float)((double)var26.posYMinus - var7);
-								float var29 = (float)((double)var26.posZMinus - var9);
-								float var30 = var27 - var36;
-								float var31 = var28 - var21;
-								float var32 = var29 - var22;
-								if(var30 != 0.0F || var31 != 0.0F || var32 != 0.0F) {
-									GL11.glTranslatef(var30, var31, var32);
-									var36 += var30;
-									var21 += var31;
-									var22 += var32;
-								}
-
-								ARBOcclusionQuery.glBeginQueryARB(GL15.GL_SAMPLES_PASSED, this.sortedWorldRenderers[var23].glOcclusionQuery);
-								this.sortedWorldRenderers[var23].callOcclusionQueryList();
-								ARBOcclusionQuery.glEndQueryARB(GL15.GL_SAMPLES_PASSED);
-								this.sortedWorldRenderers[var23].isWaitingOnOcclusionQuery = true;
-							}
-						}
-					}
-				}
-
-				GL11.glPopMatrix();
-				if(this.mc.gameSettings.anaglyph) {
-					if(EntityRenderer.anaglyphField == 0) {
-						GL11.glColorMask(false, true, true, true);
-					} else {
-						GL11.glColorMask(true, false, false, true);
-					}
-				} else {
-					GL11.glColorMask(true, true, true, true);
-				}
-
-				GL11.glDepthMask(true);
-				GL11.glEnable(GL11.GL_TEXTURE_2D);
-				GL11.glEnable(GL11.GL_ALPHA_TEST);
-				GL11.glEnable(GL11.GL_FOG);
-				var34 += this.renderSortedRenderers(var35, var19, var2, var3);
-			} while(var19 < this.sortedWorldRenderers.length);
-		} else {
-			var34 = var17 + this.renderSortedRenderers(0, this.sortedWorldRenderers.length, var2, var3);
-		}
-
-		return var34;
-	}
-
-	private void checkOcclusionQueryResult(int var1, int var2) {
-		for(int var3 = var1; var3 < var2; ++var3) {
-			if(this.sortedWorldRenderers[var3].isWaitingOnOcclusionQuery) {
-				this.occlusionResult.clear();
-				ARBOcclusionQuery.glGetQueryObjectuARB(this.sortedWorldRenderers[var3].glOcclusionQuery, GL15.GL_QUERY_RESULT_AVAILABLE, this.occlusionResult);
-				if(this.occlusionResult.get(0) != 0) {
-					this.sortedWorldRenderers[var3].isWaitingOnOcclusionQuery = false;
-					this.occlusionResult.clear();
-					ARBOcclusionQuery.glGetQueryObjectuARB(this.sortedWorldRenderers[var3].glOcclusionQuery, GL15.GL_QUERY_RESULT, this.occlusionResult);
-					this.sortedWorldRenderers[var3].isVisible = this.occlusionResult.get(0) != 0;
-				}
-			}
-		}
-
+		return var17 + this.renderSortedRenderers(0, this.sortedWorldRenderers.length, var2, var3);
 	}
 
 	private int renderSortedRenderers(int var1, int var2, int var3, double var4) {
@@ -538,14 +415,12 @@ public class RenderGlobal implements IWorldAccess {
 					++this.renderersSkippingRenderPass;
 				} else if(!this.sortedWorldRenderers[var7].isInFrustum) {
 					++this.renderersBeingClipped;
-				} else if(this.occlusionEnabled && !this.sortedWorldRenderers[var7].isVisible) {
-					++this.renderersBeingOccluded;
 				} else {
 					++this.renderersBeingRendered;
 				}
 			}
 
-			if(!this.sortedWorldRenderers[var7].skipRenderPass[var3] && this.sortedWorldRenderers[var7].isInFrustum && (!this.occlusionEnabled || this.sortedWorldRenderers[var7].isVisible)) {
+			if(!this.sortedWorldRenderers[var7].skipRenderPass[var3] && this.sortedWorldRenderers[var7].isInFrustum) {
 				int var8 = this.sortedWorldRenderers[var7].getGLCallListForPass(var3);
 				if(var8 >= 0) {
 					this.glRenderLists.add(this.sortedWorldRenderers[var7]);
@@ -634,7 +509,6 @@ public class RenderGlobal implements IWorldAccess {
 			float var12;
 			if(var18 != null) {
 				GL11.glDisable(GL11.GL_TEXTURE_2D);
-				GL11.glShadeModel(GL11.GL_SMOOTH);
 				GL11.glPushMatrix();
 				GL11.glRotatef(90.0F, 1.0F, 0.0F, 0.0F);
 				var8 = this.worldObj.getCelestialAngle(var1);
@@ -667,7 +541,6 @@ public class RenderGlobal implements IWorldAccess {
 
 				var17.draw();
 				GL11.glPopMatrix();
-				GL11.glShadeModel(GL11.GL_FLAT);
 			}
 
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
@@ -1318,25 +1191,9 @@ public class RenderGlobal implements IWorldAccess {
 
 	public void obtainEntitySkin(Entity var1) {
 		var1.updateCloak();
-		if(var1.skinUrl != null) {
-			this.renderEngine.obtainImageData(var1.skinUrl, new ImageBufferDownload());
-		}
-
-		if(var1.cloakUrl != null) {
-			this.renderEngine.obtainImageData(var1.cloakUrl, new ImageBufferDownload());
-		}
-
 	}
 
 	public void releaseEntitySkin(Entity var1) {
-		if(var1.skinUrl != null) {
-			this.renderEngine.releaseImageData(var1.skinUrl);
-		}
-
-		if(var1.cloakUrl != null) {
-			this.renderEngine.releaseImageData(var1.cloakUrl);
-		}
-
 	}
 
 	public void updateAllRenderers() {

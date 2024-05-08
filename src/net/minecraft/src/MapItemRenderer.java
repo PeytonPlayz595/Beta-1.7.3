@@ -1,8 +1,9 @@
 package net.minecraft.src;
 
-import java.awt.image.BufferedImage;
 import java.util.Iterator;
 import org.lwjgl.opengl.GL11;
+
+import net.lax1dude.eaglercraft.BufferedImage;
 
 public class MapItemRenderer {
 	private int[] field_28159_a = new int[16384];

@@ -1,6 +1,5 @@
 package net.minecraft.src;
 
-import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.GL11;
 
 public class TileEntityRendererPiston extends TileEntitySpecialRenderer {
@@ -15,11 +14,6 @@ public class TileEntityRendererPiston extends TileEntitySpecialRenderer {
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 			GL11.glEnable(GL11.GL_BLEND);
 			GL11.glDisable(GL11.GL_CULL_FACE);
-			if(Minecraft.isAmbientOcclusionEnabled()) {
-				GL11.glShadeModel(GL11.GL_SMOOTH);
-			} else {
-				GL11.glShadeModel(GL11.GL_FLAT);
-			}
 
 			var10.startDrawingQuads();
 			var10.setTranslationD((double)((float)var2 - (float)var1.xCoord + var1.func_31017_b(var8)), (double)((float)var4 - (float)var1.yCoord + var1.func_31014_c(var8)), (double)((float)var6 - (float)var1.zCoord + var1.func_31013_d(var8)));
