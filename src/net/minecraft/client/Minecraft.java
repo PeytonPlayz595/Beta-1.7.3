@@ -84,7 +84,7 @@ import net.minecraft.src.World;
 import net.minecraft.src.WorldProvider;
 import net.minecraft.src.WorldRenderer;
 
-public abstract class Minecraft implements Runnable {
+public class Minecraft implements Runnable {
 	public static byte[] field_28006_b = new byte[10485760];
 	private static Minecraft theMinecraft;
 	public PlayerController playerController;
@@ -151,10 +151,8 @@ public abstract class Minecraft implements Runnable {
 
 	public void onMinecraftCrash(UnexpectedThrowable var1) {
 		this.hasCrashed = true;
-		this.displayUnexpectedThrowable(var1);
+		//this.displayUnexpectedThrowable(var1);
 	}
-
-	public abstract void displayUnexpectedThrowable(UnexpectedThrowable var1);
 
 	public void setServer(String var1, int var2) {
 		this.serverName = var1;

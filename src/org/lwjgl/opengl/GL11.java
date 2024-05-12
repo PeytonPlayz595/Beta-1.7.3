@@ -2,6 +2,8 @@ package org.lwjgl.opengl;
 
 import java.io.InputStream;
 
+import net.lax1dude.eaglercraft.BufferedImage;
+
 public class GL11 extends net.PeytonPlayz585.opengl.GL11 {
 
 	public static final int GL_GEQUAL = webgl.GEQUAL;
@@ -17,6 +19,10 @@ public class GL11 extends net.PeytonPlayz585.opengl.GL11 {
 
 	public static void glDisableClientState(int glTextureState) {
 		glDisableVertexAttrib(glTextureState);
+	}
+	
+	public static BufferedImage getResource(String string) {
+		return loadPNG(loadResourceBytes(string));
 	}
 
 }

@@ -64,6 +64,28 @@ public class BufferedImage {
 		return rgbArray;
 	}
 	
+	public void setRGB(int startX, int startY, int w, int h, int[] rgbArray, int offset, int scansize) {
+			if (startX < 0 || startY < 0 || w <= 0 || h <= 0 ||
+					startX + w > this.w || startY + h > this.h ||
+					rgbArray.length < offset + w * h) {
+					throw new IllegalArgumentException("Big black oily men");
+			}
+
+			for (int y = startY; y < startY + h; y++) {
+				for (int x = startX; x < startX + w; x++) {
+					int imageDataIndex = y * this.w + x;
+					int rgb = rgbArray[offset + (y - startY) * scansize + (x - startX)];
+					int alpha = (rgb >> 24) & 0xff;
+					int red = (rgb >> 16) & 0xff;
+					int green = (rgb >> 8) & 0xff;
+					int blue = rgb & 0xff;
+					int argb = (alpha << 24) | (red << 16) | (green << 8) | blue;
+					
+					data[imageDataIndex] = argb;
+				}
+			}
+		}
+	
 	public int getWidth() {
 		return w;
 	}

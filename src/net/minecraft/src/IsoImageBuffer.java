@@ -1,6 +1,6 @@
 package net.minecraft.src;
 
-import java.awt.image.BufferedImage;
+import net.lax1dude.eaglercraft.BufferedImage;
 
 public class IsoImageBuffer {
 	public BufferedImage field_1348_a;

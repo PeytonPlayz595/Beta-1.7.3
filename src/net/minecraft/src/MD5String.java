@@ -1,8 +1,7 @@
 package net.minecraft.src;
 
 import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.nio.charset.StandardCharsets;
 
 public class MD5String {
 	private String field_27370_a;
@@ -10,15 +9,20 @@ public class MD5String {
 	public MD5String(String var1) {
 		this.field_27370_a = var1;
 	}
-
+	
 	public String func_27369_a(String var1) {
-		try {
-			String var2 = this.field_27370_a + var1;
-			MessageDigest var3 = MessageDigest.getInstance("MD5");
-			var3.update(var2.getBytes(), 0, var2.length());
-			return (new BigInteger(1, var3.digest())).toString(16);
-		} catch (NoSuchAlgorithmException var4) {
-			throw new RuntimeException(var4);
-		}
-	}
+        String var2 = this.field_27370_a + var1;
+        String md5Hash = calculateMD5(var2);
+        return md5Hash;
+    }
+
+    private String calculateMD5(String input) {
+        byte[] bytes = input.getBytes(StandardCharsets.UTF_8);
+        BigInteger no = new BigInteger(1, bytes);
+        String hash = no.toString(16);
+        while (hash.length() < 32) {
+            hash = "0" + hash;
+        }
+        return hash;
+    }
 }

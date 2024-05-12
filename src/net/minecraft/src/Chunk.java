@@ -354,8 +354,7 @@ public class Chunk {
 		int var2 = MathHelper.floor_double(var1.posX / 16.0D);
 		int var3 = MathHelper.floor_double(var1.posZ / 16.0D);
 		if(var2 != this.xPosition || var3 != this.zPosition) {
-			System.out.println("Wrong location! " + var1);
-			Thread.dumpStack();
+			System.err.println("Wrong location! " + var1);
 		}
 
 		int var4 = MathHelper.floor_double(var1.posY / 16.0D);

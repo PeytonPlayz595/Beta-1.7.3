@@ -1,8 +1,11 @@
 package net.minecraft.src;
 
-import java.awt.image.BufferedImage;
 import java.io.IOException;
-import javax.imageio.ImageIO;
+
+import org.lwjgl.opengl.GL11;
+
+import net.lax1dude.eaglercraft.BufferedImage;
+import net.lax1dude.eaglercraft.ImageIO;
 import net.minecraft.client.Minecraft;
 
 public class TextureCompassFX extends TextureFX {
@@ -17,11 +20,11 @@ public class TextureCompassFX extends TextureFX {
 		this.tileImage = 1;
 
 		try {
-			BufferedImage var2 = ImageIO.read(Minecraft.class.getResource("/gui/items.png"));
+			BufferedImage var2 = ImageIO.read(GL11.getResource("/gui/items.png"));
 			int var3 = this.iconIndex % 16 * 16;
 			int var4 = this.iconIndex / 16 * 16;
 			var2.getRGB(var3, var4, 16, 16, this.compassIconImageData, 0, 16);
-		} catch (IOException var5) {
+		} catch (Exception var5) {
 			var5.printStackTrace();
 		}
 

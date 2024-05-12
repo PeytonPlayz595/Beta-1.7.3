@@ -14,4 +14,8 @@ public class ImageIO {
 		return GL11.loadPNG(data);
 	}
 
+	public static BufferedImage read(BufferedImage resource) {
+		return resource;
+	}
+
 }

@@ -1,8 +1,5 @@
 package net.minecraft.src;
 
-import java.awt.Toolkit;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
@@ -37,15 +34,6 @@ public class GuiScreen extends Gui {
 	}
 
 	public static String getClipboardString() {
-		try {
-			Transferable var0 = Toolkit.getDefaultToolkit().getSystemClipboard().getContents((Object)null);
-			if(var0 != null && var0.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-				String var1 = (String)var0.getTransferData(DataFlavor.stringFlavor);
-				return var1;
-			}
-		} catch (Exception var2) {
-		}
-
 		return null;
 	}
 
