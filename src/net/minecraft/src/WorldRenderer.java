@@ -67,15 +67,11 @@ public class WorldRenderer {
 			this.posZMinus = var3 - this.posZClip;
 			float var4 = 6.0F;
 			this.rendererBoundingBox = AxisAlignedBB.getBoundingBox((double)((float)var1 - var4), (double)((float)var2 - var4), (double)((float)var3 - var4), (double)((float)(var1 + this.sizeWidth) + var4), (double)((float)(var2 + this.sizeHeight) + var4), (double)((float)(var3 + this.sizeDepth) + var4));
-			GL11.glNewList(this.glRenderList + 2, GL11.GL_COMPILE);
-			RenderItem.renderAABB(AxisAlignedBB.getBoundingBoxFromPool((double)((float)this.posXClip - var4), (double)((float)this.posYClip - var4), (double)((float)this.posZClip - var4), (double)((float)(this.posXClip + this.sizeWidth) + var4), (double)((float)(this.posYClip + this.sizeHeight) + var4), (double)((float)(this.posZClip + this.sizeDepth) + var4)));
-			GL11.glEndList();
+			//GL11.glNewList(this.glRenderList + 2, GL11.GL_COMPILE);
+			//RenderItem.renderAABB(AxisAlignedBB.getBoundingBoxFromPool((double)((float)this.posXClip - var4), (double)((float)this.posYClip - var4), (double)((float)this.posZClip - var4), (double)((float)(this.posXClip + this.sizeWidth) + var4), (double)((float)(this.posYClip + this.sizeHeight) + var4), (double)((float)(this.posZClip + this.sizeDepth) + var4)));
+			//GL11.glEndList();
 			this.markDirty();
 		}
-	}
-
-	private void setupGLTranslation() {
-		GL11.glTranslatef((float)this.posXClip, (float)this.posYClip, (float)this.posZClip);
 	}
 
 	public void updateRenderer() {
@@ -113,14 +109,8 @@ public class WorldRenderer {
 								if(!var14) {
 									var14 = true;
 									GL11.glNewList(this.glRenderList + var11, GL11.GL_COMPILE);
-									GL11.glPushMatrix();
-									this.setupGLTranslation();
-									float var19 = 1.000001F;
-									GL11.glTranslatef((float)(-this.sizeDepth) / 2.0F, (float)(-this.sizeHeight) / 2.0F, (float)(-this.sizeDepth) / 2.0F);
-									GL11.glScalef(var19, var19, var19);
-									GL11.glTranslatef((float)this.sizeDepth / 2.0F, (float)this.sizeHeight / 2.0F, (float)this.sizeDepth / 2.0F);
 									tessellator.startDrawingQuads();
-									tessellator.setTranslationD((double)(-this.posX), (double)(-this.posY), (double)(-this.posZ));
+									tessellator.setTranslationD((double) (this.posXClip-this.posX), (double) (this.posYClip-this.posY), (double) (this.posZClip-this.posZ));
 								}
 
 								if(var11 == 0 && Block.isBlockContainer[var18]) {
@@ -144,7 +134,6 @@ public class WorldRenderer {
 
 				if(var14) {
 					tessellator.draw();
-					GL11.glPopMatrix();
 					GL11.glEndList();
 					tessellator.setTranslationD(0.0D, 0.0D, 0.0D);
 				} else {

@@ -398,10 +398,6 @@ public class Minecraft implements Runnable {
 
 			while(this.running) {
 				try {
-					if(!GL11.hasBeenActive()) {
-						break;
-					}
-
 					AxisAlignedBB.clearBoundingBoxPool();
 					Vec3D.initialize();
 
@@ -450,7 +446,7 @@ public class Minecraft implements Runnable {
 						this.entityRenderer.updateCameraAndRender(this.timer.renderPartialTicks);
 					}
 
-					if(!GL11.hasBeenActive()) {
+					if(!GL11.isFocused()) {
 						Thread.sleep(10L);
 					}
 
@@ -610,7 +606,7 @@ public class Minecraft implements Runnable {
 	}
 
 	public void setIngameFocus() {
-		if(GL11.hasBeenActive()) {
+		if(GL11.isFocused()) {
 			if(!this.inGameHasFocus) {
 				this.inGameHasFocus = true;
 				this.mouseHelper.grabMouseCursor();

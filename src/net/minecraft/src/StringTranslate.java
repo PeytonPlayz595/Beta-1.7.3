@@ -3,14 +3,16 @@ package net.minecraft.src;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.lwjgl.opengl.GL11;
+
 public class StringTranslate {
 	private static StringTranslate instance = new StringTranslate();
 	private Properties translateTable = new Properties();
 
 	private StringTranslate() {
 		try {
-			this.translateTable.load(StringTranslate.class.getResourceAsStream("/lang/en_US.lang"));
-			this.translateTable.load(StringTranslate.class.getResourceAsStream("/lang/stats_US.lang"));
+			this.translateTable.load(GL11.getResourceAsStream("/lang/en_US.lang"));
+			this.translateTable.load(GL11.getResourceAsStream("/lang/stats_US.lang"));
 		} catch (IOException var2) {
 			var2.printStackTrace();
 		}

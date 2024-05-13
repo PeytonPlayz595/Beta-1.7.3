@@ -161,9 +161,6 @@ public class EaglerAdapterImpl2 {
 
 	@JSBody(params = { "v", "s" }, script = "window[v] = s;")
 	public static native void setDebugVar(String v, String s);
-	
-	@JSBody(params = { }, script = "if(window.navigator.userActivation){return window.navigator.userActivation.hasBeenActive;}else{return false;}")
-	public static native boolean hasBeenActive();
 
 	public static HTMLDocument doc = null;
 	public static HTMLElement parent = null;

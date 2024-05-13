@@ -5,13 +5,15 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.lwjgl.opengl.GL11;
+
 public class AchievementMap {
 	public static AchievementMap instance = new AchievementMap();
 	private Map guidMap = new HashMap();
 
 	private AchievementMap() {
 		try {
-			BufferedReader var1 = new BufferedReader(new InputStreamReader(AchievementMap.class.getResourceAsStream("/achievement/map.txt")));
+			BufferedReader var1 = new BufferedReader(new InputStreamReader(GL11.getResourceAsStream("/achievement/map.txt")));
 
 			while(true) {
 				String var2 = var1.readLine();

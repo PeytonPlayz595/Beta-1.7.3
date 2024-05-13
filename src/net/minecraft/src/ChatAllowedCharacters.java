@@ -3,6 +3,8 @@ package net.minecraft.src;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+import org.lwjgl.opengl.GL11;
+
 public class ChatAllowedCharacters {
 	public static final String allowedCharacters = getAllowedCharacters();
 	public static final char[] allowedCharactersArray = new char[]{'/', '\n', '\r', '\t', '\u0000', '\f', '`', '?', '*', '\\', '<', '>', '|', '\"', ':'};
@@ -11,7 +13,7 @@ public class ChatAllowedCharacters {
 		String var0 = "";
 
 		try {
-			BufferedReader var1 = new BufferedReader(new InputStreamReader(ChatAllowedCharacters.class.getResourceAsStream("/font.txt"), "UTF-8"));
+			BufferedReader var1 = new BufferedReader(new InputStreamReader(GL11.getResourceAsStream("/font.txt"), "UTF-8"));
 			String var2 = "";
 
 			while(true) {

@@ -7,11 +7,11 @@ import org.teavm.jso.typedarrays.Float32Array;
 import org.teavm.jso.typedarrays.Int32Array;
 
 public class Tessellator {
-	private static boolean convertQuadsToTriangles = true;
+	private Int32Array intBuffer;
 	private Float32Array floatBuffer;
 	private int vertexCount = 0;
-	private double textureU;
-	private double textureV;
+	private float textureU;
+	private float textureV;
 	private int color;
 	private boolean hasColor = false;
 	private boolean hasTexture = false;
@@ -31,6 +31,7 @@ public class Tessellator {
 	private Tessellator(int var1) {
 		this.bufferSize = var1;
 		ArrayBuffer a = ArrayBuffer.create(var1 * 4);
+		this.intBuffer = Int32Array.create(a);
 		this.floatBuffer = Float32Array.create(a);
 	}
 
@@ -53,11 +54,7 @@ public class Tessellator {
 				}
 
 				GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-				if(this.drawMode == 7 && convertQuadsToTriangles) {
-					GL11.glDrawArrays(GL11.GL_TRIANGLES, GL11.GL_POINTS, this.vertexCount, Int32Array.create(floatBuffer.getBuffer(), 0, this.vertexCount * 7));
-				} else {
-					GL11.glDrawArrays(this.drawMode, GL11.GL_POINTS, this.vertexCount, Int32Array.create(floatBuffer.getBuffer(), 0, this.vertexCount * 7));
-				}
+				GL11.glDrawArrays(this.drawMode, GL11.GL_POINTS, this.vertexCount, Int32Array.create(intBuffer.getBuffer(), 0, this.vertexCount * 7));
 
 				GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
 				if(this.hasTexture) {
@@ -103,8 +100,8 @@ public class Tessellator {
 
 	public void setTextureUV(double var1, double var3) {
 		this.hasTexture = true;
-		this.textureU = var1;
-		this.textureV = var3;
+		this.textureU = (float) var1;
+		this.textureV = (float) var3;
 	}
 
 	public void setColorOpaque_F(float var1, float var2, float var3) {
@@ -169,47 +166,30 @@ public class Tessellator {
 	}
 
 	public void addVertex(double var1, double var3, double var5) {
+		if(this.addedVertices > 65534) return;
 		++this.addedVertices;
 		
+		Int32Array intBuffer0 = intBuffer;
 		Float32Array floatBuffer0 = floatBuffer;
 		
-		if(this.drawMode == 7 && convertQuadsToTriangles && this.addedVertices % 4 == 0) {
-			for(int var7 = 0; var7 < 2; ++var7) {
-				int var8 = 8 * (3 - var7);
-				if(this.hasTexture) {
-					floatBuffer0.set(this.rawBufferIndex + 3, this.rawBufferIndex - var8 + 3);
-					floatBuffer0.set(this.rawBufferIndex + 4, this.rawBufferIndex - var8 + 4);
-				}
-
-				if(this.hasColor) {
-					floatBuffer0.set(this.rawBufferIndex + 5, this.rawBufferIndex - var8 + 5);
-				}
-
-				floatBuffer0.set(this.rawBufferIndex + 0, this.rawBufferIndex - var8 + 0);
-				floatBuffer0.set(this.rawBufferIndex + 1, this.rawBufferIndex - var8 + 1);
-				floatBuffer0.set(this.rawBufferIndex + 2, this.rawBufferIndex - var8 + 2);
-				++this.vertexCount;
-				this.rawBufferIndex += 8;
-			}
-		}
+		floatBuffer0.set(this.rawBufferIndex + 0, (float)(var1 + this.xOffset));
+		floatBuffer0.set(this.rawBufferIndex + 1, (float)(var3 + this.yOffset));
+		floatBuffer0.set(this.rawBufferIndex + 2, (float)(var5 + this.zOffset));
 
 		if(this.hasTexture) {
-			floatBuffer0.set(this.rawBufferIndex + 3, Float.floatToRawIntBits((float)this.textureU));
-			floatBuffer0.set(this.rawBufferIndex + 4, Float.floatToRawIntBits((float)this.textureV));
+			floatBuffer0.set(this.rawBufferIndex + 3, this.textureU);
+			floatBuffer0.set(this.rawBufferIndex + 4, this.textureV);
 		}
 
 		if(this.hasColor) {
-			floatBuffer0.set(this.rawBufferIndex + 5, this.color);
+			intBuffer0.set(this.rawBufferIndex + 5, this.color);
 		}
 
 		if(this.hasNormals) {
-			floatBuffer0.set(this.rawBufferIndex + 6, this.normal);
+			intBuffer0.set(this.rawBufferIndex + 6, this.normal);
 		}
-
-		floatBuffer0.set(this.rawBufferIndex + 0, Float.floatToRawIntBits((float)(var1 + this.xOffset)));
-		floatBuffer0.set(this.rawBufferIndex + 1, Float.floatToRawIntBits((float)(var3 + this.yOffset)));
-		floatBuffer0.set(this.rawBufferIndex + 2, Float.floatToRawIntBits((float)(var5 + this.zOffset)));
-		this.rawBufferIndex += 8;
+		
+		this.rawBufferIndex += 7;
 		++this.vertexCount;
 		if(this.vertexCount % 4 == 0 && this.rawBufferIndex >= this.bufferSize - 32) {
 			this.draw();

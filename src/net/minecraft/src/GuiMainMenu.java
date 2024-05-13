@@ -18,7 +18,7 @@ public class GuiMainMenu extends GuiScreen {
 	public GuiMainMenu() {
 		try {
 			ArrayList var1 = new ArrayList();
-			BufferedReader var2 = new BufferedReader(new InputStreamReader(GuiMainMenu.class.getResourceAsStream("/title/splashes.txt"), Charset.forName("UTF-8")));
+			BufferedReader var2 = new BufferedReader(new InputStreamReader(GL11.getResourceAsStream("/title/splashes.txt"), Charset.forName("UTF-8")));
 			String var3 = "";
 
 			while(true) {
