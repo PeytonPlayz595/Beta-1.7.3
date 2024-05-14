@@ -1,108 +1,110 @@
 package net.minecraft.src;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
 
+import net.PeytonPlayz585.opengl.GL11;
+
 public class ChunkLoader implements IChunkLoader {
-	private File saveDir;
-	private boolean createIfNecessary;
+	private String saveDir;
 
-	public ChunkLoader(File var1, boolean var2) {
+	public ChunkLoader(String var1) {
 		this.saveDir = var1;
-		this.createIfNecessary = var2;
 	}
+	
+	public static final String CHUNK_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-	private File chunkFileForXZ(int var1, int var2) {
-		String var3 = "c." + Integer.toString(var1, 36) + "." + Integer.toString(var2, 36) + ".dat";
-		String var4 = Integer.toString(var1 & 63, 36);
-		String var5 = Integer.toString(var2 & 63, 36);
-		File var6 = new File(this.saveDir, var4);
-		if(!var6.exists()) {
-			if(!this.createIfNecessary) {
-				return null;
-			}
-
-			var6.mkdir();
+	private String chunkFileForXZ(int var1, int var2) {
+		int unsignedX = var1 + 30233088;
+		int unsignedZ = var2 + 30233088;
+		int radix = CHUNK_CHARS.length();
+		char[] path = new char[10];
+		for(int i = 0; i < 5; ++i) {
+			path[i * 2] = CHUNK_CHARS.charAt(unsignedX % radix);
+			unsignedX /= radix;
+			path[i * 2 + 1] = CHUNK_CHARS.charAt(unsignedZ % radix);
+			unsignedZ /= radix;
 		}
-
-		var6 = new File(var6, var5);
-		if(!var6.exists()) {
-			if(!this.createIfNecessary) {
-				return null;
-			}
-
-			var6.mkdir();
-		}
-
-		var6 = new File(var6, var3);
-		return !var6.exists() && !this.createIfNecessary ? null : var6;
+		String s = new String(path);
+		String s1 = saveDir + "/" + s;
+		return s1;
 	}
 
 	public Chunk loadChunk(World var1, int var2, int var3) throws IOException {
-		File var4 = this.chunkFileForXZ(var2, var3);
-		if(var4 != null && var4.exists()) {
+		String var4 = this.chunkFileForXZ(var2, var3);
+		byte[] chunkData = GL11.readFile(var4);
+		
+		if(chunkData != null) {
 			try {
-				FileInputStream var5 = new FileInputStream(var4);
-				NBTTagCompound var6 = CompressedStreamTools.func_1138_a(var5);
-				if(!var6.hasKey("Level")) {
-					System.out.println("Chunk file at " + var2 + "," + var3 + " is missing level data, skipping");
+				ByteArrayInputStream var5 = new ByteArrayInputStream(chunkData);
+				NBTTagCompound var6 = CompressedStreamTools.func_1138_a(var5).getCompoundTag("Level");
+				
+				int x = var6.getInteger("xPos");
+				int z = var6.getInteger("zPos");
+				if(var2 != x || var3 != z) {
+					String var7 = this.chunkFileForXZ(x, z);
+					GL11.renameFile(var4, var7);
 					return null;
 				}
-
-				if(!var6.getCompoundTag("Level").hasKey("Blocks")) {
-					System.out.println("Chunk file at " + var2 + "," + var3 + " is missing block data, skipping");
-					return null;
-				}
-
-				Chunk var7 = loadChunkIntoWorldFromCompound(var1, var6.getCompoundTag("Level"));
-				if(!var7.isAtLocation(var2, var3)) {
-					System.out.println("Chunk file at " + var2 + "," + var3 + " is in the wrong location; relocating. (Expected " + var2 + ", " + var3 + ", got " + var7.xPosition + ", " + var7.zPosition + ")");
-					var6.setInteger("xPos", var2);
-					var6.setInteger("zPos", var3);
-					var7 = loadChunkIntoWorldFromCompound(var1, var6.getCompoundTag("Level"));
-				}
-
-				var7.func_25124_i();
-				return var7;
-			} catch (Exception var8) {
-				var8.printStackTrace();
+				
+				return loadChunkIntoWorldFromCompound(var1, var6);
+			} catch(IOException e) {
+				GL11.deleteFile(var4);
+				return null;
 			}
+		} else {
+			return null;
 		}
-
-		return null;
+//		if(var4 != null && GL11.exists(var4)) {
+//			try {
+//				ByteArrayInputStream var5 = new ByteArrayInputStream(GL11.readFile(var4));
+//				NBTTagCompound var6 = CompressedStreamTools.func_1138_a(var5);
+//				Chunk var7 = loadChunkIntoWorldFromCompound(var1, var6.getCompoundTag("Level"));
+//				if(!var7.isAtLocation(var2, var3)) {
+//					System.out.println("Chunk file at " + var2 + "," + var3 + " is in the wrong location; relocating. (Expected " + var2 + ", " + var3 + ", got " + var7.xPosition + ", " + var7.zPosition + ")");
+//					var6.setInteger("xPos", var2);
+//					var6.setInteger("zPos", var3);
+//					var7 = loadChunkIntoWorldFromCompound(var1, var6.getCompoundTag("Level"));
+//				}
+//
+//				var7.func_25124_i();
+//				return var7;
+//			} catch (Exception var8) {
+//				var8.printStackTrace();
+//			}
+//		}
+//
+//		return null;
 	}
 
 	public void saveChunk(World var1, Chunk var2) throws IOException {
 		var1.checkSessionLock();
-		File var3 = this.chunkFileForXZ(var2.xPosition, var2.zPosition);
-		if(var3.exists()) {
+		String var3 = this.chunkFileForXZ(var2.xPosition, var2.zPosition);
+		ByteArrayOutputStream var5 = new ByteArrayOutputStream();
+		
+		if(GL11.exists(var3)) {
 			WorldInfo var4 = var1.getWorldInfo();
-			var4.setSizeOnDisk(var4.getSizeOnDisk() - var3.length());
+			var4.setSizeOnDisk(var4.getSizeOnDisk() - GL11.getFileSize(var3));
 		}
-
+		
+		NBTTagCompound var6 = new NBTTagCompound();
+		NBTTagCompound var7 = new NBTTagCompound();
+		var6.setTag("Level", var7);
+		storeChunkInCompound(var2, var1, var7);
+		
 		try {
-			File var10 = new File(this.saveDir, "tmp_chunk.dat");
-			FileOutputStream var5 = new FileOutputStream(var10);
-			NBTTagCompound var6 = new NBTTagCompound();
-			NBTTagCompound var7 = new NBTTagCompound();
-			var6.setTag("Level", var7);
-			storeChunkInCompound(var2, var1, var7);
 			CompressedStreamTools.writeGzippedCompoundToOutputStream(var6, var5);
-			var5.close();
-			if(var3.exists()) {
-				var3.delete();
-			}
-
-			var10.renameTo(var3);
-			WorldInfo var8 = var1.getWorldInfo();
-			var8.setSizeOnDisk(var8.getSizeOnDisk() + var3.length());
-		} catch (Exception var9) {
-			var9.printStackTrace();
+		} catch(IOException e) {
+			e.printStackTrace();
+			return;
 		}
-
+		
+		var5.flush();
+		GL11.writeFile(var3, var5.toByteArray());
+		WorldInfo var8 = var1.getWorldInfo();
+		var8.setSizeOnDisk(var8.getSizeOnDisk() + GL11.getFileSize(var3));
 	}
 
 	public static void storeChunkInCompound(Chunk var0, World var1, NBTTagCompound var2) {

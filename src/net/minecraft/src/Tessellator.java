@@ -199,15 +199,15 @@ public class Tessellator {
 	}
 
 	public void setColorOpaque_I(int var1) {
-		int var2 = var1 >> 16 & 255;
-		int var3 = var1 >> 8 & 255;
+		int var2 = var1 >>> 16 & 255;
+		int var3 = var1 >>> 8 & 255;
 		int var4 = var1 & 255;
 		this.setColorOpaque(var2, var3, var4);
 	}
 
 	public void setColorRGBA_I(int var1, int var2) {
-		int var3 = var1 >> 16 & 255;
-		int var4 = var1 >> 8 & 255;
+		int var3 = var1 >>> 16 & 255;
+		int var4 = var1 >>> 8 & 255;
 		int var5 = var1 & 255;
 		this.setColorRGBA(var3, var4, var5, var2);
 	}
@@ -222,10 +222,10 @@ public class Tessellator {
 		}
 
 		this.hasNormals = true;
-		byte var4 = (byte)((int)(var1 * 128.0F));
-		byte var5 = (byte)((int)(var2 * 127.0F));
-		byte var6 = (byte)((int)(var3 * 127.0F));
-		this.normal = var4 | var5 << 8 | var6 << 16;
+		int var4 = (int)((var1) * 127.0F) + 127;
+		int var5 = (int)((var2) * 127.0F) + 127;
+		int var6 = (int)((var3) * 127.0F) + 127;
+		this.normal = var4 & 255 | (var5 & 255) << 8 | (var6 & 255) << 16;
 	}
 
 	public void setTranslationD(double var1, double var3, double var5) {

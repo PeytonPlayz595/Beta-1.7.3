@@ -1,35 +1,37 @@
 package net.minecraft.src;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.Map;
+
+import net.PeytonPlayz585.opengl.GL11;
 
 public class StatsSyncher {
 	private volatile boolean field_27438_a = false;
 	private volatile Map field_27437_b = null;
 	private volatile Map field_27436_c = null;
 	private StatFileWriter field_27435_d;
-	private File field_27434_e;
-	private File field_27433_f;
-	private File field_27432_g;
-	private File field_27431_h;
-	private File field_27430_i;
-	private File field_27429_j;
+	private String field_27434_e;
+	private String field_27433_f;
+	private String field_27432_g;
+	private String field_27431_h;
+	private String field_27430_i;
+	private String field_27429_j;
 	private Session field_27428_k;
 	private int field_27427_l = 0;
 	private int field_27426_m = 0;
 
-	public StatsSyncher(Session var1, StatFileWriter var2, File var3) {
-		this.field_27434_e = new File(var3, "stats_" + var1.username.toLowerCase() + "_unsent.dat");
-		this.field_27433_f = new File(var3, "stats_" + var1.username.toLowerCase() + ".dat");
-		this.field_27430_i = new File(var3, "stats_" + var1.username.toLowerCase() + "_unsent.old");
-		this.field_27429_j = new File(var3, "stats_" + var1.username.toLowerCase() + ".old");
-		this.field_27432_g = new File(var3, "stats_" + var1.username.toLowerCase() + "_unsent.tmp");
-		this.field_27431_h = new File(var3, "stats_" + var1.username.toLowerCase() + ".tmp");
+	public StatsSyncher(Session var1, StatFileWriter var2, String var3) {
+		this.field_27434_e = makeFilePath(var3, "stats_" + var1.username.toLowerCase() + "_unsent.dat");
+		this.field_27433_f = makeFilePath(var3, "stats_" + var1.username.toLowerCase() + ".dat");
+		this.field_27430_i = makeFilePath(var3, "stats_" + var1.username.toLowerCase() + "_unsent.old");
+		this.field_27429_j = makeFilePath(var3, "stats_" + var1.username.toLowerCase() + ".old");
+		this.field_27432_g = makeFilePath(var3, "stats_" + var1.username.toLowerCase() + "_unsent.tmp");
+		this.field_27431_h = makeFilePath(var3, "stats_" + var1.username.toLowerCase() + ".tmp");
 		if(!var1.username.toLowerCase().equals(var1.username)) {
 			this.func_28214_a(var3, "stats_" + var1.username + "_unsent.dat", this.field_27434_e);
 			this.func_28214_a(var3, "stats_" + var1.username + ".dat", this.field_27433_f);
@@ -41,30 +43,30 @@ public class StatsSyncher {
 
 		this.field_27435_d = var2;
 		this.field_27428_k = var1;
-		if(this.field_27434_e.exists()) {
+		if(GL11.exists(this.field_27434_e)) {
 			var2.func_27179_a(this.func_27415_a(this.field_27434_e, this.field_27432_g, this.field_27430_i));
 		}
 
 		this.func_27418_a();
 	}
 
-	private void func_28214_a(File var1, String var2, File var3) {
-		File var4 = new File(var1, var2);
-		if(var4.exists() && !var4.isDirectory() && !var3.exists()) {
-			var4.renameTo(var3);
+	private void func_28214_a(String var1, String var2, String var3) {
+		String var4 = makeFilePath(var1, var2);
+		if(GL11.exists(var4) && !GL11.directoryExists(var4) && !GL11.exists(var3)) {
+			GL11.renameFile(var4, var3);
 		}
 
 	}
 
-	private Map func_27415_a(File var1, File var2, File var3) {
-		return var1.exists() ? this.func_27408_a(var1) : (var3.exists() ? this.func_27408_a(var3) : (var2.exists() ? this.func_27408_a(var2) : null));
+	private Map func_27415_a(String var1, String var2, String var3) {
+		return GL11.exists(var1) ? this.func_27408_a(var1) : (GL11.exists(var3) ? this.func_27408_a(var3) : (GL11.exists(var2) ? this.func_27408_a(var2) : null));
 	}
 
-	private Map func_27408_a(File var1) {
+	private Map func_27408_a(String var1) {
 		BufferedReader var2 = null;
 
 		try {
-			var2 = new BufferedReader(new FileReader(var1));
+			var2 = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(GL11.readFile(var1))));
 			String var3 = "";
 			StringBuilder var4 = new StringBuilder();
 
@@ -93,24 +95,26 @@ public class StatsSyncher {
 		return null;
 	}
 
-	private void func_27410_a(Map var1, File var2, File var3, File var4) throws IOException {
-		PrintWriter var5 = new PrintWriter(new FileWriter(var3, false));
+	private void func_27410_a(Map var1, String var2, String var3, String var4) throws IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		PrintWriter var5 = new PrintWriter(baos);
 
 		try {
 			var5.print(StatFileWriter.func_27185_a(this.field_27428_k.username, "local", var1));
+			GL11.writeFile(var3, baos.toByteArray());
 		} finally {
 			var5.close();
 		}
 
-		if(var4.exists()) {
-			var4.delete();
+		if(GL11.exists(var4)) {
+			GL11.deleteFile(var4);
 		}
 
-		if(var2.exists()) {
-			var2.renameTo(var4);
+		if(GL11.exists(var2)) {
+			GL11.renameFile(var2, var4);
 		}
 
-		var3.renameTo(var2);
+		GL11.renameFile(var3, var2);
 	}
 
 	public void func_27418_a() {
@@ -190,19 +194,19 @@ public class StatsSyncher {
 		return var0.field_27437_b;
 	}
 
-	static File func_27423_b(StatsSyncher var0) {
+	static String func_27423_b(StatsSyncher var0) {
 		return var0.field_27433_f;
 	}
 
-	static File func_27411_c(StatsSyncher var0) {
+	static String func_27411_c(StatsSyncher var0) {
 		return var0.field_27431_h;
 	}
 
-	static File func_27413_d(StatsSyncher var0) {
+	static String func_27413_d(StatsSyncher var0) {
 		return var0.field_27429_j;
 	}
 
-	static void func_27412_a(StatsSyncher var0, Map var1, File var2, File var3, File var4) throws IOException {
+	static void func_27412_a(StatsSyncher var0, Map var1, String var2, String var3, String var4) throws IOException {
 		var0.func_27410_a(var1, var2, var3, var4);
 	}
 
@@ -210,7 +214,7 @@ public class StatsSyncher {
 		return var0.field_27437_b = var1;
 	}
 
-	static Map func_27409_a(StatsSyncher var0, File var1, File var2, File var3) {
+	static Map func_27409_a(StatsSyncher var0, String var1, String var2, String var3) {
 		return var0.func_27415_a(var1, var2, var3);
 	}
 
@@ -218,15 +222,19 @@ public class StatsSyncher {
 		return var0.field_27438_a = var1;
 	}
 
-	static File func_27414_e(StatsSyncher var0) {
+	static String func_27414_e(StatsSyncher var0) {
 		return var0.field_27434_e;
 	}
 
-	static File func_27417_f(StatsSyncher var0) {
+	static String func_27417_f(StatsSyncher var0) {
 		return var0.field_27432_g;
 	}
 
-	static File func_27419_g(StatsSyncher var0) {
+	static String func_27419_g(StatsSyncher var0) {
 		return var0.field_27430_i;
+	}
+	
+	private static String makeFilePath(String s, String s1) {
+		return s + "/" + s1;
 	}
 }

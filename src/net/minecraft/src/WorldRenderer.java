@@ -157,6 +157,13 @@ public class WorldRenderer {
 			this.tileEntities.removeAll(var21);
 			this.isChunkLit = Chunk.isLit;
 			this.isInitialized = true;
+			
+			if(skipRenderPass[0]) {
+				GL11.flushDisplayList(glRenderList);
+			}
+			if(skipRenderPass[1]) {
+				GL11.flushDisplayList(glRenderList + 1);
+			}
 		}
 	}
 
@@ -170,6 +177,8 @@ public class WorldRenderer {
 	public void setDontDraw() {
 		for(int var1 = 0; var1 < 2; ++var1) {
 			this.skipRenderPass[var1] = true;
+			GL11.flushDisplayList(glRenderList);
+			GL11.flushDisplayList(glRenderList + 1);
 		}
 
 		this.isInFrustum = false;

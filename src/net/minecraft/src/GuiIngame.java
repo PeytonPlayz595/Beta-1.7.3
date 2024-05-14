@@ -31,9 +31,6 @@ public class GuiIngame extends Gui {
 		FontRenderer var8 = this.mc.fontRenderer;
 		this.mc.entityRenderer.func_905_b();
 		GL11.glEnable(GL11.GL_BLEND);
-		if(Minecraft.isFancyGraphicsEnabled()) {
-			this.renderVignette(this.mc.thePlayer.getEntityBrightness(var1), var6, var7);
-		}
 
 		ItemStack var9 = this.mc.thePlayer.inventory.armorItemInSlot(3);
 		if(!this.mc.gameSettings.thirdPersonView && var9 != null && var9.itemID == Block.pumpkin.blockID) {
@@ -53,9 +50,6 @@ public class GuiIngame extends Gui {
 		this.drawTexturedModalRect(var6 / 2 - 91 - 1 + var11.currentItem * 20, var7 - 22 - 1, 0, 22, 24, 22);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.mc.renderEngine.getTexture("/gui/icons.png"));
 		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_ONE_MINUS_DST_COLOR, GL11.GL_ONE_MINUS_SRC_COLOR);
-		this.drawTexturedModalRect(var6 / 2 - 7, var7 / 2 - 7, 0, 0, 16, 16);
-		GL11.glDisable(GL11.GL_BLEND);
 		boolean var12 = this.mc.thePlayer.heartsLife / 3 % 2 == 1;
 		if(this.mc.thePlayer.heartsLife < 10) {
 			var12 = false;
@@ -165,10 +159,6 @@ public class GuiIngame extends Gui {
 		String var23;
 		if(this.mc.gameSettings.showDebugInfo) {
 			GL11.glPushMatrix();
-			if(Minecraft.hasPaidCheckTime > 0L) {
-				GL11.glTranslatef(0.0F, 32.0F, 0.0F);
-			}
-
 			var8.drawStringWithShadow("Minecraft Beta 1.7.3 (" + this.mc.debug + ")", 2, 2, 16777215);
 			var8.drawStringWithShadow(this.mc.func_6241_m(), 2, 12, 16777215);
 			var8.drawStringWithShadow(this.mc.func_6262_n(), 2, 22, 16777215);
@@ -260,7 +250,7 @@ public class GuiIngame extends Gui {
 		GL11.glDisable(GL11.GL_BLEND);
 	}
 
-	private void renderPumpkinBlur(int var1, int var2) {
+	public void renderPumpkinBlur(int var1, int var2) {
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		GL11.glDepthMask(false);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -280,8 +270,9 @@ public class GuiIngame extends Gui {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 
-	private void renderVignette(float var1, int var2, int var3) {
-		var1 = 1.0F - var1;
+	public void renderVignette(float var1, int var2, int var3) {
+		var1 = 1.0F - var1 * 0.5f;
+		
 		if(var1 < 0.0F) {
 			var1 = 0.0F;
 		}
@@ -447,5 +438,14 @@ public class GuiIngame extends Gui {
 	    int blue = (int) Math.max(0f, Math.min(255f, b * 255f));
 
 	    return (red << 16) | (green << 8) | blue;
+	}
+	
+	public void renderCrossHairs(int w, int h) {
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.mc.renderEngine.getTexture("/gui/icons.png"));
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_ONE_MINUS_DST_COLOR, GL11.GL_ONE_MINUS_SRC_COLOR);
+		this.drawTexturedModalRect(w / 2 - 7, h / 2 - 7, 0, 0, 16, 16);
 	}
 }

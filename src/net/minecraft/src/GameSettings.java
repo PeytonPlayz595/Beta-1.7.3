@@ -1,10 +1,12 @@
 package net.minecraft.src;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+
+import net.PeytonPlayz585.opengl.GL11;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Keyboard;
 
@@ -37,7 +39,7 @@ public class GameSettings {
 	public KeyBinding keyBindSneak = new KeyBinding("key.sneak", 42);
 	public KeyBinding[] keyBindings = new KeyBinding[]{this.keyBindForward, this.keyBindLeft, this.keyBindBack, this.keyBindRight, this.keyBindJump, this.keyBindSneak, this.keyBindDrop, this.keyBindInventory, this.keyBindChat, this.keyBindToggleFog};
 	protected Minecraft mc;
-	private File optionsFile;
+	private String optionsFile;
 	public int difficulty = 2;
 	public boolean hideGUI = false;
 	public boolean thirdPersonView = false;
@@ -50,9 +52,9 @@ public class GameSettings {
 	public float field_22271_G = 1.0F;
 	public int guiScale = 0;
 
-	public GameSettings(Minecraft var1, File var2) {
+	public GameSettings(Minecraft var1, String var2) {
 		this.mc = var1;
-		this.optionsFile = new File(var2, "options.txt");
+		this.optionsFile = var2 + "/" + "options.txt";
 		this.loadOptions();
 	}
 
@@ -175,11 +177,13 @@ public class GameSettings {
 
 	public void loadOptions() {
 		try {
-			if(!this.optionsFile.exists()) {
+			if(!GL11.exists(this.optionsFile)) {
 				return;
 			}
 
-			BufferedReader var1 = new BufferedReader(new FileReader(this.optionsFile));
+			ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(GL11.readFile(this.optionsFile));
+			InputStreamReader inputStreamReader = new InputStreamReader(byteArrayInputStream, "UTF-8");
+			BufferedReader var1 = new BufferedReader(inputStreamReader);
 			String var2 = "";
 
 			while(true) {
@@ -273,7 +277,8 @@ public class GameSettings {
 
 	public void saveOptions() {
 		try {
-			PrintWriter var1 = new PrintWriter(new FileWriter(this.optionsFile));
+			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+			PrintWriter var1 = new PrintWriter(byteArrayOutputStream);
 			var1.println("music:" + this.musicVolume);
 			var1.println("sound:" + this.soundVolume);
 			var1.println("invertYMouse:" + this.invertMouse);
@@ -293,6 +298,10 @@ public class GameSettings {
 			for(int var2 = 0; var2 < this.keyBindings.length; ++var2) {
 				var1.println("key_" + this.keyBindings[var2].keyDescription + ":" + this.keyBindings[var2].keyCode);
 			}
+			
+			var1.flush();
+			byte[] data = byteArrayOutputStream.toByteArray();
+			GL11.writeFile(this.optionsFile, data);
 
 			var1.close();
 		} catch (Exception var3) {

@@ -1,7 +1,5 @@
 package net.minecraft.client;
 
-import java.io.File;
-
 import net.PeytonPlayz585.input.Keyboard;
 import net.PeytonPlayz585.input.Mouse;
 import net.PeytonPlayz585.opengl.GL11;
@@ -13,6 +11,7 @@ import net.minecraft.src.ChunkProviderLoadOrGenerate;
 import net.minecraft.src.ColorizerFoliage;
 import net.minecraft.src.ColorizerGrass;
 import net.minecraft.src.ColorizerWater;
+import net.minecraft.src.EaglerSaveFormat;
 import net.minecraft.src.EffectRenderer;
 import net.minecraft.src.EntityClientPlayerMP;
 import net.minecraft.src.EntityLiving;
@@ -20,8 +19,6 @@ import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityPlayerSP;
 import net.minecraft.src.EntityRenderer;
 import net.minecraft.src.EnumMovingObjectType;
-import net.minecraft.src.EnumOS2;
-import net.minecraft.src.EnumOSMappingHelper;
 import net.minecraft.src.EnumOptions;
 import net.minecraft.src.FontRenderer;
 import net.minecraft.src.GLAllocation;
@@ -59,7 +56,6 @@ import net.minecraft.src.RenderBlocks;
 import net.minecraft.src.RenderEngine;
 import net.minecraft.src.RenderGlobal;
 import net.minecraft.src.RenderManager;
-import net.minecraft.src.SaveConverterMcRegion;
 import net.minecraft.src.ScaledResolution;
 import net.minecraft.src.Session;
 import net.minecraft.src.SoundManager;
@@ -117,18 +113,16 @@ public class Minecraft implements Runnable {
 	public GameSettings gameSettings;
 	public SoundManager sndManager = new SoundManager();
 	public MouseHelper mouseHelper;
-	private File mcDataDir;
 	private ISaveFormat saveLoader;
 	public static long[] frameTimes = new long[512];
 	public static long[] tickTimes = new long[512];
 	public static int numRecordedFrameTimes = 0;
-	public static long hasPaidCheckTime = 0L;
 	public StatFileWriter statFileWriter;
 	private String serverName;
 	private int serverPort;
 	private TextureWaterFX textureWaterFX = new TextureWaterFX();
 	private TextureLavaFX textureLavaFX = new TextureLavaFX();
-	private static File minecraftDir = null;
+	private static String minecraftDir = "minecraft";
 	public volatile boolean running = true;
 	public String debug = "";
 	boolean isTakingScreenshot = false;
@@ -138,6 +132,8 @@ public class Minecraft implements Runnable {
 	public boolean isRaining = false;
 	long systemTime = System.currentTimeMillis();
 	private int joinPlayerCounter = 0;
+	
+	public static int debugFPS;
 
 	public Minecraft() {
 		StatList.func_27360_a();
@@ -160,9 +156,8 @@ public class Minecraft implements Runnable {
 	}
 
 	public void startGame() {
-		this.mcDataDir = getMinecraftDir();
-		this.saveLoader = new SaveConverterMcRegion(new File(this.mcDataDir, "saves"));
-		this.gameSettings = new GameSettings(this, this.mcDataDir);
+		this.saveLoader = new EaglerSaveFormat(minecraftDir + "/" + "saves");
+		this.gameSettings = new GameSettings(this, minecraftDir);
 		this.renderEngine = new RenderEngine(this.gameSettings);
 		this.fontRenderer = new FontRenderer(this.gameSettings, "/font/default.png", this.renderEngine);
 		ColorizerWater.func_28182_a(this.renderEngine.func_28149_a("/misc/watercolor.png"));
@@ -170,7 +165,7 @@ public class Minecraft implements Runnable {
 		ColorizerFoliage.func_28152_a(this.renderEngine.func_28149_a("/misc/foliagecolor.png"));
 		this.entityRenderer = new EntityRenderer(this);
 		RenderManager.instance.itemRenderer = new ItemRenderer(this);
-		this.statFileWriter = new StatFileWriter(this.session, this.mcDataDir);
+		this.statFileWriter = new StatFileWriter(this.session, minecraftDir + "/statsNew");
 		AchievementList.openInventory.setStatStringFormatter(new StatStringFormatKeyInv(this));
 		this.loadScreen();
 		this.mouseHelper = new MouseHelper();
@@ -262,49 +257,6 @@ public class Minecraft implements Runnable {
 		var9.draw();
 	}
 
-	public static File getMinecraftDir() {
-		if(minecraftDir == null) {
-			minecraftDir = getAppDir("minecraft");
-		}
-
-		return minecraftDir;
-	}
-
-	public static File getAppDir(String var0) {
-		String var1 = System.getProperty("user.home", ".");
-		File var2;
-		switch(EnumOSMappingHelper.enumOSMappingArray[getOs().ordinal()]) {
-		case 1:
-		case 2:
-			var2 = new File(var1, '.' + var0 + '/');
-			break;
-		case 3:
-			String var3 = System.getenv("APPDATA");
-			if(var3 != null) {
-				var2 = new File(var3, "." + var0 + '/');
-			} else {
-				var2 = new File(var1, '.' + var0 + '/');
-			}
-			break;
-		case 4:
-			var2 = new File(var1, "Library/Application Support/" + var0);
-			break;
-		default:
-			var2 = new File(var1, var0 + '/');
-		}
-
-		if(!var2.exists() && !var2.mkdirs()) {
-			throw new RuntimeException("The working directory could not be created: " + var2);
-		} else {
-			return var2;
-		}
-	}
-
-	private static EnumOS2 getOs() {
-		String var0 = System.getProperty("os.name").toLowerCase();
-		return var0.contains("win") ? EnumOS2.windows : (var0.contains("mac") ? EnumOS2.macos : (var0.contains("solaris") ? EnumOS2.solaris : (var0.contains("sunos") ? EnumOS2.solaris : (var0.contains("linux") ? EnumOS2.linux : (var0.contains("unix") ? EnumOS2.linux : EnumOS2.unknown)))));
-	}
-
 	public ISaveFormat getSaveLoader() {
 		return this.saveLoader;
 	}
@@ -384,13 +336,7 @@ public class Minecraft implements Runnable {
 	public void run() {
 		this.running = true;
 
-		try {
-			this.startGame();
-		} catch (Exception var17) {
-			var17.printStackTrace();
-			this.onMinecraftCrash(new UnexpectedThrowable("Failed to start game", var17));
-			return;
-		}
+		this.startGame();
 
 		try {
 			long var1 = System.currentTimeMillis();
@@ -480,6 +426,8 @@ public class Minecraft implements Runnable {
 					for(this.isGamePaused = !this.isMultiplayerWorld() && this.currentScreen != null && this.currentScreen.doesGuiPauseGame(); System.currentTimeMillis() >= var1 + 1000L; var3 = 0) {
 						this.debug = var3 + " fps, " + WorldRenderer.chunksUpdated + " chunk updates";
 						WorldRenderer.chunksUpdated = 0;
+						debugFPS = var3;
+						var3 = 0;
 						var1 += 1000L;
 					}
 				} catch (MinecraftException var18) {
@@ -1181,24 +1129,6 @@ public class Minecraft implements Runnable {
 		this.theWorld.func_656_j();
 	}
 
-	public void installResource(String var1, File var2) {
-		int var3 = var1.indexOf("/");
-		String var4 = var1.substring(0, var3);
-		var1 = var1.substring(var3 + 1);
-		if(var4.equalsIgnoreCase("sound")) {
-			this.sndManager.addSound(var1, var2);
-		} else if(var4.equalsIgnoreCase("newsound")) {
-			this.sndManager.addSound(var1, var2);
-		} else if(var4.equalsIgnoreCase("streaming")) {
-			this.sndManager.addStreaming(var1, var2);
-		} else if(var4.equalsIgnoreCase("music")) {
-			this.sndManager.addMusic(var1, var2);
-		} else if(var4.equalsIgnoreCase("newmusic")) {
-			this.sndManager.addMusic(var1, var2);
-		}
-
-	}
-
 	public String func_6241_m() {
 		return this.renderGlobal.getDebugInfoRenders();
 	}
@@ -1300,5 +1230,9 @@ public class Minecraft implements Runnable {
 		}
 
 		return false;
+	}
+	
+	public static Minecraft getMinecraft() {
+		return theMinecraft;
 	}
 }

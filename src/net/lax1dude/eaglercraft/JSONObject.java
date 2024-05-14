@@ -2233,7 +2233,7 @@ public class JSONObject {
                 try {
                     BigDecimal bd = new BigDecimal(val);
                     if(initial == '-' && BigDecimal.ZERO.compareTo(bd)==0) {
-                        return Double.valueOf(-0.0);
+                        return Double.valueOf(0D);
                     }
                     return bd;
                 } catch (NumberFormatException retryAsDouble) {

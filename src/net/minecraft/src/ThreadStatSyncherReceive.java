@@ -1,5 +1,7 @@
 package net.minecraft.src;
 
+import net.PeytonPlayz585.opengl.GL11;
+
 class ThreadStatSyncherReceive extends Thread {
 	final StatsSyncher field_27231_a;
 
@@ -11,7 +13,7 @@ class ThreadStatSyncherReceive extends Thread {
 		try {
 			if(StatsSyncher.func_27422_a(this.field_27231_a) != null) {
 				StatsSyncher.func_27412_a(this.field_27231_a, StatsSyncher.func_27422_a(this.field_27231_a), StatsSyncher.func_27423_b(this.field_27231_a), StatsSyncher.func_27411_c(this.field_27231_a), StatsSyncher.func_27413_d(this.field_27231_a));
-			} else if(StatsSyncher.func_27423_b(this.field_27231_a).exists()) {
+			} else if(GL11.exists(StatsSyncher.func_27423_b(this.field_27231_a))) {
 				StatsSyncher.func_27421_a(this.field_27231_a, StatsSyncher.func_27409_a(this.field_27231_a, StatsSyncher.func_27423_b(this.field_27231_a), StatsSyncher.func_27411_c(this.field_27231_a), StatsSyncher.func_27413_d(this.field_27231_a)));
 			}
 		} catch (Exception var5) {

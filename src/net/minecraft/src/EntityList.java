@@ -22,7 +22,7 @@ public class EntityList {
 		try {
 			Class var3 = (Class)stringToClassMapping.get(var0);
 			if(var3 != null) {
-				var2 = (Entity)var3.getConstructor(new Class[]{World.class}).newInstance(new Object[]{var1});
+				var2 = SpawnerAnimals.newInstance(var3);
 			}
 		} catch (Exception var4) {
 			var4.printStackTrace();
@@ -37,7 +37,7 @@ public class EntityList {
 		try {
 			Class var3 = (Class)stringToClassMapping.get(var0.getString("id"));
 			if(var3 != null) {
-				var2 = (Entity)var3.getConstructor(new Class[]{World.class}).newInstance(new Object[]{var1});
+				var2 = SpawnerAnimals.newInstance(var3);
 			}
 		} catch (Exception var4) {
 			var4.printStackTrace();
@@ -58,7 +58,7 @@ public class EntityList {
 		try {
 			Class var3 = (Class)IDtoClassMapping.get(Integer.valueOf(var0));
 			if(var3 != null) {
-				var2 = (Entity)var3.getConstructor(new Class[]{World.class}).newInstance(new Object[]{var1});
+				var2 = SpawnerAnimals.newInstance(var3);
 			}
 		} catch (Exception var4) {
 			var4.printStackTrace();

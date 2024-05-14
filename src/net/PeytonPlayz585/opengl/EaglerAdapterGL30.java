@@ -437,14 +437,12 @@ public class EaglerAdapterGL30 extends EaglerAdapterImpl2 {
 		lightPos1vec.normalise();
 		Matrix4f.transform(matModelV[matModelPointer], lightPos0vec, lightPos0vec).normalise();
 		Matrix4f.transform(matModelV[matModelPointer], lightPos1vec, lightPos1vec).normalise();
-		
-		//Maybe NOT flip light matrix???
-		lightPos0vec.x = lightPos0vec.x;
-		lightPos1vec.x = lightPos1vec.x;
-		lightPos0vec.y = lightPos0vec.y;
-		lightPos1vec.y = lightPos1vec.y;
-		lightPos0vec.z = lightPos0vec.z;
-		lightPos1vec.z = lightPos1vec.z;
+		lightPos0vec.x = -lightPos0vec.x;
+		lightPos1vec.x = -lightPos1vec.x;
+		lightPos0vec.y = -lightPos0vec.y;
+		lightPos1vec.y = -lightPos1vec.y;
+		lightPos0vec.z = -lightPos0vec.z;
+		lightPos1vec.z = -lightPos1vec.z;
 	}
 
 	public static final void revertLightMatrix() {

@@ -1,15 +1,16 @@
 package net.minecraft.src;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import net.PeytonPlayz585.opengl.GL11;
 
 public class MapStorage {
 	private ISaveHandler field_28191_a;
@@ -29,15 +30,15 @@ public class MapStorage {
 		} else {
 			if(this.field_28191_a != null) {
 				try {
-					File var4 = this.field_28191_a.func_28113_a(var2);
-					if(var4 != null && var4.exists()) {
+					String var4 = this.field_28191_a.func_28113_a(var2);
+					if(var4 != null && GL11.exists(var4)) {
 						try {
 							var3 = (MapDataBase)var1.getConstructor(new Class[]{String.class}).newInstance(new Object[]{var2});
 						} catch (Exception var7) {
 							throw new RuntimeException("Failed to instantiate " + var1.toString(), var7);
 						}
 
-						FileInputStream var5 = new FileInputStream(var4);
+						ByteArrayInputStream var5 = new ByteArrayInputStream(GL11.readFile(var4));
 						NBTTagCompound var6 = CompressedStreamTools.func_1138_a(var5);
 						var5.close();
 						var3.readFromNBT(var6.getCompoundTag("data"));
@@ -83,14 +84,15 @@ public class MapStorage {
 	private void saveData(MapDataBase var1) {
 		if(this.field_28191_a != null) {
 			try {
-				File var2 = this.field_28191_a.func_28113_a(var1.field_28168_a);
+				String var2 = this.field_28191_a.func_28113_a(var1.field_28168_a);
 				if(var2 != null) {
 					NBTTagCompound var3 = new NBTTagCompound();
 					var1.writeToNBT(var3);
 					NBTTagCompound var4 = new NBTTagCompound();
 					var4.setCompoundTag("data", var3);
-					FileOutputStream var5 = new FileOutputStream(var2);
+					ByteArrayOutputStream var5 = new ByteArrayOutputStream();
 					CompressedStreamTools.writeGzippedCompoundToOutputStream(var4, var5);
+					GL11.writeFile(var2, var5.toByteArray());
 					var5.close();
 				}
 			} catch (Exception var6) {
@@ -107,9 +109,9 @@ public class MapStorage {
 				return;
 			}
 
-			File var1 = this.field_28191_a.func_28113_a("idcounts");
-			if(var1 != null && var1.exists()) {
-				DataInputStream var2 = new DataInputStream(new FileInputStream(var1));
+			String var1 = this.field_28191_a.func_28113_a("idcounts");
+			if(var1 != null && GL11.exists(var1)) {
+				DataInputStream var2 = new DataInputStream(new ByteArrayInputStream(GL11.readFile(var1)));
 				NBTTagCompound var3 = CompressedStreamTools.func_1141_a(var2);
 				var2.close();
 				Iterator var4 = var3.func_28110_c().iterator();
@@ -143,7 +145,7 @@ public class MapStorage {
 			return var2.shortValue();
 		} else {
 			try {
-				File var3 = this.field_28191_a.func_28113_a("idcounts");
+				String var3 = this.field_28191_a.func_28113_a("idcounts");
 				if(var3 != null) {
 					NBTTagCompound var4 = new NBTTagCompound();
 					Iterator var5 = this.idCounts.keySet().iterator();
@@ -154,8 +156,10 @@ public class MapStorage {
 						var4.setShort(var6, var7);
 					}
 
-					DataOutputStream var9 = new DataOutputStream(new FileOutputStream(var3));
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					DataOutputStream var9 = new DataOutputStream(baos);
 					CompressedStreamTools.func_1139_a(var4, var9);
+					GL11.writeFile(var3, baos.toByteArray());
 					var9.close();
 				}
 			} catch (Exception var8) {

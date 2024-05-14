@@ -67,6 +67,7 @@ import org.teavm.jso.websocket.WebSocket;
 import net.lax1dude.eaglercraft.adapter.teavm.WebGLQuery;
 import net.lax1dude.eaglercraft.adapter.teavm.WebGLVertexArray;
 import net.minecraft.src.MathHelper;
+import net.PeytonPlayz585.opengl.GL11;
 import net.PeytonPlayz585.storage.LocalStorageManager;
 import net.lax1dude.eaglercraft.AssetRepository;
 import net.lax1dude.eaglercraft.Base64;
@@ -1965,6 +1966,31 @@ public class EaglerAdapterImpl2 {
 		return IndexedDBFilesystem.pathExists(path);
 	}
 	
+	public static final boolean exists(String path) {
+		return readFile(path) != null;
+	}
+	
+	public static final void mkdir(String path) {
+		String[] parts = path.split("/");
+		String dir = parts[parts.length - 1];
+		
+		if(path.endsWith("/")) {
+			String file = "placeholder.txt";
+			path = path.replace(dir + "/", "");
+			if(!path.endsWith("/")) {
+				path = path + "/";
+			}
+			GL11.writeFile(path + dir + "/" + file, "UwU".getBytes());
+		} else {
+			String file = "placeholder.txt";
+			path = path.replace(dir, "");
+			if(!path.endsWith("/")) {
+				path = path + "/";
+			}
+			GL11.writeFile(path + dir + "/" + file, "UwU".getBytes());
+		}
+	}
+	
 	public static final void writeFile(String path, byte[] data) {
 		IndexedDBFilesystem.writeFile(path, data);
 	}
@@ -2003,6 +2029,18 @@ public class EaglerAdapterImpl2 {
 	
 	public static final Collection<FileEntry> listFilesRecursive(String path) {
 		return listFiles(path, false, true);
+	}
+	
+	public static final FileEntry[] listFiles(String path) {
+		Collection<FileEntry> entries = IndexedDBFilesystem.listFiles(path, true, false);
+		FileEntry[] entryArray = new FileEntry[entries.size()];
+		
+		int i = 0;
+		for(FileEntry entry : entries) {
+			entryArray[i] = entry;
+			i = i + 1;
+		}
+		return entryArray;
 	}
 
 	public static class FileEntry {

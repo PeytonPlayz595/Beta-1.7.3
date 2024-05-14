@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import net.minecraft.client.Minecraft;
+
 public final class SpawnerAnimals {
 	private static Set eligibleChunksForSpawning = new HashSet();
 	protected static final Class[] nightSpawnEntities = new Class[]{EntitySpider.class, EntityZombie.class, EntitySkeleton.class};
@@ -120,7 +122,11 @@ public final class SpawnerAnimals {
 										if(var33 >= 576.0F) {
 											EntityLiving var43;
 											try {
-												var43 = (EntityLiving)var15.entityClass.getConstructor(new Class[]{World.class}).newInstance(new Object[]{var0});
+												var43 = (EntityLiving) newInstance(var15.entityClass);
+												
+												if(var43 == null) {
+													return var3;
+												}
 											} catch (Exception var34) {
 												var34.printStackTrace();
 												return var3;
@@ -214,7 +220,11 @@ public final class SpawnerAnimals {
 
 					EntityLiving var17;
 					try {
-						var17 = (EntityLiving)var6[var12].getConstructor(new Class[]{World.class}).newInstance(new Object[]{var0});
+						var17 = (EntityLiving)newInstance(var6[var12]);
+						
+						if(var17 == null) {
+							return var2;
+						}
 					} catch (Exception var21) {
 						var21.printStackTrace();
 						return var2;
@@ -244,5 +254,125 @@ public final class SpawnerAnimals {
 				}
 			}
 		}
+	}
+	
+	public static Entity newInstance(Class class0) {
+		if(class0 == EntityArrow.class) {
+			return new EntityArrow(Minecraft.getMinecraft().theWorld);
+		}
+		
+		if(class0 == EntityBoat.class) {
+			return new EntityBoat(Minecraft.getMinecraft().theWorld);
+		}
+		
+		if(class0 == EntityChicken.class) {
+			return new EntityChicken(Minecraft.getMinecraft().theWorld);
+		}
+		
+		if(class0 == EntityCow.class) {
+			return new EntityCow(Minecraft.getMinecraft().theWorld);
+		}
+		
+		if(class0 == EntityCreature.class) {
+			return new EntityCreature(Minecraft.getMinecraft().theWorld);
+		}
+		
+		if(class0 == EntityCreeper.class) {
+			return new EntityCreeper(Minecraft.getMinecraft().theWorld);
+		}
+		
+		if(class0 == EntityEgg.class) {
+			return new EntityEgg(Minecraft.getMinecraft().theWorld);
+		}
+		
+		if(class0 == EntityFallingSand.class) {
+			return new EntityFallingSand(Minecraft.getMinecraft().theWorld);
+		}
+		
+		if(class0 == EntityFireball.class) {
+			return new EntityFireball(Minecraft.getMinecraft().theWorld);
+		}
+		
+		if(class0 == EntityFish.class) {
+			return new EntityFish(Minecraft.getMinecraft().theWorld);
+		}
+		
+		if(class0 == EntityFlying.class) {
+			return new EntityFlying(Minecraft.getMinecraft().theWorld);
+		}
+		
+		if(class0 == EntityGhast.class) {
+			return new EntityGhast(Minecraft.getMinecraft().theWorld);
+		}
+		
+		if(class0 == EntityGiantZombie.class) {
+			return new EntityGiantZombie(Minecraft.getMinecraft().theWorld);
+		}
+		
+		if(class0 == EntityItem.class) {
+			return new EntityItem(Minecraft.getMinecraft().theWorld);
+		}
+		
+		if(class0 == EntityMinecart.class) {
+			return new EntityMinecart(Minecraft.getMinecraft().theWorld);
+		}
+		
+		if(class0 == EntityMob.class) {
+			return new EntityMob(Minecraft.getMinecraft().theWorld);
+		}
+		
+		if(class0 == EntityPainting.class) {
+			return new EntityPainting(Minecraft.getMinecraft().theWorld);
+		}
+		
+		if(class0 == EntityPig.class) {
+			return new EntityPig(Minecraft.getMinecraft().theWorld);
+		}
+		
+		if(class0 == EntityPigZombie.class) {
+			return new EntityPigZombie(Minecraft.getMinecraft().theWorld);
+		}
+		
+		if(class0 == EntitySheep.class) {
+			return new EntitySheep(Minecraft.getMinecraft().theWorld);
+		}
+		
+		if(class0 == EntitySkeleton.class) {
+			return new EntitySkeleton(Minecraft.getMinecraft().theWorld);
+		}
+		
+		if(class0 == EntitySlime.class) {
+			return new EntitySlime(Minecraft.getMinecraft().theWorld);
+		}
+		
+		if(class0 == EntitySnowball.class) {
+			return new EntitySnowball(Minecraft.getMinecraft().theWorld);
+		}
+		
+		if(class0 == EntitySpider.class) {
+			return new EntitySpider(Minecraft.getMinecraft().theWorld);
+		}
+		
+		if(class0 == EntitySquid.class) {
+			return new EntitySquid(Minecraft.getMinecraft().theWorld);
+		}
+		
+		if(class0 == EntityTNTPrimed.class) {
+			return new EntityTNTPrimed(Minecraft.getMinecraft().theWorld);
+		}
+		
+		if(class0 == EntityWaterMob.class) {
+			return new EntityWaterMob(Minecraft.getMinecraft().theWorld);
+		}
+		
+		if(class0 == EntityWolf.class) {
+			return new EntityWolf(Minecraft.getMinecraft().theWorld);
+		}
+		
+		if(class0 == EntityZombie.class) {
+			return new EntityZombie(Minecraft.getMinecraft().theWorld);
+		}
+		
+		return null;
 	}
 }

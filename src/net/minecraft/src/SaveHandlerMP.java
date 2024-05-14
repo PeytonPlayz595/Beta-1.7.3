@@ -1,6 +1,5 @@
 package net.minecraft.src;
 
-import java.io.File;
 import java.util.List;
 
 public class SaveHandlerMP implements ISaveHandler {
@@ -21,7 +20,7 @@ public class SaveHandlerMP implements ISaveHandler {
 	public void saveWorldInfo(WorldInfo var1) {
 	}
 
-	public File func_28113_a(String var1) {
+	public String func_28113_a(String var1) {
 		return null;
 	}
 }

@@ -57,21 +57,6 @@ public class GuiAchievement extends Gui {
 	}
 
 	public void updateAchievementWindow() {
-		if(Minecraft.hasPaidCheckTime > 0L) {
-			GL11.glDisable(GL11.GL_DEPTH_TEST);
-			GL11.glDepthMask(false);
-			RenderHelper.disableStandardItemLighting();
-			this.updateAchievementWindowScale();
-			String var1 = "Minecraft Beta 1.7.3   Unlicensed Copy :(";
-			String var2 = "(Or logged in from another location)";
-			String var3 = "Purchase at minecraft.net";
-			this.theGame.fontRenderer.drawStringWithShadow(var1, 2, 2, 16777215);
-			this.theGame.fontRenderer.drawStringWithShadow(var2, 2, 11, 16777215);
-			this.theGame.fontRenderer.drawStringWithShadow(var3, 2, 20, 16777215);
-			GL11.glDepthMask(true);
-			GL11.glEnable(GL11.GL_DEPTH_TEST);
-		}
-
 		if(this.theAchievement != null && this.field_25083_f != 0L) {
 			double var8 = (double)(System.currentTimeMillis() - this.field_25083_f) / 3000.0D;
 			if(this.field_27103_i || this.field_27103_i || var8 >= 0.0D && var8 <= 1.0D) {

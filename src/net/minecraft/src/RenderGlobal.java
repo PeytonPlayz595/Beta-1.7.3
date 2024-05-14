@@ -536,7 +536,7 @@ public class RenderGlobal implements IWorldAccess {
 					var14 = (float)var20 * (float)Math.PI * 2.0F / (float)var19;
 					float var15 = MathHelper.sin(var14);
 					float var16 = MathHelper.cos(var14);
-					var17.addVertex((double)(var15 * 120.0F), (double)(var16 * 120.0F), (double)(-var16 * 40.0F * var18[3]));
+					var17.addVertex((double)(var15 * 120.0F), (double)(var16 * 120.0F), (double)(var16 * 40.0F * var18[3]));
 				}
 
 				var17.draw();
@@ -956,7 +956,7 @@ public class RenderGlobal implements IWorldAccess {
 				var8 = this.worldObj.getBlockId(var2.blockX, var2.blockY, var2.blockZ);
 				Block var9 = var8 > 0 ? Block.blocksList[var8] : null;
 				GL11.glDisable(GL11.GL_ALPHA_TEST);
-				GL11.glPolygonOffset(-3.0F, -3.0F);
+				GL11.glPolygonOffset(3.0F, 3.0F);
 				GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
 				double var10 = var1.lastTickPosX + (var1.posX - var1.lastTickPosX) * (double)var5;
 				double var12 = var1.lastTickPosY + (var1.posY - var1.lastTickPosY) * (double)var5;

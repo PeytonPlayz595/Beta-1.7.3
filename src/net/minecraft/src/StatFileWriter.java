@@ -1,11 +1,12 @@
 package net.minecraft.src;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import net.PeytonPlayz585.opengl.GL11;
 
 public class StatFileWriter {
 	private Map field_25102_a = new HashMap();
@@ -13,22 +14,19 @@ public class StatFileWriter {
 	private boolean field_27189_c = false;
 	private StatsSyncher statsSyncher;
 
-	public StatFileWriter(Session var1, File var2) {
-		File var3 = new File(var2, "stats");
-		if(!var3.exists()) {
-			var3.mkdir();
-		}
+	public StatFileWriter(Session var1, String var2) {
+		String var3 = var2 + "/" + "stats";
 
-		File[] var4 = var2.listFiles();
+		GL11.FileEntry[] var4 = GL11.listFiles(var2);
 		int var5 = var4.length;
 
 		for(int var6 = 0; var6 < var5; ++var6) {
-			File var7 = var4[var6];
+			GL11.FileEntry var7 = var4[var6];
 			if(var7.getName().startsWith("stats_") && var7.getName().endsWith(".dat")) {
-				File var8 = new File(var3, var7.getName());
-				if(!var8.exists()) {
+				String var8 = var3 + "/" + var7.getName();
+				if(!GL11.exists(var8)) {
 					System.out.println("Relocating " + var7.getName());
-					var7.renameTo(var8);
+					GL11.renameFile(var7.path, var8);
 				}
 			}
 		}

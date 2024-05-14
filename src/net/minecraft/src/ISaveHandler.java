@@ -1,6 +1,5 @@
 package net.minecraft.src;
 
-import java.io.File;
 import java.util.List;
 
 public interface ISaveHandler {
@@ -13,6 +12,6 @@ public interface ISaveHandler {
 	void saveWorldInfoAndPlayer(WorldInfo var1, List var2);
 
 	void saveWorldInfo(WorldInfo var1);
-
-	File func_28113_a(String var1);
+	
+	String func_28113_a(String var1);
 }

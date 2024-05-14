@@ -67,7 +67,7 @@ public class BlockSign extends BlockContainer {
 
 	protected TileEntity getBlockEntity() {
 		try {
-			return (TileEntity)this.signEntityClass.newInstance();
+			return new TileEntitySign();
 		} catch (Exception var2) {
 			throw new RuntimeException(var2);
 		}
