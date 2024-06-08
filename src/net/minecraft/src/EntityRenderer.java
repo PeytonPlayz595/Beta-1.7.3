@@ -329,9 +329,7 @@ public class EntityRenderer {
 
 	public void updateCameraAndRender(float var1) {
 		if(!GL11.isFocused()) {
-			if(System.currentTimeMillis() - this.prevFrameTime > 500L) {
-				this.mc.displayInGameMenu();
-			}
+			this.mc.displayInGameMenu();
 		} else {
 			this.prevFrameTime = System.currentTimeMillis();
 		}

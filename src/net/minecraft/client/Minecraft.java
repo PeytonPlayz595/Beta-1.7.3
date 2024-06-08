@@ -392,10 +392,6 @@ public class Minecraft implements Runnable {
 						this.entityRenderer.updateCameraAndRender(this.timer.renderPartialTicks);
 					}
 
-					if(!GL11.isFocused()) {
-						Thread.sleep(10L);
-					}
-
 					if(this.gameSettings.showDebugInfo) {
 						this.displayDebugInfo(var24);
 					} else {
@@ -554,7 +550,7 @@ public class Minecraft implements Runnable {
 	}
 
 	public void setIngameFocus() {
-		if(GL11.isFocused()) {
+		//if(GL11.isFocused()) {
 			if(!this.inGameHasFocus) {
 				this.inGameHasFocus = true;
 				this.mouseHelper.grabMouseCursor();
@@ -562,7 +558,7 @@ public class Minecraft implements Runnable {
 				this.leftClickCounter = 10000;
 				this.mouseTicksRan = this.ticksRan + 10000;
 			}
-		}
+		//}
 	}
 
 	public void setIngameNotInFocus() {

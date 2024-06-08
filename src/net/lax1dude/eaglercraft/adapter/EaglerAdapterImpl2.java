@@ -309,6 +309,11 @@ public class EaglerAdapterImpl2 {
 				forceMouseGrabbed();
 			}
 		});
+		win.addEventListener("pointerlockchange", new EventListener<MouseEvent>() {
+			public void handleEvent(MouseEvent evt) {
+				lostFocus = true;
+			}
+		});
 		onBeforeCloseRegister();
 		
 		if(!config.isNull("dataBaseName")) {
@@ -354,6 +359,7 @@ public class EaglerAdapterImpl2 {
 	public static String forcedServer = null;
 	public static String dataBaseName = null;
 	public static boolean joinServerOnLaunch = false;
+	private static boolean lostFocus = false;
 	
 	public static final void destroyContext() {
 		
@@ -1173,6 +1179,10 @@ public class EaglerAdapterImpl2 {
 	private static boolean pointerLockFlag = false;
 	
 	public static final boolean isFocused() {
+		if(lostFocus) {
+			lostFocus = false;
+			return false;
+		}
 		boolean yee = isPointerLocked();
 		boolean dee = pointerLockFlag;
 		pointerLockFlag = yee;
