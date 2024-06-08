@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public class WorldGenMinable extends WorldGenerator {
 	private int minableBlockId;
 	private int numberOfBlocks;

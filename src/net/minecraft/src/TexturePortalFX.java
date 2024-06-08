@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public class TexturePortalFX extends TextureFX {
 	private int portalTickCounter = 0;
 	private byte[][] portalTextureData = new byte[32][1024];

@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public class BlockRedstoneOre extends Block {
 	private boolean field_468_a;
 

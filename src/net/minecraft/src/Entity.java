@@ -1,7 +1,6 @@
 package net.minecraft.src;
 
 import java.util.List;
-import java.util.Random;
 
 public abstract class Entity {
 	private static int nextEntityID = 0;

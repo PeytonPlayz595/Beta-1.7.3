@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public class ChunkProviderHell implements IChunkProvider {
 	private Random hellRNG;
 	private NoiseGeneratorOctaves field_4169_i;

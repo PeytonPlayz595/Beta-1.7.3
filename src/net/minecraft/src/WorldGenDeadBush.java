@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public class WorldGenDeadBush extends WorldGenerator {
 	private int field_28058_a;
 

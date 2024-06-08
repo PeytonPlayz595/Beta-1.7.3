@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public class ChunkProviderGenerate implements IChunkProvider {
 	private Random rand;
 	private NoiseGeneratorOctaves field_912_k;

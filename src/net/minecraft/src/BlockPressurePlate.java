@@ -1,7 +1,6 @@
 package net.minecraft.src;
 
 import java.util.List;
-import java.util.Random;
 
 public class BlockPressurePlate extends Block {
 	private EnumMobType triggerMobType;

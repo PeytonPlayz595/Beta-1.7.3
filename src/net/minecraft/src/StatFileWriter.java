@@ -96,8 +96,8 @@ public class StatFileWriter {
 
 		try {
 			String var2 = "local";
-			StringBuilder var3 = new StringBuilder();
-			J_JsonRootNode var4 = (new J_JdomParser()).func_27367_a(var0);
+			String var3 = "";
+			J_JsonRootNode var4 = (new J_JdomParser()).func_27367_a(var0); //Crashes!?!?
 			List var5 = var4.func_27217_b(new Object[]{"stats-change"});
 			Iterator var6 = var5.iterator();
 
@@ -111,8 +111,8 @@ public class StatFileWriter {
 				if(var12 == null) {
 					System.out.println(var10 + " is not a valid stat");
 				} else {
-					var3.append(StatList.func_27361_a(var10).statGuid).append(",");
-					var3.append(var11).append(",");
+					var3 = var3 + StatList.func_27361_a(var10).statGuid + ",";
+					var3 = var3 + var11 + ",";
 					var1.put(var12, Integer.valueOf(var11));
 				}
 			}
@@ -131,41 +131,41 @@ public class StatFileWriter {
 	}
 
 	public static String func_27185_a(String var0, String var1, Map var2) {
-		StringBuilder var3 = new StringBuilder();
-		StringBuilder var4 = new StringBuilder();
+		String var3 = "";
+		String var4 = "";
 		boolean var5 = true;
-		var3.append("{\r\n");
+		var3 = var3 + "{\r\n";
 		if(var0 != null && var1 != null) {
-			var3.append("  \"user\":{\r\n");
-			var3.append("    \"name\":\"").append(var0).append("\",\r\n");
-			var3.append("    \"sessionid\":\"").append(var1).append("\"\r\n");
-			var3.append("  },\r\n");
+			var3 = var3 + "  \"user\":{\r\n";
+			var3 = var3 + "    \"name\":\"" + var0 + "\",\r\n";
+			var3 = var3 + "    \"sessionid\":\"" + var1 + "\"\r\n";
+			var3 = var3 + "  },\r\n";
 		}
 
-		var3.append("  \"stats-change\":[");
+		var3 = var3 + "  \"stats-change\":[";
 		Iterator var6 = var2.keySet().iterator();
 
 		while(var6.hasNext()) {
 			StatBase var7 = (StatBase)var6.next();
 			if(!var5) {
-				var3.append("},");
+				var3 = var3 + "},";
 			} else {
 				var5 = false;
 			}
 
-			var3.append("\r\n    {\"").append(var7.statId).append("\":").append(var2.get(var7));
-			var4.append(var7.statGuid).append(",");
-			var4.append(var2.get(var7)).append(",");
+			var3 = var3 + "\r\n    {\"" + var7.statId + "\":" + var2.get(var7);
+			var4 = var4 + var7.statGuid + ",";
+			var4 = var4 + var2.get(var7) + ",";
 		}
 
 		if(!var5) {
-			var3.append("}");
+			var3 = var3 + "}";
 		}
 
 		MD5String var8 = new MD5String(var1);
-		var3.append("\r\n  ],\r\n");
-		var3.append("  \"checksum\":\"").append(var8.func_27369_a(var4.toString())).append("\"\r\n");
-		var3.append("}");
+		var3 = var3 + "\r\n  ],\r\n";
+		var3 = var3 + "  \"checksum\":\"" + var8.func_27369_a(var4) + "\"\r\n";
+		var3 = var3 + "}";
 		return var3.toString();
 	}
 

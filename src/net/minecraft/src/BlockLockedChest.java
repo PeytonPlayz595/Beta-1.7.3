@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public class BlockLockedChest extends Block {
 	protected BlockLockedChest(int var1) {
 		super(var1, Material.wood);

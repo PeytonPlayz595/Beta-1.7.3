@@ -1,7 +1,6 @@
 package net.minecraft.src;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class Block {
 	public static final StepSound soundPowderFootstep = new StepSound("stone", 1.0F, 1.0F);

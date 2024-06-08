@@ -6,7 +6,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Random;
+
 import org.lwjgl.opengl.GL11;
 
 public class GuiMainMenu extends GuiScreen {

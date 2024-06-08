@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public class BlockPistonMoving extends BlockContainer {
 	public BlockPistonMoving(int var1) {
 		super(var1, Material.field_31067_B);

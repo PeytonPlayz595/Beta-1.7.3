@@ -2,7 +2,6 @@ package net.minecraft.src;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class BiomeGenBase {
 	public static final BiomeGenBase rainforest = (new BiomeGenRainforest()).setColor(588342).setBiomeName("Rainforest").func_4124_a(2094168);

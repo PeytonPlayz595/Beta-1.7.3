@@ -5,7 +5,7 @@ import java.io.Reader;
 import java.util.Arrays;
 
 public final class J_SajParser {
-	public void func_27463_a(Reader var1, J_JsonListener var2) throws IOException, J_InvalidSyntaxException {
+	public void func_27463_a(String var1, J_JsonListener var2) throws IOException, J_InvalidSyntaxException {
 		J_PositionTrackingPushbackReader var3 = new J_PositionTrackingPushbackReader(var1);
 		char var4 = (char)var3.func_27333_c();
 		switch(var4) {
@@ -26,8 +26,6 @@ public final class J_SajParser {
 		int var5 = this.func_27448_l(var3);
 		if(var5 != -1) {
 			throw new J_InvalidSyntaxException("Got unexpected trailing character [" + (char)var5 + "].", var3);
-		} else {
-			var2.func_27204_c();
 		}
 	}
 
@@ -76,7 +74,6 @@ public final class J_SajParser {
 			}
 
 			boolean var5 = false;
-
 			while(!var5) {
 				char var6 = (char)this.func_27448_l(var1);
 				switch(var6) {
@@ -178,34 +175,34 @@ public final class J_SajParser {
 	}
 
 	private String func_27459_a(J_PositionTrackingPushbackReader var1) throws IOException, J_InvalidSyntaxException {
-		StringBuilder var2 = new StringBuilder();
+		String var2 = "";
 		char var3 = (char)var1.func_27333_c();
 		if(45 == var3) {
-			var2.append('-');
+			var2 = var2 + '-';
 		} else {
 			var1.func_27334_a(var3);
 		}
 
-		var2.append(this.func_27451_b(var1));
-		return var2.toString();
+		var2 = var2 + this.func_27451_b(var1);
+		return var2;
 	}
 
 	private String func_27451_b(J_PositionTrackingPushbackReader var1) throws IOException, J_InvalidSyntaxException {
-		StringBuilder var2 = new StringBuilder();
+		String var2 = "";
 		char var3 = (char)var1.func_27333_c();
 		if(48 == var3) {
-			var2.append('0');
-			var2.append(this.func_27462_f(var1));
-			var2.append(this.func_27454_g(var1));
+			var2 = var2 + '0';
+			var2 = var2 + this.func_27462_f(var1);
+			var2 = var2 + this.func_27454_g(var1);
 		} else {
 			var1.func_27334_a(var3);
-			var2.append(this.func_27460_c(var1));
-			var2.append(this.func_27456_e(var1));
-			var2.append(this.func_27462_f(var1));
-			var2.append(this.func_27454_g(var1));
+			var2 = var2 + this.func_27460_c(var1);
+			var2 = var2 + this.func_27456_e(var1);
+			var2 = var2 + this.func_27462_f(var1);
+			var2 = var2 + this.func_27454_g(var1);
 		}
 
-		return var2.toString();
+		return var2;
 	}
 
 	private char func_27460_c(J_PositionTrackingPushbackReader var1) throws IOException, J_InvalidSyntaxException {
@@ -246,7 +243,7 @@ public final class J_SajParser {
 	}
 
 	private String func_27456_e(J_PositionTrackingPushbackReader var1) throws IOException {
-		StringBuilder var2 = new StringBuilder();
+		String var2 = "";
 		boolean var3 = false;
 
 		while(!var3) {
@@ -262,7 +259,7 @@ public final class J_SajParser {
 			case '7':
 			case '8':
 			case '9':
-				var2.append(var4);
+				var2 = var2 + var4;
 				break;
 			default:
 				var3 = true;
@@ -270,52 +267,52 @@ public final class J_SajParser {
 			}
 		}
 
-		return var2.toString();
+		return var2;
 	}
 
 	private String func_27462_f(J_PositionTrackingPushbackReader var1) throws IOException, J_InvalidSyntaxException {
-		StringBuilder var2 = new StringBuilder();
+		String var2 = "";
 		char var3 = (char)var1.func_27333_c();
 		if(var3 == 46) {
-			var2.append('.');
-			var2.append(this.func_27458_d(var1));
-			var2.append(this.func_27456_e(var1));
+			var2 = var2 + '.';
+			var2 = var2 + this.func_27458_d(var1);
+			var2 = var2 + this.func_27456_e(var1);
 		} else {
 			var1.func_27334_a(var3);
 		}
 
-		return var2.toString();
+		return var2;
 	}
 
 	private String func_27454_g(J_PositionTrackingPushbackReader var1) throws IOException, J_InvalidSyntaxException {
-		StringBuilder var2 = new StringBuilder();
+		String var2 = "";
 		char var3 = (char)var1.func_27333_c();
 		if(var3 != 46 && var3 != 69) {
 			var1.func_27334_a(var3);
 		} else {
-			var2.append('E');
-			var2.append(this.func_27461_h(var1));
-			var2.append(this.func_27458_d(var1));
-			var2.append(this.func_27456_e(var1));
+			var2 = var2 + 'E';
+			var2 = var2 + this.func_27461_h(var1);
+			var2 = var2 + this.func_27458_d(var1);
+			var2 = var2 + this.func_27456_e(var1);
 		}
 
-		return var2.toString();
+		return var2;
 	}
 
 	private String func_27461_h(J_PositionTrackingPushbackReader var1) throws IOException {
-		StringBuilder var2 = new StringBuilder();
+		String var2 = "";
 		char var3 = (char)var1.func_27333_c();
 		if(var3 != 43 && var3 != 45) {
 			var1.func_27334_a(var3);
 		} else {
-			var2.append(var3);
+			var2 = var2 + var3;
 		}
 
-		return var2.toString();
+		return var2;
 	}
 
 	private String func_27452_i(J_PositionTrackingPushbackReader var1) throws IOException, J_InvalidSyntaxException {
-		StringBuilder var2 = new StringBuilder();
+		String var2 = "";
 		char var3 = (char)var1.func_27333_c();
 		if(34 != var3) {
 			throw new J_InvalidSyntaxException("Expected [\"] but got [" + var3 + "].", var1);
@@ -330,14 +327,14 @@ public final class J_SajParser {
 					break;
 				case '\\':
 					char var6 = this.func_27457_j(var1);
-					var2.append(var6);
+					var2 = var2 + var6;
 					break;
 				default:
-					var2.append(var5);
+					var2 = var2 + var5;
 				}
 			}
 
-			return var2.toString();
+			return var2;
 		}
 	}
 
@@ -389,29 +386,27 @@ public final class J_SajParser {
 				int var4 = Integer.parseInt(String.valueOf(var2), 16);
 				return var4;
 			} catch (NumberFormatException var6) {
+				System.out.println("yee3");
 				var1.func_27335_a(var2);
+				System.out.println("yee4");
 				throw new J_InvalidSyntaxException("Unable to parse [" + String.valueOf(var2) + "] as a hexidecimal number.", var6, var1);
 			}
 		}
 	}
 
 	private int func_27448_l(J_PositionTrackingPushbackReader var1) throws IOException {
-		boolean var3 = false;
-
-		int var2;
-		do {
-			var2 = var1.func_27333_c();
+		while(true) {
+			int var2 = var1.func_27333_c();
 			switch(var2) {
-			case 9:
-			case 10:
-			case 13:
-			case 32:
-				break;
-			default:
-				var3 = true;
+				case 9:
+				case 10:
+				case 13:
+				case 32:
+					break;
+				default:
+					return var2;
 			}
-		} while(!var3);
-
-		return var2;
+			
+		}
 	}
 }

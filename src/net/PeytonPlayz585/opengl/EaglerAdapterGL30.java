@@ -10,9 +10,6 @@ import net.PeytonPlayz585.glemu.FixedFunctionShader;
 import net.PeytonPlayz585.glemu.GLObjectMap;
 
 import net.lax1dude.eaglercraft.adapter.EaglerAdapterImpl2;
-import net.minecraft.client.Minecraft;
-import net.minecraft.src.GLAllocation;
-import net.minecraft.src.Vec3D;
 import net.PeytonPlayz585.glemu.vector.*;
 
 import static net.PeytonPlayz585.glemu.StreamBuffer.StreamBufferInstance;
@@ -250,25 +247,41 @@ public class EaglerAdapterGL30 extends EaglerAdapterImpl2 {
 		}
 	}
 
+	static float clearDepth = -999.0f;
 	public static final void glClearDepth(float p1) {
-		_wglClearDepth(-p1);
+		p1 = 1.0f - p1;
+		if(p1 != clearDepth) {
+			_wglClearDepth(p1);
+			clearDepth = p1;
+		}
 	}
 
+	public static final int GL_GEQUAL = RealOpenGLEnums.GL_GEQUAL;
+	public static final int GL_LESS = RealOpenGLEnums.GL_LESS;
+	static int stateDepthFunc = -1;
 	public static final void glDepthFunc(int p1) {
-		int f = _wGL_GEQUAL;
-		switch (p1) {
+		int rev = p1;
+		switch(p1) {
 		case GL_GREATER:
-			f = _wGL_LESS;
+			rev = _wGL_LESS;
 			break;
-		case GL_LEQUAL:
-			f = _wGL_GEQUAL;
+		case GL_GEQUAL:
+			rev = _wGL_LEQUAL;
 			break;
 		case GL_EQUAL:
-			f = _wGL_EQUAL;
-		default:
+			rev = _wGL_EQUAL;
+			break;
+		case GL_LEQUAL:
+			rev = _wGL_GEQUAL;
+			break;
+		case GL_LESS:
+			rev = _wGL_GREATER;
 			break;
 		}
-		_wglDepthFunc(f);
+		if(rev != stateDepthFunc) {
+			_wglDepthFunc(rev);
+			stateDepthFunc = rev;
+		}
 	}
 
 	public static final void glAlphaFunc(int p1, float p2) {

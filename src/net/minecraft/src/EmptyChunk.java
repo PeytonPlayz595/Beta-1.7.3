@@ -1,7 +1,6 @@
 package net.minecraft.src;
 
 import java.util.List;
-import java.util.Random;
 
 public class EmptyChunk extends Chunk {
 	public EmptyChunk(World var1, int var2, int var3) {

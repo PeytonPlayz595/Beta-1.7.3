@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public class WorldGenLiquids extends WorldGenerator {
 	private int liquidBlockId;
 

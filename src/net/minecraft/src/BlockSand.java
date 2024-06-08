@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public class BlockSand extends Block {
 	public static boolean fallInstantly = false;
 

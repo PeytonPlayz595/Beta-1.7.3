@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public class BlockFurnace extends BlockContainer {
 	private Random furnaceRand = new Random();
 	private final boolean isActive;

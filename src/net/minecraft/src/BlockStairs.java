@@ -1,7 +1,6 @@
 package net.minecraft.src;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class BlockStairs extends Block {
 	private Block modelBlock;

@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public class WorldChunkManager {
 	private NoiseGeneratorOctaves2 field_4194_e;
 	private NoiseGeneratorOctaves2 field_4193_f;

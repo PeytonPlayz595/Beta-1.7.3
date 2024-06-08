@@ -2,7 +2,6 @@ package net.minecraft.src;
 
 import java.nio.FloatBuffer;
 import java.util.List;
-import java.util.Random;
 
 import net.PeytonPlayz585.glemu.GameOverlayFramebuffer;
 import net.minecraft.client.Minecraft;

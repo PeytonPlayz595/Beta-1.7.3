@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public class BlockStationary extends BlockFluid {
 	protected BlockStationary(int var1, Material var2) {
 		super(var1, var2);

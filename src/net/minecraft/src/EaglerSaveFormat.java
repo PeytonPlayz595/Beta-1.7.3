@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -58,7 +59,9 @@ public class EaglerSaveFormat implements ISaveFormat {
 						}else {
 							throw new IOException("file '" + dir + "/level.dat' does not contain an NBTTagCompound");
 						}
-					}catch(IOException e) {
+					}catch(EOFException e) {
+						//L
+					} catch(IOException e) {
 						System.err.println("Failed to load world data for '" + saveDir + "/level.dat'");
 						System.err.println("It will be kept for future recovery");
 						e.printStackTrace();

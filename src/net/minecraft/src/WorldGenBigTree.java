@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public class WorldGenBigTree extends WorldGenerator {
 	static final byte[] field_882_a = new byte[]{(byte)2, (byte)0, (byte)0, (byte)1, (byte)2, (byte)1};
 	Random field_881_b = new Random();

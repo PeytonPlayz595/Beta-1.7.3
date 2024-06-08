@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public class Teleporter {
 	private Random field_4232_a = new Random();
 

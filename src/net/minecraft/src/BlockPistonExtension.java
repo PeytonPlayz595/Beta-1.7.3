@@ -1,7 +1,6 @@
 package net.minecraft.src;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class BlockPistonExtension extends Block {
 	private int field_31053_a = -1;

@@ -1,6 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
 import org.lwjgl.opengl.GL11;
 
 public class RenderLightningBolt extends Render {

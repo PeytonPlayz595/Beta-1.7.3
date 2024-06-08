@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public class BlockSign extends BlockContainer {
 	private Class signEntityClass;
 	private boolean isFreestanding;

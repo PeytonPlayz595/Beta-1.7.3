@@ -1,7 +1,6 @@
 package net.minecraft.src;
 
 import java.util.List;
-import java.util.Random;
 
 public class BlockDetectorRail extends BlockRail {
 	public BlockDetectorRail(int var1, int var2) {

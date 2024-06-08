@@ -1,6 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -143,13 +142,15 @@ public class GuiAchievements extends GuiScreen {
 			var5 = field_27123_v - 1;
 		}
 
-		int var6 = this.mc.renderEngine.getTexture("/terrain.png");
 		int var7 = this.mc.renderEngine.getTexture("/achievement/bg.png");
 		int var8 = (this.width - this.field_27121_a) / 2;
 		int var9 = (this.height - this.field_27119_i) / 2;
 		int var10 = var8 + 16;
 		int var11 = var9 + 17;
 		this.zLevel = 0.0F;
+		GL11.glClearDepth(0.0f);
+		GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
+		GL11.glClearDepth(1.0f);
 		GL11.glDepthFunc(GL11.GL_GEQUAL);
 		GL11.glPushMatrix();
 		GL11.glTranslatef(0.0F, 0.0F, -200.0F);
@@ -157,7 +158,6 @@ public class GuiAchievements extends GuiScreen {
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 		GL11.glEnable(GL11.GL_COLOR_MATERIAL);
-		this.mc.renderEngine.bindTexture(var6);
 		int var12 = var4 + 288 >> 4;
 		int var13 = var5 + 288 >> 4;
 		int var14 = (var4 + 288) % 16;
@@ -193,6 +193,7 @@ public class GuiAchievements extends GuiScreen {
 					var26 = Block.bedrock.blockIndexInTexture;
 				}
 
+				GL11.glBindTexture(this.mc.renderEngine.getTexture("/terrain.png"));
 				this.drawTexturedModalRect(var10 + var24 * 16 - var14, var11 + var22 * 16 - var15, var26 % 16 << 4, var26 >> 4 << 4, 16, 16);
 			}
 		}

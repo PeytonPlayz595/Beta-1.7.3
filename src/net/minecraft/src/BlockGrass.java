@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public class BlockGrass extends Block {
 	protected BlockGrass(int var1) {
 		super(var1, Material.grassMaterial);

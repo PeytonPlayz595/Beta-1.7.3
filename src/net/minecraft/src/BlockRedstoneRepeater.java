@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public class BlockRedstoneRepeater extends Block {
 	public static final double[] field_22024_a = new double[]{-0.0625D, 1.0D / 16.0D, 0.1875D, 0.3125D};
 	private static final int[] field_22023_b = new int[]{1, 2, 3, 4};

@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public class NoiseGeneratorPerlin extends NoiseGenerator {
 	private int[] permutations;
 	public double xCoord;

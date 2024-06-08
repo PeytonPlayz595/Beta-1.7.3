@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public class NoiseGeneratorOctaves extends NoiseGenerator {
 	private NoiseGeneratorPerlin[] generatorCollection;
 	private int field_1191_b;

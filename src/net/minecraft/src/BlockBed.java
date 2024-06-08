@@ -1,7 +1,6 @@
 package net.minecraft.src;
 
 import java.util.Iterator;
-import java.util.Random;
 
 public class BlockBed extends Block {
 	public static final int[][] headBlockToFootBlockMap = new int[][]{{0, 1}, {-1, 0}, {0, -1}, {1, 0}};

@@ -1,6 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
 import org.lwjgl.input.Keyboard;
 
 public class GuiCreateWorld extends GuiScreen {

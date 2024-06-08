@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public abstract class BlockFluid extends Block {
 	protected BlockFluid(int var1, Material var2) {
 		super(var1, (var2 == Material.lava ? 14 : 12) * 16 + 13, var2);

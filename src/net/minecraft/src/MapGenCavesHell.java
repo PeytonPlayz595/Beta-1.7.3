@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public class MapGenCavesHell extends MapGenBase {
 	protected void func_4129_a(int var1, int var2, byte[] var3, double var4, double var6, double var8) {
 		this.func_4128_a(var1, var2, var3, var4, var6, var8, 1.0F + this.rand.nextFloat() * 6.0F, 0.0F, 0.0F, -1, -1, 0.5D);

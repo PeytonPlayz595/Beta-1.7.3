@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public class BlockDispenser extends BlockContainer {
 	private Random random = new Random();
 

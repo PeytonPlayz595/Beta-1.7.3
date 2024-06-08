@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public class BlockGlowStone extends Block {
 	public BlockGlowStone(int var1, int var2, Material var3) {
 		super(var1, var2, var3);

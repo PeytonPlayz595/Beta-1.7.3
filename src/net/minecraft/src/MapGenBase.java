@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public class MapGenBase {
 	protected int field_1306_a = 8;
 	protected Random rand = new Random();

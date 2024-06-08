@@ -63,36 +63,11 @@ public class StatsSyncher {
 	}
 
 	private Map func_27408_a(String var1) {
-		BufferedReader var2 = null;
-
-		try {
-			var2 = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(GL11.readFile(var1))));
-			String var3 = "";
-			StringBuilder var4 = new StringBuilder();
-
-			while(true) {
-				var3 = var2.readLine();
-				if(var3 == null) {
-					Map var5 = StatFileWriter.func_27177_a(var4.toString());
-					return var5;
-				}
-
-				var4.append(var3);
-			}
-		} catch (Exception var15) {
-			var15.printStackTrace();
-		} finally {
-			if(var2 != null) {
-				try {
-					var2.close();
-				} catch (Exception var14) {
-					var14.printStackTrace();
-				}
-			}
-
+		byte[] bytes = GL11.readFile(var1);
+		if (bytes == null || bytes.length == 0) {
+			return null;
 		}
-
-		return null;
+		return StatFileWriter.func_27177_a(new String(""));
 	}
 
 	private void func_27410_a(Map var1, String var2, String var3, String var4) throws IOException {

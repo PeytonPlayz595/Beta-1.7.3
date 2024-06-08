@@ -6,7 +6,7 @@ import java.io.IOException;
 //import java.net.URL;
 //import java.net.UnknownHostException;
 import java.util.List;
-import java.util.Random;
+
 import net.minecraft.client.Minecraft;
 
 public class NetClientHandler extends NetHandler {

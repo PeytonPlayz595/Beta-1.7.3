@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public class BlockLeaves extends BlockLeavesBase {
 	private int baseIndexInPNG;
 	int[] adjacentTreeBlocks;

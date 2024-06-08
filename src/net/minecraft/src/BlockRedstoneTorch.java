@@ -2,7 +2,6 @@ package net.minecraft.src;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class BlockRedstoneTorch extends BlockTorch {
 	private boolean torchActive = false;

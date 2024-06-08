@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public class WorldGenLakes extends WorldGenerator {
 	private int field_15235_a;
 

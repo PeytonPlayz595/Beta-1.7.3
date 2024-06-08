@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public class BiomeGenForest extends BiomeGenBase {
 	public BiomeGenForest() {
 		this.spawnableCreatureList.add(new SpawnListEntry(EntityWolf.class, 2));

@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public class WorldGenHellLava extends WorldGenerator {
 	private int field_4158_a;
 

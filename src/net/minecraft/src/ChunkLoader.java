@@ -49,7 +49,9 @@ public class ChunkLoader implements IChunkLoader {
 					return null;
 				}
 				
-				return loadChunkIntoWorldFromCompound(var1, var6);
+				Chunk var7 = loadChunkIntoWorldFromCompound(var1, var6);
+				var7.func_25124_i();
+				return var7;
 			} catch(IOException e) {
 				GL11.deleteFile(var4);
 				return null;
@@ -57,26 +59,6 @@ public class ChunkLoader implements IChunkLoader {
 		} else {
 			return null;
 		}
-//		if(var4 != null && GL11.exists(var4)) {
-//			try {
-//				ByteArrayInputStream var5 = new ByteArrayInputStream(GL11.readFile(var4));
-//				NBTTagCompound var6 = CompressedStreamTools.func_1138_a(var5);
-//				Chunk var7 = loadChunkIntoWorldFromCompound(var1, var6.getCompoundTag("Level"));
-//				if(!var7.isAtLocation(var2, var3)) {
-//					System.out.println("Chunk file at " + var2 + "," + var3 + " is in the wrong location; relocating. (Expected " + var2 + ", " + var3 + ", got " + var7.xPosition + ", " + var7.zPosition + ")");
-//					var6.setInteger("xPos", var2);
-//					var6.setInteger("zPos", var3);
-//					var7 = loadChunkIntoWorldFromCompound(var1, var6.getCompoundTag("Level"));
-//				}
-//
-//				var7.func_25124_i();
-//				return var7;
-//			} catch (Exception var8) {
-//				var8.printStackTrace();
-//			}
-//		}
-//
-//		return null;
 	}
 
 	public void saveChunk(World var1, Chunk var2) throws IOException {

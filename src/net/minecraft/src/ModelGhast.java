@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public class ModelGhast extends ModelBase {
 	ModelRenderer body;
 	ModelRenderer[] tentacles = new ModelRenderer[9];

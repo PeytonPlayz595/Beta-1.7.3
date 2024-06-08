@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public class Item {
 	protected static Random itemRand = new Random();
 	public static Item[] itemsList = new Item[32000];

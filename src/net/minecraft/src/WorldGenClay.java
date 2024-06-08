@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public class WorldGenClay extends WorldGenerator {
 	private int clayBlockId = Block.blockClay.blockID;
 	private int numberOfBlocks;

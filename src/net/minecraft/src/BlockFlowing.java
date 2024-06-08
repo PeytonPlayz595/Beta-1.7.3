@@ -1,7 +1,5 @@
 package net.minecraft.src;
 
-import java.util.Random;
-
 public class BlockFlowing extends BlockFluid {
 	int numAdjacentSources = 0;
 	boolean[] isOptimalFlowDirection = new boolean[4];
