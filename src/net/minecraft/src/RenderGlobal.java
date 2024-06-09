@@ -1148,6 +1148,9 @@ public class RenderGlobal implements IWorldAccess {
 
 	public void spawnParticle(String var1, double var2, double var4, double var6, double var8, double var10, double var12) {
 		if(this.mc != null && this.mc.renderViewEntity != null && this.mc.effectRenderer != null) {
+			if(isBehindPlayer(var2, var4, var6)) {
+        		return;
+        	}
 			double var14 = this.mc.renderViewEntity.posX - var2;
 			double var16 = this.mc.renderViewEntity.posY - var4;
 			double var18 = this.mc.renderViewEntity.posZ - var6;
@@ -1188,6 +1191,12 @@ public class RenderGlobal implements IWorldAccess {
 			}
 		}
 	}
+	
+	private boolean isBehindPlayer(double x, double y, double z) {
+        final Vec3D playerToBlock = new Vec3D(x - this.mc.thePlayer.posX, y - this.mc.thePlayer.posY, z - this.mc.thePlayer.posZ).normalize();
+        final Vec3D direction = (this.mc.thePlayer.getLookVec()).normalize();
+        return playerToBlock.dotProduct(direction) > 0.5;
+    }
 
 	public void obtainEntitySkin(Entity var1) {
 		var1.updateCloak();

@@ -145,7 +145,7 @@ public class EaglerAdapterGL30 extends EaglerAdapterImpl2 {
 	private static float fogColorA = 1.0f;
 	private static int fogMode = 1;
 	private static boolean fogEnabled = false;
-	private static boolean fogPremultiply = false;
+	//private static boolean fogPremultiply = false;
 	private static float fogStart = 1.0f;
 	private static float fogEnd = 1.0f;
 	private static float fogDensity = 1.0f;
@@ -288,8 +288,12 @@ public class EaglerAdapterGL30 extends EaglerAdapterImpl2 {
 		alphaThresh = p2;
 	}
 
+	private static int stateCullFace = -1;
 	public static final void glCullFace(int p1) {
-		_wglCullFace(p1);
+		if(p1 != stateCullFace) {
+			stateCullFace = p1;
+			_wglCullFace(p1);
+		}
 	}
 
 	public static final void glMatrixMode(int p1) {
@@ -428,7 +432,7 @@ public class EaglerAdapterGL30 extends EaglerAdapterImpl2 {
 	}
 
 	public static final void glLineWidth(float p1) {
-
+		webgl.lineWidth(p1);
 	}
 
 	public static final void glTexImage2D(int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8,
@@ -568,12 +572,25 @@ public class EaglerAdapterGL30 extends EaglerAdapterImpl2 {
 		}
 	}
 
+	static int stateBlendSRC = -1;
+	static int stateBlendDST = -1;
 	public static final void glBlendFunc(int p1, int p2) {
-		fogPremultiply = (p1 == GL_ONE && p2 == GL_ONE_MINUS_SRC_ALPHA);
+//		fogPremultiply = (p1 == GL_ONE && p2 == GL_ONE_MINUS_SRC_ALPHA);
+//		if(overlayFBOBlending) {
+//			_wglBlendFuncSeparate(p1, p2, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+//		}else {
+//			_wglBlendFunc(p1, p2);
+//		}
 		if(overlayFBOBlending) {
-			_wglBlendFuncSeparate(p1, p2, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-		}else {
+			glBlendFuncSeparate(p1, p2, 0, 1);
+			return;
+		}
+		int srcBits = (p1 | (p1 << 16));
+		int dstBits = (p2 | (p2 << 16));
+		if(srcBits != stateBlendSRC || dstBits != stateBlendDST) {
 			_wglBlendFunc(p1, p2);
+			stateBlendSRC = srcBits;
+			stateBlendDST = dstBits;
 		}
 	}
 	
@@ -584,12 +601,27 @@ public class EaglerAdapterGL30 extends EaglerAdapterImpl2 {
 	}
 	
 	public static final void glBlendFuncSeparate(int p1, int p2, int p3, int p4) {
-		fogPremultiply = (p3 == GL_ONE && p4 == GL_ONE_MINUS_SRC_ALPHA);
-		_wglBlendFuncSeparate(p1, p2, p3, p4);
+//		fogPremultiply = (p3 == GL_ONE && p4 == GL_ONE_MINUS_SRC_ALPHA);
+//		_wglBlendFuncSeparate(p1, p2, p3, p4);
+		if(overlayFBOBlending) { // game overlay framebuffer in EntityRenderer.java
+			p3 = GL_ONE;
+			p4 = GL_ONE_MINUS_SRC_ALPHA;
+		}
+		int srcBits = (p1 | (p3 << 16));
+		int dstBits = (p2 | (p4 << 16));
+		if(srcBits != stateBlendSRC || dstBits != stateBlendDST) {
+			_wglBlendFuncSeparate(p1, p2, p3, p4);
+			stateBlendSRC = srcBits;
+			stateBlendDST = dstBits;
+		}
 	}
 
+	private static boolean stateDepthMask = true;
 	public static final void glDepthMask(boolean p1) {
-		_wglDepthMask(p1);
+		if(p1 != stateDepthMask) {
+			stateDepthMask = p1;
+			_wglDepthMask(p1);
+		}
 	}
 
 	public static final void glColorMask(boolean p1, boolean p2, boolean p3, boolean p4) {
@@ -645,10 +677,10 @@ public class EaglerAdapterGL30 extends EaglerAdapterImpl2 {
 	}
 
 	public static final void glNormal3f(float p1, float p2, float p3) {
-		float len = (float) Math.sqrt(p1 * p1 + p2 * p2 + p3 * p3);
-		normalX = p1 / len;
-		normalY = p2 / len;
-		normalZ = p3 / len;
+		//float len = (float) Math.sqrt(p1 * p1 + p2 * p2 + p3 * p3);
+		normalX = p1 /*/ len*/;
+		normalY = p2 /*/ len*/;
+		normalZ = p3 /*/ len*/;
 	}
 
 	public static final int glGenLists(int p1) {
@@ -857,7 +889,7 @@ public class EaglerAdapterGL30 extends EaglerAdapterImpl2 {
 		}
 		s.setColor(colorR, colorG, colorB, colorA);
 		if (fogEnabled) {
-			s.setFogMode((fogPremultiply ? 2 : 0) + fogMode);
+			s.setFogMode(fogMode);
 			s.setFogColor(fogColorR, fogColorG, fogColorB, fogColorA);
 			s.setFogDensity(fogDensity);
 			s.setFogStartEnd(fogStart, fogEnd);

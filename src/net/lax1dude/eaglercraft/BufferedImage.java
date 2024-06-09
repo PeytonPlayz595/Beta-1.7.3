@@ -2,10 +2,10 @@ package net.lax1dude.eaglercraft;
 
 public class BufferedImage {
 
-	public final int[] data;
+	private final int[] data;
 	public final int w;
 	public final int h;
-	public final boolean alpha;
+	private final boolean alpha;
 
 	public BufferedImage(int width, int height, int[] pixels, boolean alpha) {
 		this.w = width;
@@ -36,55 +36,51 @@ public class BufferedImage {
 		return new BufferedImage(pw, ph, img, alpha);
 	}
 	
-	public int[] data() {
-		return this.data;
-	}
-	
-	public int[] getRGB(int startX, int startY, int w, int h,  int[] rgbArray, int offset, int scansize) {
-		if (startX < 0 || startY < 0 || w <= 0 || h <= 0 ||
-				startX + w > this.w || startY + h > this.h ||
-				rgbArray.length < offset + w * h) {
-				throw new IllegalArgumentException("Suck my dick nigga");
-		}
+	public int[] getRGB(int startX, int startY, int w, int h, int[] rgbArray, int offset, int scansize) {
+	    if (startX < 0 || startY < 0 || w <= 0 || h <= 0 ||
+	        startX + w > this.w || startY + h > this.h ||
+	        rgbArray.length < offset + w * h) {
+	        throw new IllegalArgumentException("Invalid input parameters");
+	    }
 
-		for (int y = startY; y < startY + h; y++) {
-			for (int x = startX; x < startX + w; x++) {
-				int imageDataIndex = y * this.w + x;
-				int argb = data[imageDataIndex];
-				int alpha = (argb >> 24) & 0xff;
-				int red = (argb >> 16) & 0xff;
-				int green = (argb >> 8) & 0xff;
-				int blue = argb & 0xff;
-				int rgb = (alpha << 24) | (red << 16) | (green << 8) | blue;
-      
-				rgbArray[offset + (y - startY) * scansize + (x - startX)] = rgb;
-			}
-		}
+	    for (int y = startY; y < startY + h; y++) {
+	        for (int x = startX; x < startX + w; x++) {
+	            int imageDataIndex = y * this.w + x;
+	            int argb = data[imageDataIndex];
+	            int alpha = (argb >> 24) & 0xff;
+	            int red = (argb >> 16) & 0xff;
+	            int green = (argb >> 8) & 0xff;
+	            int blue = argb & 0xff;
+	            int rgb = (alpha << 24) | (red << 16) | (green << 8) | blue;
 
-		return rgbArray;
+	            rgbArray[offset + (y - startY) * scansize + (x - startX)] = rgb;
+	        }
+	    }
+
+	    return rgbArray;
 	}
-	
+
 	public void setRGB(int startX, int startY, int w, int h, int[] rgbArray, int offset, int scansize) {
-			if (startX < 0 || startY < 0 || w <= 0 || h <= 0 ||
-					startX + w > this.w || startY + h > this.h ||
-					rgbArray.length < offset + w * h) {
-					throw new IllegalArgumentException("Big black oily men");
-			}
+	    if (startX < 0 || startY < 0 || w <= 0 || h <= 0 ||
+	        startX + w > this.w || startY + h > this.h ||
+	        rgbArray.length < offset + w * h) {
+	        throw new IllegalArgumentException("Invalid input parameters");
+	    }
 
-			for (int y = startY; y < startY + h; y++) {
-				for (int x = startX; x < startX + w; x++) {
-					int imageDataIndex = y * this.w + x;
-					int rgb = rgbArray[offset + (y - startY) * scansize + (x - startX)];
-					int alpha = (rgb >> 24) & 0xff;
-					int red = (rgb >> 16) & 0xff;
-					int green = (rgb >> 8) & 0xff;
-					int blue = rgb & 0xff;
-					int argb = (alpha << 24) | (red << 16) | (green << 8) | blue;
-					
-					data[imageDataIndex] = argb;
-				}
-			}
-		}
+	    for (int y = startY; y < startY + h; y++) {
+	        for (int x = startX; x < startX + w; x++) {
+	            int imageDataIndex = y * this.w + x;
+	            int rgb = rgbArray[offset + (y - startY) * scansize + (x - startX)];
+	            int alpha = (rgb >> 24) & 0xff;
+	            int red = (rgb >> 16) & 0xff;
+	            int green = (rgb >> 8) & 0xff;
+	            int blue = rgb & 0xff;
+	            int argb = (alpha << 24) | (red << 16) | (green << 8) | blue;
+
+	            data[imageDataIndex] = argb;
+	        }
+	    }
+	}
 	
 	public int getWidth() {
 		return w;

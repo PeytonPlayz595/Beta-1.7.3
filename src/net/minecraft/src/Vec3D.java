@@ -31,7 +31,7 @@ public class Vec3D {
 		return ((Vec3D)vectorList.get(nextVector++)).setComponents(var0, var2, var4);
 	}
 
-	private Vec3D(double var1, double var3, double var5) {
+	public Vec3D(double var1, double var3, double var5) {
 		if(var1 == -0D) {
 			var1 = 0.0D;
 		}
@@ -63,6 +63,10 @@ public class Vec3D {
 	public Vec3D normalize() {
 		double var1 = (double)MathHelper.sqrt_double(this.xCoord * this.xCoord + this.yCoord * this.yCoord + this.zCoord * this.zCoord);
 		return var1 < 1.0E-4D ? createVector(0.0D, 0.0D, 0.0D) : createVector(this.xCoord / var1, this.yCoord / var1, this.zCoord / var1);
+	}
+	
+	public double dotProduct(Vec3D vec) {
+		return this.xCoord * vec.xCoord + this.yCoord * vec.yCoord + this.zCoord * vec.zCoord;
 	}
 
 	public Vec3D crossProduct(Vec3D var1) {

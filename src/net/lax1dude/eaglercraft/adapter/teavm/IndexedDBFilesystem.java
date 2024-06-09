@@ -42,7 +42,7 @@ public class IndexedDBFilesystem {
 			System.out.println("Setting custom database name to " + GL11.dataBaseName);
 			dbo = AsyncHandlers.openDB(GL11.dataBaseName);
 		} else {
-			dbo = AsyncHandlers.openDB("_net_lax1dude_eaglercraft_beta_IndexedDBFilesystem_1_3");
+			dbo = AsyncHandlers.openDB("_net_PeytonPlayz585_eaglercraft_beta_IndexedDBFilesystem_1_7_3");
 		}
 		if(dbo == null) {
 			err = "Unknown Error";

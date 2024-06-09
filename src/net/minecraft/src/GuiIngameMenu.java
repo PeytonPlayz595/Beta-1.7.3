@@ -57,6 +57,7 @@ public class GuiIngameMenu extends GuiScreen {
 	public void drawScreen(int var1, int var2, float var3) {
 		this.drawDefaultBackground();
 		boolean var4 = !this.mc.theWorld.func_650_a(this.updateCounter2++);
+		this.mc.setIngameNotInFocus();
 		if(var4 || this.updateCounter < 20) {
 			float var5 = ((float)(this.updateCounter % 10) + var3) / 10.0F;
 			var5 = MathHelper.sin(var5 * (float)Math.PI * 2.0F) * 0.2F + 0.8F;
