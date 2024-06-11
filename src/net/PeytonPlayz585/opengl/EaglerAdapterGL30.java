@@ -720,13 +720,14 @@ public class EaglerAdapterGL30 extends EaglerAdapterImpl2 {
 			if (d != null && d.listLength > 0) {
 				bindTheShader(d.shaderMode | getShaderModeFlag1());
 				_wglBindVertexArray0(d.glarray);
-				_wglDrawQuadArrays(0, d.listLength);
 				
 				//glTranslate support for display lists
 				for(Translate t : d.translate) {
 					deevis.set(t.f, t.f1, t.f2);
 					getMatrix().translate(deevis);
 				}
+				
+				_wglDrawQuadArrays(0, d.listLength);
 				
 				shader.unuseProgram();
 				vertexDrawn += d.listLength * 6 / 4;
