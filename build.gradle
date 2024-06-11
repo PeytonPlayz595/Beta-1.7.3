@@ -1,0 +1,36 @@
+plugins {
+    id "java"
+    id "war"
+    id "org.teavm" version "0.9.2"
+}
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation teavm.libs.jsoApis
+}
+
+apply plugin: 'eclipse'
+
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/'
+        }
+    }
+}
+
+teavm.js {
+    addedToWebApp = true;
+    mainClass = "net.lax1dude.eaglercraft.Client"
+    outputDir = file("web");
+    targetFileName = "app.js";
+    obfuscated = true;
+    sourceMap = true;
+    entryPointName = 'main';
+    properties = null;
+    optimization = org.teavm.gradle.api.OptimizationLevel.AGGRESSIVE;
+    processMemory = 512;
+}
