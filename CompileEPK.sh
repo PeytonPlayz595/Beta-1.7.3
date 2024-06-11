@@ -1,2 +1,2 @@
 #!/bin/sh
-java -jar desktopRuntime/eclipseProject/jars/CompilePackage.jar "desktopRuntime/resources/" "web/resources.mc"
+java -jar jars/CompilePackage.jar "resources/" "web/resources.mc"
