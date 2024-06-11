@@ -172,6 +172,7 @@ public abstract class GuiContainer extends GuiScreen {
 
 	public void updateScreen() {
 		super.updateScreen();
+		this.mc.setIngameNotInFocus();
 		if(!this.mc.thePlayer.isEntityAlive() || this.mc.thePlayer.isDead) {
 			this.mc.thePlayer.closeScreen();
 		}

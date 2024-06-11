@@ -103,7 +103,11 @@ public class SoundManager {
 	            double var4 = var1.prevPosX + (var1.posX - var1.prevPosX) * (double)var2;
 			    double var6 = var1.prevPosY + (var1.posY - var1.prevPosY) * (double)var2;
 			    double var8 = var1.prevPosZ + (var1.posZ - var1.prevPosZ) * (double)var2;
-			    GL11.setListenerPos((float)var4, (float)var6, (float)var8, (float)var1.motionX, (float)var1.motionY, (float)var1.motionZ, (float)var9, (float)var3);
+			    try {
+			    	GL11.setListenerPos((float)var4, (float)var6, (float)var8, (float)var1.motionX, (float)var1.motionY, (float)var1.motionZ, (float)var9, (float)var3);
+			    } catch(Exception e) {
+			    	// ???
+			    }
 			}
 		}
 	}

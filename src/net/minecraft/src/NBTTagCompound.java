@@ -135,6 +135,10 @@ public class NBTTagCompound extends NBTBase {
 		return this.getByte(var1) != 0;
 	}
 
+	public boolean hasNoTags() {
+		return this.tagMap.isEmpty();
+	}
+	
 	public String toString() {
 		return "" + this.tagMap.size() + " entries";
 	}

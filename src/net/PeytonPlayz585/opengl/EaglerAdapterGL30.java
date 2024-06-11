@@ -4,7 +4,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import net.PeytonPlayz585.glemu.FixedFunctionShader;
 import net.PeytonPlayz585.glemu.GLObjectMap;
@@ -195,6 +197,8 @@ public class EaglerAdapterGL30 extends EaglerAdapterImpl2 {
 		private BufferGL glbuffer;
 		private int shaderMode;
 		private int listLength;
+		
+		private List<Translate> translate = new ArrayList<Translate>();
 
 		private DisplayList(int id) {
 			this.id = id;
@@ -202,6 +206,16 @@ public class EaglerAdapterGL30 extends EaglerAdapterImpl2 {
 			this.glbuffer = null;
 			this.shaderMode = -1;
 			this.listLength = 0;
+		}
+	}
+	
+	private static class Translate {
+		private float f, f1, f2;
+		
+		private Translate(float f, float f1, float f2) {
+			this.f = f;
+			this.f1 = f1;
+			this.f2 = f2;
 		}
 	}
 
@@ -370,7 +384,8 @@ public class EaglerAdapterGL30 extends EaglerAdapterImpl2 {
 		deevis.set(p1, p2, p3);
 		getMatrix().translate(deevis);
 		if (isCompilingDisplayList) {
-			throw new IllegalArgumentException("matrix is not supported while recording display list use tessellator class instead");
+			compilingDisplayList.translate.add(new Translate(p1, p2, p3));
+			//throw new IllegalArgumentException("matrix is not supported while recording display list use tessellator class instead");
 		}
 	}
 
@@ -706,6 +721,13 @@ public class EaglerAdapterGL30 extends EaglerAdapterImpl2 {
 				bindTheShader(d.shaderMode | getShaderModeFlag1());
 				_wglBindVertexArray0(d.glarray);
 				_wglDrawQuadArrays(0, d.listLength);
+				
+				//glTranslate support for display lists
+				for(Translate t : d.translate) {
+					deevis.set(t.f, t.f1, t.f2);
+					getMatrix().translate(deevis);
+				}
+				
 				shader.unuseProgram();
 				vertexDrawn += d.listLength * 6 / 4;
 				triangleDrawn += d.listLength / 2;
@@ -805,7 +827,13 @@ public class EaglerAdapterGL30 extends EaglerAdapterImpl2 {
 	}
 
 	public static final void glPolygonOffset(float p1, float p2) {
-		_wglPolygonOffset(p1, p2);
+		//if(p1 != 0) {
+			p1 = -p1;
+		//}
+		//if(p2 != 0) {
+			p2 = -p2;
+		//}
+		_wglPolygonOffset(-p1, -p2);
 	}
 
 	public static final void glCallLists(IntBuffer p1) {

@@ -72,7 +72,6 @@ import net.minecraft.src.TexturePortalFX;
 import net.minecraft.src.TextureWatchFX;
 import net.minecraft.src.TextureWaterFX;
 import net.minecraft.src.TextureWaterFlowFX;
-import net.minecraft.src.ThreadSleepForever;
 import net.minecraft.src.Timer;
 import net.minecraft.src.UnexpectedThrowable;
 import net.minecraft.src.Vec3D;
@@ -138,7 +137,6 @@ public class Minecraft implements Runnable {
 	public Minecraft() {
 		StatList.func_27360_a();
 		this.tempDisplayHeight = GL11.getCanvasHeight();
-		new ThreadSleepForever(this, "Timer hack thread");
 		this.displayWidth = GL11.getCanvasWidth();
 		this.displayHeight = GL11.getCanvasHeight();
 
@@ -198,12 +196,7 @@ public class Minecraft implements Runnable {
 
 		this.checkGLError("Post startup");
 		this.ingameGUI = new GuiIngame(this);
-		if(this.serverName != null) {
-			this.displayGuiScreen(new GuiConnecting(this, this.serverName, this.serverPort));
-		} else {
-			this.displayGuiScreen(new GuiMainMenu());
-		}
-
+		this.displayGuiScreen(new GuiMainMenu());
 	}
 
 	private void loadScreen() {

@@ -10,6 +10,7 @@ public class FontRenderer {
 	private int[] charWidth = new int[256];
 	public int fontTextureName = 0;
 	private int fontDisplayLists;
+	private IntBuffer buffer = GLAllocation.createDirectIntBuffer(1024);
 
 	public FontRenderer(GameSettings var1, String var2, RenderEngine var3) {
 		BufferedImage var4;
@@ -75,6 +76,7 @@ public class FontRenderer {
 			var19.addVertexWithUV((double)(0.0F + var20), 0.0D, 0.0D, (double)(((float)var10 + var20) / 128.0F + var21), (double)((float)var11 / 128.0F + var23));
 			var19.addVertexWithUV(0.0D, 0.0D, 0.0D, (double)((float)var10 / 128.0F + var21), (double)((float)var11 / 128.0F + var23));
 			var19.draw();
+			GL11.glTranslatef((float)this.charWidth[var9], 0.0F, 0.0F);
 			GL11.glEndList();
 		}
 
@@ -138,6 +140,7 @@ public class FontRenderer {
 			}
 
 			GL11.glColor4f(var10, var7, var8, var9);
+			this.buffer.clear();
 			GL11.glPushMatrix();
 			GL11.glTranslatef((float)var2, (float)var3, 0.0F);
 
@@ -149,19 +152,30 @@ public class FontRenderer {
 						var11 = 15;
 					}
 
-					GL11.glCallList(fontDisplayLists + 256 + var11 + (var5 ? 16 : 0));
-					GL11.glTranslatef(charWidth[256 + var11 + (var5 ? 16 : 0)] * 0.5f, 0.0F, 0.0F);
+					this.buffer.put(this.fontDisplayLists + 256 + var11 + (var5 ? 16 : 0));
+					if(this.buffer.remaining() == 0) {
+						this.buffer.flip();
+						GL11.glCallLists(this.buffer);
+						this.buffer.clear();
+					}
 				}
 
 				if(var6 < var1.length()) {
 					var11 = ChatAllowedCharacters.allowedCharacters.indexOf(var1.charAt(var6));
 					if(var11 >= 0) {
-						GL11.glCallList(fontDisplayLists + var11 + 32);
-						GL11.glTranslatef(charWidth[var11 + 32], 0.0F, 0.0F);
+						this.buffer.put(this.fontDisplayLists + var11 + 32);
 					}
+				}
+
+				if(this.buffer.remaining() == 0) {
+					this.buffer.flip();
+					GL11.glCallLists(this.buffer);
+					this.buffer.clear();
 				}
 			}
 
+			this.buffer.flip();
+			GL11.glCallLists(this.buffer);
 			GL11.glPopMatrix();
 		}
 	}

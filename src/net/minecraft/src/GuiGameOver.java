@@ -31,6 +31,12 @@ public class GuiGameOver extends GuiScreen {
 		}
 
 	}
+	
+	@Override
+	public void updateScreen() {
+		super.updateScreen();
+		this.mc.setIngameNotInFocus();
+	}
 
 	public void drawScreen(int var1, int var2, float var3) {
 		this.drawGradientRect(0, 0, this.width, this.height, 1615855616, -1602211792);

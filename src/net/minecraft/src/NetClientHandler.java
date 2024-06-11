@@ -7,6 +7,8 @@ import java.io.IOException;
 //import java.net.UnknownHostException;
 import java.util.List;
 
+import net.PeytonPlayz585.opengl.GL11;
+import net.PeytonPlayz585.socket.Socket;
 import net.minecraft.client.Minecraft;
 
 public class NetClientHandler extends NetHandler {
@@ -19,14 +21,32 @@ public class NetClientHandler extends NetHandler {
 	public MapStorage field_28118_b = new MapStorage((ISaveHandler)null);
 	Random rand = new Random();
 
-	public NetClientHandler(Minecraft var1, String var2, int var3) throws IOException {
+	public NetClientHandler(Minecraft var1, String var2) throws IOException {
 		this.mc = var1;
-		//Socket var4 = new Socket(InetAddress.getByName(var2), var3);
-		//this.netManager = new NetworkManager(var4, "Client", this);
+		
+		String uri = null;
+		if(var2.startsWith("ws://")) {
+			uri = var2.substring(5);
+		}else if(var2.startsWith("wss://")){
+			uri = var2.substring(6);
+		}else if(!var2.contains("://")){
+			uri = var2;
+			if(GL11.isSSLPage()) {
+				var2 = "wss://" + var2;
+			} else {
+				var2 = "ws://" + var2;
+			}
+		}else {
+			throw new IOException("Invalid URI Protocol!");
+		}
+		
+		Socket var4 = new Socket(var2);
+		this.netManager = new NetworkManager(var4, "Client", this);
 	}
 
 	public void processReadPackets() {
 		if(!this.disconnected) {
+			this.netManager.readPacket();
 			this.netManager.processReadPackets();
 		}
 
@@ -377,6 +397,10 @@ public class NetClientHandler extends NetHandler {
 	}
 
 	public void handleHandshake(Packet2Handshake var1) {
+		this.addToSendQueue(new Packet1Login(this.mc.session.username, 14));
+	}
+	
+	public void handleHandshake() {
 		this.addToSendQueue(new Packet1Login(this.mc.session.username, 14));
 	}
 

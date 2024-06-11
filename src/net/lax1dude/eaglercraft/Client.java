@@ -41,7 +41,7 @@ public class Client {
     private static void run0() {
     	System.out.println(" -------- starting minecraft -------- ");
     	instance = new Minecraft();
-    	Session session = new Session("Player", "mcpass");
+    	Session session = new Session("Player094", "mcpass");
     	instance.session = session;
     	LocalStorageManager.loadStorage();
     	run1();

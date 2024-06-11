@@ -53,31 +53,28 @@ public abstract class Packet {
 		return ((Integer)packetClassToIdMap.get(this.getClass())).intValue();
 	}
 
+	
+	//Ignore EOFExceptions, it will be handled in NetworkManager
 	public static Packet readPacket(DataInputStream var0, boolean var1) throws IOException {
 		boolean var2 = false;
 		Packet var3 = null;
 
 		int var6;
-		try {
-			var6 = var0.read();
-			if(var6 == -1) {
-				return null;
-			}
-
-			if(var1 && !serverPacketIdList.contains(Integer.valueOf(var6)) || !var1 && !clientPacketIdList.contains(Integer.valueOf(var6))) {
-				throw new IOException("Bad packet id " + var6);
-			}
-
-			var3 = getNewPacket(var6);
-			if(var3 == null) {
-				throw new IOException("Bad packet id " + var6);
-			}
-
-			var3.readPacketData(var0);
-		} catch (EOFException var5) {
-			System.out.println("Reached end of stream");
+		var6 = var0.read();
+		if(var6 == -1) {
 			return null;
 		}
+
+		if(var1 && !serverPacketIdList.contains(Integer.valueOf(var6)) || !var1 && !clientPacketIdList.contains(Integer.valueOf(var6))) {
+			throw new IOException("Bad packet id " + var6);
+		}
+
+		var3 = getNewPacket(var6);
+		if(var3 == null) {
+			throw new IOException("Bad packet id " + var6);
+		}
+
+		var3.readPacketData(var0);
 
 		PacketCounter var4 = (PacketCounter)packetStats.get(Integer.valueOf(var6));
 		if(var4 == null) {

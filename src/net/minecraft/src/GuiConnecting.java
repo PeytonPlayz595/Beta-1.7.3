@@ -5,11 +5,11 @@ import net.minecraft.client.Minecraft;
 public class GuiConnecting extends GuiScreen {
 	private NetClientHandler clientHandler;
 	private boolean cancelled = false;
-
-	public GuiConnecting(Minecraft var1, String var2, int var3) {
-		System.out.println("Connecting to " + var2 + ", " + var3);
+	
+	public GuiConnecting(Minecraft var1, String var2) {
+		System.out.println("Connecting to " + var2);
 		var1.changeWorld1((World)null);
-		//(new ThreadConnectToServer(this, var1, var2, var3)).start();
+		(new ThreadConnectToServer(this, var1, var2)).start();
 	}
 
 	public void updateScreen() {
