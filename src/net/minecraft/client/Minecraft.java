@@ -216,7 +216,7 @@ public class Minecraft implements Runnable {
 		GL11.glDisable(GL11.GL_FOG);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.renderEngine.getTexture("/title/mojang.png"));
 		var2.startDrawingQuads();
-		var2.setColorOpaque_I(16777215);
+		var2.setColorRGBA_F(255, 255, 255, 255);
 		var2.addVertexWithUV(0.0D, (double)this.displayHeight, 0.0D, 0.0D, 0.0D);
 		var2.addVertexWithUV((double)this.displayWidth, (double)this.displayHeight, 0.0D, 0.0D, 0.0D);
 		var2.addVertexWithUV((double)this.displayWidth, 0.0D, 0.0D, 0.0D, 0.0D);
@@ -224,8 +224,7 @@ public class Minecraft implements Runnable {
 		var2.draw();
 		short var3 = 256;
 		short var4 = 256;
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		var2.setColorOpaque_I(16777215);
+		var2.setColorRGBA_F(255, 255, 255, 255);
 		this.func_6274_a((var1.getScaledWidth() - var3) / 2, (var1.getScaledHeight() - var4) / 2, 0, 0, var3, var4);
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glDisable(GL11.GL_FOG);

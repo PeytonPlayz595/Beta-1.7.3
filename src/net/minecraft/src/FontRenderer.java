@@ -1,6 +1,9 @@
 package net.minecraft.src;
 
 import java.nio.IntBuffer;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.lwjgl.opengl.GL11;
 
 import net.lax1dude.eaglercraft.BufferedImage;
@@ -11,6 +14,8 @@ public class FontRenderer {
 	public int fontTextureName = 0;
 	private int fontDisplayLists;
 	private IntBuffer buffer = GLAllocation.createDirectIntBuffer(1024);
+	
+	private Map<Integer, Color3f> colorList = new HashMap<Integer, Color3f>();
 
 	public FontRenderer(GameSettings var1, String var2, RenderEngine var3) {
 		BufferedImage var4;
@@ -105,9 +110,7 @@ public class FontRenderer {
 				var22 /= 4;
 			}
 
-			GL11.glNewList(this.fontDisplayLists + 256 + var9, GL11.GL_COMPILE);
-			GL11.glColor3f((float)var11 / 255.0F, (float)var12 / 255.0F, (float)var22 / 255.0F);
-			GL11.glEndList();
+			colorList.put(this.fontDisplayLists + 256 + var9, new Color3f((float)var11 / 255.0F, (float)var12 / 255.0F, (float)var22 / 255.0F));
 		}
 
 	}
@@ -151,11 +154,18 @@ public class FontRenderer {
 					if(var11 < 0 || var11 > 15) {
 						var11 = 15;
 					}
-
+					
 					this.buffer.put(this.fontDisplayLists + 256 + var11 + (var5 ? 16 : 0));
 					if(this.buffer.remaining() == 0) {
 						this.buffer.flip();
-						GL11.glCallLists(this.buffer);
+						while (buffer.hasRemaining()) {
+							int i = buffer.get();
+							if(colorList.containsKey(i)) {
+								Color3f color = colorList.get(i);
+								GL11.glColor3f(color.r, color.g, color.b);
+							}
+							GL11.glCallList(i);
+						}
 						this.buffer.clear();
 					}
 				}
@@ -169,13 +179,27 @@ public class FontRenderer {
 
 				if(this.buffer.remaining() == 0) {
 					this.buffer.flip();
-					GL11.glCallLists(this.buffer);
+					while (buffer.hasRemaining()) {
+						int i = buffer.get();
+						if(colorList.containsKey(i)) {
+							Color3f color = colorList.get(i);
+							GL11.glColor3f(color.r, color.g, color.b);
+						}
+						GL11.glCallList(i);
+					}
 					this.buffer.clear();
 				}
 			}
 
 			this.buffer.flip();
-			GL11.glCallLists(this.buffer);
+			while (buffer.hasRemaining()) {
+				int i = buffer.get();
+				if(colorList.containsKey(i)) {
+					Color3f color = colorList.get(i);
+					GL11.glColor3f(color.r, color.g, color.b);
+				}
+				GL11.glCallList(i);
+			}
 			GL11.glPopMatrix();
 		}
 	}
