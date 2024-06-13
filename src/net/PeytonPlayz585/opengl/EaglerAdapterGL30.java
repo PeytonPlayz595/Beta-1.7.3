@@ -828,12 +828,6 @@ public class EaglerAdapterGL30 extends EaglerAdapterImpl2 {
 	}
 
 	public static final void glPolygonOffset(float p1, float p2) {
-		//if(p1 != 0) {
-			p1 = -p1;
-		//}
-		//if(p2 != 0) {
-			p2 = -p2;
-		//}
 		_wglPolygonOffset(-p1, -p2);
 	}
 
