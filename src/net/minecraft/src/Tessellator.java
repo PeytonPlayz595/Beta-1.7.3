@@ -195,7 +195,7 @@ public class Tessellator {
 			this.draw();
 			this.isDrawing = true;
 		}
-
+		
 	}
 
 	public void setColorOpaque_I(int var1) {

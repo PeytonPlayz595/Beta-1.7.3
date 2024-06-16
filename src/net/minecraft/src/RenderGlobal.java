@@ -536,7 +536,7 @@ public class RenderGlobal implements IWorldAccess {
 					var14 = (float)var20 * (float)Math.PI * 2.0F / (float)var19;
 					float var15 = MathHelper.sin(var14);
 					float var16 = MathHelper.cos(var14);
-					var17.addVertex((double)(var15 * 120.0F), (double)(var16 * 120.0F), (double)(var16 * 40.0F * var18[3]));
+					var17.addVertex((double)(var15 * 120.0F), (double)(var16 * 120.0F), (double)(-var16 * 40.0F * var18[3]));
 				}
 
 				var17.draw();

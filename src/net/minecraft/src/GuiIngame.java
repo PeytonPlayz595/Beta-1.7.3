@@ -3,6 +3,7 @@ package net.minecraft.src;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.PeytonPlayz585.awt.Color;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -193,7 +194,7 @@ public class GuiIngame extends Gui {
 				GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 				var17 = 16777215;
 				if(this.field_22065_l) {
-					var17 = HSBtoRGB(var25 / 50.0F, 0.7F, 0.6F) & 16777215;
+					var17 = Color.HSBtoRGB(var25 / 50.0F, 0.7F, 0.6F) & 16777215;
 				}
 
 				var8.drawString(this.recordPlaying, -var8.getStringWidth(this.recordPlaying) / 2, -4, var17 + (var16 << 24));
@@ -396,48 +397,6 @@ public class GuiIngame extends Gui {
 		StringTranslate var2 = StringTranslate.getInstance();
 		String var3 = var2.translateKey(var1);
 		this.addChatMessage(var3);
-	}
-	
-	public static int HSBtoRGB(float hue, float saturation, float brightness) {
-	    hue = (hue % 1f) + 1f;
-	    saturation = Math.min(1f, Math.max(0f, saturation));
-	    brightness = Math.min(1f, Math.max(0f, brightness));
-
-	    float q = brightness < 0.5f ? brightness * (1f + saturation) : brightness + saturation - brightness * saturation;
-	    float p = 2f * brightness - q;
-
-	    float r, g, b;
-	    if (hue < 1f/6f) {
-	        r = q;
-	        g = p + (q - p) * 6f * hue;
-	        b = p;
-	    } else if (hue < 2f/6f) {
-	        r = p - (q - p) * 6f * (hue - 1f/6f);
-	        g = q;
-	        b = p;
-	    } else if (hue < 3f/6f) {
-	        r = p;
-	        g = q - (q - p) * 6f * (hue - 2f/6f);
-	        b = p - (q - p) * 6f * (hue - 2f/6f);
-	    } else if (hue < 4f/6f) {
-	        r = p;
-	        g = p;
-	        b = q - (q - p) * 6f * (hue - 3f/6f);
-	    } else if (hue < 5f/6f) {
-	        r = p + (q - p) * 6f * (hue - 4f/6f);
-	        g = p;
-	        b = q;
-	    } else {
-	        r = q;
-	        g = p - (q - p) * 6f * (hue - 5f/6f);
-	        b = p;
-	    }
-
-	    int red = (int) Math.max(0f, Math.min(255f, r * 255f));
-	    int green = (int) Math.max(0f, Math.min(255f, g * 255f));
-	    int blue = (int) Math.max(0f, Math.min(255f, b * 255f));
-
-	    return (red << 16) | (green << 8) | blue;
 	}
 	
 	public void renderCrossHairs(int w, int h) {

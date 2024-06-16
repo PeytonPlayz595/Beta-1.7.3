@@ -1,7 +1,9 @@
 package net.minecraft.src;
 
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.lwjgl.opengl.GL11;
@@ -16,7 +18,7 @@ public class FontRenderer {
 	private IntBuffer buffer = GLAllocation.createDirectIntBuffer(1024);
 	
 	private Map<Integer, Color3f> colorList = new HashMap<Integer, Color3f>();
-
+	
 	public FontRenderer(GameSettings var1, String var2, RenderEngine var3) {
 		BufferedImage var4;
 		try {
@@ -160,8 +162,8 @@ public class FontRenderer {
 						this.buffer.flip();
 						while (buffer.hasRemaining()) {
 							int i = buffer.get();
-							if(colorList.containsKey(i)) {
-								Color3f color = colorList.get(i);
+							Color3f color = colorList.get(i);
+							if(color != null) {
 								GL11.glColor3f(color.r, color.g, color.b);
 							}
 							GL11.glCallList(i);
@@ -181,8 +183,8 @@ public class FontRenderer {
 					this.buffer.flip();
 					while (buffer.hasRemaining()) {
 						int i = buffer.get();
-						if(colorList.containsKey(i)) {
-							Color3f color = colorList.get(i);
+						Color3f color = colorList.get(i);
+						if(color != null) {
 							GL11.glColor3f(color.r, color.g, color.b);
 						}
 						GL11.glCallList(i);
@@ -194,8 +196,8 @@ public class FontRenderer {
 			this.buffer.flip();
 			while (buffer.hasRemaining()) {
 				int i = buffer.get();
-				if(colorList.containsKey(i)) {
-					Color3f color = colorList.get(i);
+				Color3f color = colorList.get(i);
+				if(color != null) {
 					GL11.glColor3f(color.r, color.g, color.b);
 				}
 				GL11.glCallList(i);
