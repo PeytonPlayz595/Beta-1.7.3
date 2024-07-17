@@ -69,6 +69,7 @@ import net.lax1dude.eaglercraft.adapter.teavm.WebGLVertexArray;
 import net.minecraft.src.MathHelper;
 import net.PeytonPlayz585.opengl.GL11;
 import net.PeytonPlayz585.storage.LocalStorageManager;
+import net.lax1dude.eaglercraft.EarlyLoadScreen;
 import net.lax1dude.eaglercraft.AssetRepository;
 import net.lax1dude.eaglercraft.Base64;
 import net.lax1dude.eaglercraft.Client;
@@ -76,8 +77,6 @@ import net.lax1dude.eaglercraft.BufferedImage;
 import net.lax1dude.eaglercraft.JSONObject;
 import net.lax1dude.eaglercraft.adapter.teavm.IndexedDBFilesystem;
 import net.lax1dude.eaglercraft.adapter.teavm.IndexedDBFilesystem.OpenState;
-//import net.lax1dude.eaglercraft.adapter.teavm.IndexedDBFilesystem;
-//import net.lax1dude.eaglercraft.adapter.teavm.IndexedDBFilesystem.OpenState;
 import net.lax1dude.eaglercraft.adapter.teavm.WebGL2RenderingContext;
 import static net.lax1dude.eaglercraft.adapter.teavm.WebGL2RenderingContext.*;
 
@@ -319,6 +318,8 @@ public class EaglerAdapterImpl2 {
 		if(!config.isNull("dataBaseName")) {
 			dataBaseName = config.getString("dataBaseName");
 		}
+		
+		EarlyLoadScreen.paintScreen();
 		
 		OpenState st = IndexedDBFilesystem.initialize();
 		if(st != OpenState.OPENED) {

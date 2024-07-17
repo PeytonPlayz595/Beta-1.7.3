@@ -21,13 +21,14 @@ class ThreadConnectToServer {
 			}
 
 			GuiConnecting.getNetClientHandler(this.connectingGui).handleHandshake();
-		} catch (Exception var4) {
+		} catch (Throwable var4) {
+			System.out.println("yee");
 			if(GuiConnecting.isCancelled(this.connectingGui)) {
 				return;
 			}
 
-			var4.printStackTrace();
 			this.mc.displayGuiScreen(new GuiConnectFailed("connect.failed", "disconnect.genericReason", new Object[]{var4.toString()}));
+			var4.printStackTrace();
 		}
 
 	}

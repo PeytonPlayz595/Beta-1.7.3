@@ -89,4 +89,8 @@ public class BufferedImage {
 	public int getHeight() {
 		return h;
 	}
+	
+	public int[] getData() {
+		return data;
+	}
 }

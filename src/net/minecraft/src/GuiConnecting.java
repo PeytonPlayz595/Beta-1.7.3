@@ -6,17 +6,33 @@ public class GuiConnecting extends GuiScreen {
 	private NetClientHandler clientHandler;
 	private boolean cancelled = false;
 	
+	private Minecraft minecraft;
+	private String uri;
+	private int timer = 0;
+	
 	public GuiConnecting(Minecraft var1, String var2) {
 		System.out.println("Connecting to " + var2);
 		var1.changeWorld1((World)null);
-		(new ThreadConnectToServer(this, var1, var2)).start();
+		
+		this.minecraft = var1;
+		this.uri = var2;
 	}
 
 	public void updateScreen() {
+		/*
+		 * Connects AFTER drawing screen, this fixes two issues
+		 * 1. A blank background while the connection is being initialized
+		 * 2. The connection failed screen not showing due to the connecting screen being rendered AFTER the connection failed
+		 */
+		if (timer > 2 && this.clientHandler == null) {
+			(new ThreadConnectToServer(this, this.minecraft, this.uri)).start();
+		}
 		if(this.clientHandler != null) {
 			this.clientHandler.processReadPackets();
 		}
-
+		if(timer >= 1) {
+			++timer;
+		}
 	}
 
 	protected void keyTyped(char var1, int var2) {
@@ -41,6 +57,10 @@ public class GuiConnecting extends GuiScreen {
 	}
 
 	public void drawScreen(int var1, int var2, float var3) {
+		if(timer == 0) {
+			timer = 1;
+		}
+		
 		this.drawDefaultBackground();
 		StringTranslate var4 = StringTranslate.getInstance();
 		if(this.clientHandler == null) {

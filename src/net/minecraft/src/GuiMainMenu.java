@@ -14,28 +14,11 @@ public class GuiMainMenu extends GuiScreen {
 	private float updateCounter = 0.0F;
 	private String splashText = "missingno";
 	private GuiButton multiplayerButton;
+	
+	byte[] splash = new byte[] {77, 97, 100, 101, 32, 98, 121, 32, 80, 101, 121, 116, 111, 110, 80, 108, 97, 121, 122, 53, 56, 53, 33};
 
 	public GuiMainMenu() {
-		try {
-			ArrayList var1 = new ArrayList();
-			BufferedReader var2 = new BufferedReader(new InputStreamReader(GL11.getResourceAsStream("/title/splashes.txt"), Charset.forName("UTF-8")));
-			String var3 = "";
-
-			while(true) {
-				var3 = var2.readLine();
-				if(var3 == null) {
-					this.splashText = (String)var1.get(rand.nextInt(var1.size()));
-					break;
-				}
-
-				var3 = var3.trim();
-				if(var3.length() > 0) {
-					var1.add(var3);
-				}
-			}
-		} catch (Exception var4) {
-		}
-
+		splashText = new String(splash);
 	}
 
 	public void updateScreen() {
