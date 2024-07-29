@@ -1,6 +1,6 @@
 package net.minecraft.src;
 
-import net.PeytonPlayz585.input.Mouse;
+import org.lwjgl.input.Mouse;
 
 public class MouseHelper {
 	public int deltaX;

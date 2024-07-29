@@ -54,7 +54,7 @@ public class Tessellator {
 				}
 
 				GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-				GL11.glDrawArrays(this.drawMode, GL11.GL_POINTS, this.vertexCount, Int32Array.create(intBuffer.getBuffer(), 0, this.vertexCount * 7));
+				GL11.glDrawArrays(this.drawMode, GL11.GL_POINTS, this.vertexCount, Int32Array.create(intBuffer.getBuffer(), 0, this.vertexCount * 8));
 
 				GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
 				if(this.hasTexture) {
@@ -189,7 +189,7 @@ public class Tessellator {
 			intBuffer0.set(this.rawBufferIndex + 6, this.normal);
 		}
 		
-		this.rawBufferIndex += 7;
+		this.rawBufferIndex += 8;
 		++this.vertexCount;
 		if(this.vertexCount % 4 == 0 && this.rawBufferIndex >= this.bufferSize - 32) {
 			this.draw();

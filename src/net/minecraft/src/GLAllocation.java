@@ -49,14 +49,14 @@ public class GLAllocation {
 	}
 
 	public static ByteBuffer createDirectByteBuffer(int par0) {
-		return GL11.isWebGL ? ByteBuffer.wrap(new byte[par0]).order(ByteOrder.nativeOrder()) : ByteBuffer.allocateDirect(par0).order(ByteOrder.nativeOrder());
+		return ByteBuffer.wrap(new byte[par0]).order(ByteOrder.nativeOrder());
 	}
 	
 	public static IntBuffer createDirectIntBuffer(int par0) {
-		return GL11.isWebGL ? IntBuffer.wrap(new int[par0]) : createDirectByteBuffer(par0 << 2).asIntBuffer();
+		return IntBuffer.wrap(new int[par0]);
 	}
 	
 	public static FloatBuffer createDirectFloatBuffer(int par0) {
-		return GL11.isWebGL ? FloatBuffer.wrap(new float[par0]) : createDirectByteBuffer(par0 << 2).asFloatBuffer();
+		return FloatBuffer.wrap(new float[par0]);
 	}
 }

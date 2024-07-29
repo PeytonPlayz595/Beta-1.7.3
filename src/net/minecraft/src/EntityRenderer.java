@@ -6,6 +6,7 @@ import java.util.List;
 import net.PeytonPlayz585.glemu.GameOverlayFramebuffer;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 
@@ -328,7 +329,7 @@ public class EntityRenderer {
 	}
 
 	public void updateCameraAndRender(float var1) {
-		if(!GL11.isFocused()) {
+		if(!Display.isFocused()) {
 			this.mc.displayInGameMenu();
 		} else {
 			this.prevFrameTime = System.currentTimeMillis();

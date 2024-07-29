@@ -1,6 +1,7 @@
 package net.PeytonPlayz585.glemu;
 
-import static net.PeytonPlayz585.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.EaglerAdapterImpl2.*;
+import static org.lwjgl.opengl.GL11.*;
 
 import java.nio.ByteBuffer;
 

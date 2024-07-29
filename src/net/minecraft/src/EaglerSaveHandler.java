@@ -7,7 +7,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-import net.PeytonPlayz585.opengl.GL11;
+import net.PeytonPlayz585.fileutils.File;
 
 public class EaglerSaveHandler implements ISaveHandler {
 	
@@ -18,7 +18,7 @@ public class EaglerSaveHandler implements ISaveHandler {
 	}
 
 	public WorldInfo loadWorldInfo() {
-		byte[] file = GL11.readFile(saveDir + "/level.dat");
+		byte[] file = File.readFile(saveDir + "/level.dat");
 		if(file != null) {
 			try {
 				NBTBase nbt = NBTBase.readTag(new DataInputStream(new ByteArrayInputStream(file)));
@@ -55,7 +55,7 @@ public class EaglerSaveHandler implements ISaveHandler {
 			e.printStackTrace();
 			return;
 		}
-		GL11.writeFile(saveDir + "/level.dat", out.toByteArray());
+		File.writeFile(saveDir + "/level.dat", out.toByteArray());
 	}
 
 	@Override
@@ -69,7 +69,7 @@ public class EaglerSaveHandler implements ISaveHandler {
 			e.printStackTrace();
 			return;
 		}
-		GL11.writeFile(saveDir + "/level.dat", out.toByteArray());
+		File.writeFile(saveDir + "/level.dat", out.toByteArray());
 	}
 
 	public String func_28113_a(String var1) {

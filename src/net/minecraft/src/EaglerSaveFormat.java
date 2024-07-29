@@ -11,9 +11,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
-import net.PeytonPlayz585.opengl.GL11;
-
-import static net.PeytonPlayz585.opengl.GL11.FileEntry;
+import net.PeytonPlayz585.fileutils.File;
+import net.PeytonPlayz585.fileutils.FileEntry;
 
 public class EaglerSaveFormat implements ISaveFormat {
 	
@@ -37,7 +36,7 @@ public class EaglerSaveFormat implements ISaveFormat {
 	//Returns a list a worlds
 	public List func_22176_b() {
 		ArrayList<SaveFormatComparator> lst = new ArrayList<>();
-		GL11.listFilesAndDirectories(saveDir).forEach(new Consumer<FileEntry>() {
+		File.listFilesAndDirectories(saveDir).forEach(new Consumer<FileEntry>() {
 			@Override
 			public void accept(FileEntry t) {
 				if(!t.isDirectory) {
@@ -45,7 +44,7 @@ public class EaglerSaveFormat implements ISaveFormat {
 				}
 				String folderName = t.getName();
 				String dir = t.path;
-				byte[] lvl = GL11.readFile(dir + "/level.dat");
+				byte[] lvl = File.readFile(dir + "/level.dat");
 				if(lvl != null) {
 					try {
 						NBTBase nbt = NBTBase.readTag(new DataInputStream(new ByteArrayInputStream(lvl)));
@@ -78,7 +77,7 @@ public class EaglerSaveFormat implements ISaveFormat {
 
 	//Returns world info for the world
 	public WorldInfo func_22173_b(String var1) {
-		byte[] lvl = GL11.readFile(saveDir + "/" + var1 + "/level.dat");
+		byte[] lvl = File.readFile(saveDir + "/" + var1 + "/level.dat");
 		if(lvl != null) {
 			try {
 				NBTBase nbt = NBTBase.readTag(new DataInputStream(new ByteArrayInputStream(lvl)));
@@ -113,7 +112,7 @@ public class EaglerSaveFormat implements ISaveFormat {
 		if(var2.contains("/saves/saves/")) {
 			var2 = var2.replace("/saves/saves/", "/saves/");
 		}
-		byte[] lvl = GL11.readFile(saveDir + "/" + var1 + "/level.dat");
+		byte[] lvl = File.readFile(saveDir + "/" + var1 + "/level.dat");
 		if(lvl != null) {
 			try {
 				NBTBase nbt = NBTBase.readTag(new DataInputStream(new ByteArrayInputStream(lvl)));
@@ -122,7 +121,7 @@ public class EaglerSaveFormat implements ISaveFormat {
 					w.setString("LevelName", var2);
 					ByteArrayOutputStream out = new ByteArrayOutputStream(lvl.length + 16 + var2.length() * 2);
 					NBTBase.writeTag(w, new DataOutputStream(out));
-					GL11.writeFile(saveDir + "/" + var1 + "/level.dat", out.toByteArray());
+					File.writeFile(saveDir + "/" + var1 + "/level.dat", out.toByteArray());
 				}else {
 					throw new IOException("file '" + saveDir + "/" + var1 + "/level.dat' does not contain an NBTTagCompound");
 				}

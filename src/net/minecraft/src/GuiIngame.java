@@ -165,9 +165,9 @@ public class GuiIngame extends Gui {
 			var8.drawStringWithShadow(this.mc.func_6262_n(), 2, 22, 16777215);
 			var8.drawStringWithShadow(this.mc.func_6245_o(), 2, 32, 16777215);
 			var8.drawStringWithShadow(this.mc.func_21002_o(), 2, 42, 16777215);
-			long var24 = GL11.maxMemory();
-			long var29 = GL11.totalMemory();
-			long var30 = GL11.freeMemory();
+			long var24 = GL11.EaglerAdapterImpl2.maxMemory();
+			long var29 = GL11.EaglerAdapterImpl2.totalMemory();
+			long var30 = GL11.EaglerAdapterImpl2.freeMemory();
 			long var21 = var29 - var30;
 			var23 = "Used memory: " + var21 * 100L / var24 + "% (" + var21 / 1024L / 1024L + "MB) of " + var24 / 1024L / 1024L + "MB";
 			this.drawString(var8, var23, var6 - var8.getStringWidth(var23) - 2, 2, 14737632);

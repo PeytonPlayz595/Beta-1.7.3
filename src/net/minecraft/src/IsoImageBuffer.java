@@ -1,6 +1,6 @@
 package net.minecraft.src;
 
-import net.lax1dude.eaglercraft.BufferedImage;
+import net.PeytonPlayz585.awt.image.BufferedImage;
 
 public class IsoImageBuffer {
 	public BufferedImage field_1348_a;

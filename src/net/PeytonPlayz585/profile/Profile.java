@@ -4,7 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import net.lax1dude.eaglercraft.adapter.EaglerAdapterImpl2;
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.CompressedStreamTools;
 import net.minecraft.src.NBTTagCompound;
@@ -26,7 +27,7 @@ public class Profile {
 	}
 	
 	public static void read() {
-		read(EaglerAdapterImpl2.loadLocalStorage("P"));
+		read(GL11.EaglerAdapterImpl2.loadLocalStorage("P"));
 	}
 	
 	public static void read(byte[] profileStorage) {
@@ -67,7 +68,7 @@ public class Profile {
 	public static void save() {
 		byte[] b = write();
 		if(b != null) {
-			EaglerAdapterImpl2.saveLocalStorage("P", b);
+			GL11.EaglerAdapterImpl2.saveLocalStorage("P", b);
 		}
 	}
 	

@@ -12,8 +12,7 @@ import java.util.List;
 import java.util.Map;
 import org.lwjgl.opengl.GL11;
 
-import net.lax1dude.eaglercraft.BufferedImage;
-import net.lax1dude.eaglercraft.adapter.EaglerAdapterImpl2.TextureGL;
+import net.PeytonPlayz585.awt.image.BufferedImage;
 
 public class RenderEngine {
 	public static boolean useMipmaps = false;
@@ -390,7 +389,7 @@ public class RenderEngine {
 	}
 
 	private BufferedImage readTextureImage(InputStream var1) throws IOException {
-		return GL11.loadPNG(((ByteArrayInputStream)var1).readAllBytes());
+		return GL11.EaglerAdapterImpl2.loadPNG(((ByteArrayInputStream)var1).readAllBytes());
 	}
 
 	public void bindTexture(int var1) {

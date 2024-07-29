@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.PeytonPlayz585.opengl.GL11;
+import net.PeytonPlayz585.fileutils.File;
+import net.PeytonPlayz585.fileutils.FileEntry;
 
 public class StatFileWriter {
 	private Map field_25102_a = new HashMap();
@@ -17,16 +18,16 @@ public class StatFileWriter {
 	public StatFileWriter(Session var1, String var2) {
 		String var3 = var2 + "/" + "stats";
 
-		GL11.FileEntry[] var4 = GL11.listFiles(var2);
+		FileEntry[] var4 = File.listFiles(var2);
 		int var5 = var4.length;
 
 		for(int var6 = 0; var6 < var5; ++var6) {
-			GL11.FileEntry var7 = var4[var6];
+			FileEntry var7 = var4[var6];
 			if(var7.getName().startsWith("stats_") && var7.getName().endsWith(".dat")) {
 				String var8 = var3 + "/" + var7.getName();
-				if(!GL11.exists(var8)) {
+				if(!File.exists(var8)) {
 					System.out.println("Relocating " + var7.getName());
-					GL11.renameFile(var7.path, var8);
+					File.renameFile(var7.path, var8);
 				}
 			}
 		}

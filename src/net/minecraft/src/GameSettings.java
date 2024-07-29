@@ -1,12 +1,13 @@
 package net.minecraft.src;
 
 import java.io.BufferedReader;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
-import net.PeytonPlayz585.opengl.GL11;
+import net.PeytonPlayz585.fileutils.File;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Keyboard;
 
@@ -177,11 +178,11 @@ public class GameSettings {
 
 	public void loadOptions() {
 		try {
-			if(!GL11.exists(this.optionsFile)) {
+			if(!File.exists(this.optionsFile)) {
 				return;
 			}
 
-			ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(GL11.readFile(this.optionsFile));
+			ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(File.readFile(this.optionsFile));
 			InputStreamReader inputStreamReader = new InputStreamReader(byteArrayInputStream, "UTF-8");
 			BufferedReader var1 = new BufferedReader(inputStreamReader);
 			String var2 = "";
@@ -301,7 +302,7 @@ public class GameSettings {
 			
 			var1.flush();
 			byte[] data = byteArrayOutputStream.toByteArray();
-			GL11.writeFile(this.optionsFile, data);
+			File.writeFile(this.optionsFile, data);
 
 			var1.close();
 		} catch (Exception var3) {

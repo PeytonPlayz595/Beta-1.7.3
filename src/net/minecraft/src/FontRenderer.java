@@ -8,8 +8,8 @@ import java.util.Map;
 
 import org.lwjgl.opengl.GL11;
 
-import net.lax1dude.eaglercraft.BufferedImage;
-import net.lax1dude.eaglercraft.ImageIO;
+import net.PeytonPlayz585.awt.image.BufferedImage;
+import net.PeytonPlayz585.awt.image.ImageIO;
 
 public class FontRenderer {
 	private int[] charWidth = new int[256];

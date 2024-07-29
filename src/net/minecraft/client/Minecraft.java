@@ -1,8 +1,10 @@
 package net.minecraft.client;
 
-import net.PeytonPlayz585.input.Keyboard;
-import net.PeytonPlayz585.input.Mouse;
-import net.PeytonPlayz585.opengl.GL11;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.src.AchievementList;
 import net.minecraft.src.AxisAlignedBB;
 import net.minecraft.src.Block;
@@ -136,9 +138,9 @@ public class Minecraft implements Runnable {
 
 	public Minecraft() {
 		StatList.func_27360_a();
-		this.tempDisplayHeight = GL11.getCanvasHeight();
-		this.displayWidth = GL11.getCanvasWidth();
-		this.displayHeight = GL11.getCanvasHeight();
+		this.tempDisplayHeight = GL11.EaglerAdapterImpl2.getCanvasHeight();
+		this.displayWidth = GL11.EaglerAdapterImpl2.getCanvasWidth();
+		this.displayHeight = GL11.EaglerAdapterImpl2.getCanvasHeight();
 
 		theMinecraft = this;
 	}
@@ -233,7 +235,7 @@ public class Minecraft implements Runnable {
 		
 		//Emulate Display.swapBuffers()
 		GL11.glFlush();
-		GL11.updateDisplay();
+		Display.update();
 		GL11.optimize();
 	}
 
@@ -370,7 +372,7 @@ public class Minecraft implements Runnable {
 						this.theWorld.updatingLighting();
 					}
 
-					GL11.updateDisplay();
+					Display.update();
 
 					if(this.thePlayer != null && this.thePlayer.isEntityInsideOpaqueBlock()) {
 						this.gameSettings.thirdPersonView = false;
@@ -393,9 +395,9 @@ public class Minecraft implements Runnable {
 					this.guiAchievement.updateAchievementWindow();
 					Thread.yield();
 
-					if(GL11.getCanvasWidth() != this.displayWidth || GL11.getCanvasHeight() != this.displayHeight) {
-						this.displayWidth = GL11.getCanvasWidth();
-						this.displayHeight = GL11.getCanvasHeight();
+					if(GL11.EaglerAdapterImpl2.getCanvasWidth() != this.displayWidth || GL11.EaglerAdapterImpl2.getCanvasHeight() != this.displayHeight) {
+						this.displayWidth = GL11.EaglerAdapterImpl2.getCanvasWidth();
+						this.displayHeight = GL11.EaglerAdapterImpl2.getCanvasHeight();
 						if(this.displayWidth <= 0) {
 							this.displayWidth = 1;
 						}
@@ -784,19 +786,19 @@ public class Minecraft implements Runnable {
 												this.displayInGameMenu();
 											}
 
-											if(Keyboard.getEventKey() == 33 && GL11.isKeyDown(2)) {
+											if(Keyboard.getEventKey() == 33 && Keyboard.isKeyDown(2)) {
 												this.gameSettings.hideGUI = !this.gameSettings.hideGUI;
 											}
 
-											if(Keyboard.getEventKey() == 33 && GL11.isKeyDown(4)) {
+											if(Keyboard.getEventKey() == 33 && Keyboard.isKeyDown(4)) {
 												this.gameSettings.showDebugInfo = !this.gameSettings.showDebugInfo;
 											}
 
-											if(Keyboard.getEventKey() == 33 && GL11.isKeyDown(6)) {
+											if(Keyboard.getEventKey() == 33 && Keyboard.isKeyDown(6)) {
 												this.gameSettings.thirdPersonView = !this.gameSettings.thirdPersonView;
 											}
 
-											if(Keyboard.getEventKey() == 33 && GL11.isKeyDown(9)) {
+											if(Keyboard.getEventKey() == 33 && Keyboard.isKeyDown(9)) {
 												this.gameSettings.smoothCamera = !this.gameSettings.smoothCamera;
 											}
 

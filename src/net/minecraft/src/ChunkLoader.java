@@ -5,7 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
 
-import net.PeytonPlayz585.opengl.GL11;
+import net.PeytonPlayz585.fileutils.File;
 
 public class ChunkLoader implements IChunkLoader {
 	private String saveDir;
@@ -34,7 +34,7 @@ public class ChunkLoader implements IChunkLoader {
 
 	public Chunk loadChunk(World var1, int var2, int var3) throws IOException {
 		String var4 = this.chunkFileForXZ(var2, var3);
-		byte[] chunkData = GL11.readFile(var4);
+		byte[] chunkData = File.readFile(var4);
 		
 		if(chunkData != null) {
 			try {
@@ -45,7 +45,7 @@ public class ChunkLoader implements IChunkLoader {
 				int z = var6.getInteger("zPos");
 				if(var2 != x || var3 != z) {
 					String var7 = this.chunkFileForXZ(x, z);
-					GL11.renameFile(var4, var7);
+					File.renameFile(var4, var7);
 					return null;
 				}
 				
@@ -53,7 +53,7 @@ public class ChunkLoader implements IChunkLoader {
 				var7.func_25124_i();
 				return var7;
 			} catch(IOException e) {
-				GL11.deleteFile(var4);
+				File.deleteFile(var4);
 				return null;
 			}
 		} else {
@@ -66,9 +66,9 @@ public class ChunkLoader implements IChunkLoader {
 		String var3 = this.chunkFileForXZ(var2.xPosition, var2.zPosition);
 		ByteArrayOutputStream var5 = new ByteArrayOutputStream();
 		
-		if(GL11.exists(var3)) {
+		if(File.exists(var3)) {
 			WorldInfo var4 = var1.getWorldInfo();
-			var4.setSizeOnDisk(var4.getSizeOnDisk() - GL11.getFileSize(var3));
+			var4.setSizeOnDisk(var4.getSizeOnDisk() - File.getFileSize(var3));
 		}
 		
 		NBTTagCompound var6 = new NBTTagCompound();
@@ -84,9 +84,9 @@ public class ChunkLoader implements IChunkLoader {
 		}
 		
 		var5.flush();
-		GL11.writeFile(var3, var5.toByteArray());
+		File.writeFile(var3, var5.toByteArray());
 		WorldInfo var8 = var1.getWorldInfo();
-		var8.setSizeOnDisk(var8.getSizeOnDisk() + GL11.getFileSize(var3));
+		var8.setSizeOnDisk(var8.getSizeOnDisk() + File.getFileSize(var3));
 	}
 
 	public static void storeChunkInCompound(Chunk var0, World var1, NBTTagCompound var2) {

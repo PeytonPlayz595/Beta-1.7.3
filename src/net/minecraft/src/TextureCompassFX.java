@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import org.lwjgl.opengl.GL11;
 
-import net.lax1dude.eaglercraft.BufferedImage;
-import net.lax1dude.eaglercraft.ImageIO;
+import net.PeytonPlayz585.awt.image.BufferedImage;
+import net.PeytonPlayz585.awt.image.ImageIO;
 import net.minecraft.client.Minecraft;
 
 public class TextureCompassFX extends TextureFX {

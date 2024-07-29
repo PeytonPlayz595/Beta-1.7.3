@@ -7,7 +7,8 @@ import java.io.IOException;
 //import java.net.UnknownHostException;
 import java.util.List;
 
-import net.PeytonPlayz585.opengl.GL11;
+import org.lwjgl.opengl.GL11;
+
 import net.PeytonPlayz585.socket.Socket;
 import net.minecraft.client.Minecraft;
 
@@ -31,7 +32,7 @@ public class NetClientHandler extends NetHandler {
 			uri = var2.substring(6);
 		}else if(!var2.contains("://")){
 			uri = var2;
-			if(GL11.isSSLPage()) {
+			if(GL11.EaglerAdapterImpl2.isSSLPage()) {
 				var2 = "wss://" + var2;
 			} else {
 				var2 = "ws://" + var2;

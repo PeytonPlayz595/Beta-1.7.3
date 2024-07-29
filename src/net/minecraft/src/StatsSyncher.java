@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.Map;
 
-import net.PeytonPlayz585.opengl.GL11;
+import net.PeytonPlayz585.fileutils.File;
 
 public class StatsSyncher {
 	private volatile boolean field_27438_a = false;
@@ -43,7 +43,7 @@ public class StatsSyncher {
 
 		this.field_27435_d = var2;
 		this.field_27428_k = var1;
-		if(GL11.exists(this.field_27434_e)) {
+		if(File.exists(this.field_27434_e)) {
 			var2.func_27179_a(this.func_27415_a(this.field_27434_e, this.field_27432_g, this.field_27430_i));
 		}
 
@@ -52,18 +52,18 @@ public class StatsSyncher {
 
 	private void func_28214_a(String var1, String var2, String var3) {
 		String var4 = makeFilePath(var1, var2);
-		if(GL11.exists(var4) && !GL11.directoryExists(var4) && !GL11.exists(var3)) {
-			GL11.renameFile(var4, var3);
+		if(File.exists(var4) && !File.directoryExists(var4) && !File.exists(var3)) {
+			File.renameFile(var4, var3);
 		}
 
 	}
 
 	private Map func_27415_a(String var1, String var2, String var3) {
-		return GL11.exists(var1) ? this.func_27408_a(var1) : (GL11.exists(var3) ? this.func_27408_a(var3) : (GL11.exists(var2) ? this.func_27408_a(var2) : null));
+		return File.exists(var1) ? this.func_27408_a(var1) : (File.exists(var3) ? this.func_27408_a(var3) : (File.exists(var2) ? this.func_27408_a(var2) : null));
 	}
 
 	private Map func_27408_a(String var1) {
-		byte[] bytes = GL11.readFile(var1);
+		byte[] bytes = File.readFile(var1);
 		if (bytes == null || bytes.length == 0) {
 			return null;
 		}
@@ -76,20 +76,20 @@ public class StatsSyncher {
 
 		try {
 			var5.print(StatFileWriter.func_27185_a(this.field_27428_k.username, "local", var1));
-			GL11.writeFile(var3, baos.toByteArray());
+			File.writeFile(var3, baos.toByteArray());
 		} finally {
 			var5.close();
 		}
 
-		if(GL11.exists(var4)) {
-			GL11.deleteFile(var4);
+		if(File.exists(var4)) {
+			File.deleteFile(var4);
 		}
 
-		if(GL11.exists(var2)) {
-			GL11.renameFile(var2, var4);
+		if(File.exists(var2)) {
+			File.renameFile(var2, var4);
 		}
 
-		GL11.renameFile(var3, var2);
+		File.renameFile(var3, var2);
 	}
 
 	public void func_27418_a() {
