@@ -13,6 +13,7 @@ import java.util.Map;
 import org.lwjgl.opengl.GL11;
 
 import net.PeytonPlayz585.awt.image.BufferedImage;
+import net.lax1dude.eaglercraft.SpriteSheetTexture;
 
 public class RenderEngine {
 	public static boolean useMipmaps = false;
@@ -25,6 +26,7 @@ public class RenderEngine {
 	private GameSettings options;
 	private boolean clampTexture = false;
 	private boolean blurTexture = false;
+	private List<SpriteSheetTexture> textureSpriteList = new ArrayList();
 	
 	private BufferedImage missingTextureImage;
 
@@ -284,18 +286,51 @@ public class RenderEngine {
 		var1.onTick();
 	}
 
+//	public void updateDynamicTextures() {
+//		for (int i = 0; i < textureList.size(); i++) {
+//			TextureFX texturefx = (TextureFX) textureList.get(i);
+//			texturefx.anaglyphEnabled = this.options.anaglyph;
+//			texturefx.onTick();
+//			texturefx.bindImage(this);
+//			int tileSize = 16 * 16 * 4;
+//			imageData.clear();
+//			imageData.put(texturefx.imageData);
+//			imageData.position(0).limit(tileSize);
+//			GL11.glTexSubImage2D(3553, 0, (texturefx.iconIndex % 16) * 16, (texturefx.iconIndex / 16) * 16, 16, 16, 6408, 5121, imageData);
+//		}
+//	}
+	
 	public void updateDynamicTextures() {
+
 		for (int i = 0; i < textureList.size(); i++) {
 			TextureFX texturefx = (TextureFX) textureList.get(i);
-			texturefx.anaglyphEnabled = this.options.anaglyph;
+			texturefx.anaglyphEnabled = options.anaglyph;
 			texturefx.onTick();
-			texturefx.bindImage(this);
 			int tileSize = 16 * 16 * 4;
 			imageData.clear();
 			imageData.put(texturefx.imageData);
 			imageData.position(0).limit(tileSize);
-			GL11.glTexSubImage2D(3553, 0, (texturefx.iconIndex % 16) * 16, (texturefx.iconIndex / 16) * 16, 16, 16, 6408, 5121, imageData);
+			texturefx.bindImage(this);
+			GL11.glTexSubImage2D(3553 /* GL_TEXTURE_2D */, 0, (texturefx.iconIndex % 16) * 16, (texturefx.iconIndex / 16) * 16, 16, 16,
+					6408 /* GL_RGBA */, 5121 /* GL_UNSIGNED_BYTE */, imageData);
 		}
+
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, getTexture("/terrain.png"));
+		for(int i = 0, l = textureSpriteList.size(); i < l; ++i) {
+			SpriteSheetTexture sp = textureSpriteList.get(i);
+			sp.update();
+			int w = 16;
+			for(int j = 0; j < 5; ++j) {
+				GL11.glTexSubImage2D(3553 /* GL_TEXTURE_2D */, j, (sp.iconIndex % 16) * w, (sp.iconIndex / 16) * w, w * sp.iconTileSize, w * sp.iconTileSize,
+						6408 /* GL_RGBA */, 5121 /* GL_UNSIGNED_BYTE */, sp.grabFrame(j));
+				w /= 2;
+			}
+		}
+
+	}
+	
+	public void registerSpriteSheet(String name, int iconIndex, int iconTileSize) {
+		textureSpriteList.add(new SpriteSheetTexture(name, iconIndex, iconTileSize));
 	}
 
 	private int averageColor(int var1, int var2) {
@@ -384,6 +419,10 @@ public class RenderEngine {
 			} catch (IOException var6) {
 				var6.printStackTrace();
 			}
+		}
+		
+		for(int j = 0, l = textureSpriteList.size(); j < l; ++j) {
+			textureSpriteList.get(j).reloadData();
 		}
 
 	}
