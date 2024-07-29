@@ -77,14 +77,20 @@ public class SoundManager {
 		
 		if(loaded && this.options.musicVolume != 0.0F) {
 			if(!GL11.isPlaying(BgMusic)) {
-				if(this.ticksBeforeMusic > 0) {
-					--this.ticksBeforeMusic;
+				try {
+					if(this.ticksBeforeMusic > 0) {
+						--this.ticksBeforeMusic;
+						return;
+					}
+				
+					//Apparently I DO NOT know how to use random.nextInt
+					int var1 = rand.nextInt(music.length);
+					this.ticksBeforeMusic = this.rand.nextInt(12000) + 12000;
+					BgMusic = GL11.beginPlaybackStatic(music[var1].replace(".", "/").replace("_", "."), this.options.musicVolume, 1.0F);
+				} catch(Exception e) {
+					BgMusic = -1;
 					return;
 				}
-				
-				int var1 = rand.nextInt((music.length - 1) + 1) + 1;
-				this.ticksBeforeMusic = this.rand.nextInt(12000) + 12000;
-				BgMusic = GL11.beginPlaybackStatic(music[var1].replace(".", "/").replace("_", "."), this.options.musicVolume, 1.0F);
 			}
 		}
 	}
@@ -124,7 +130,12 @@ public class SoundManager {
 		}
 		
 		if(loaded && this.options.soundVolume != 0.0F) {
-			String var7 = "sounds/" + var1.replace(".", "/") + number + ".ogg";
+			if(var1 == null) {
+				return;
+			}
+			
+			String var7;
+			var7 = "sounds/" + var1.replace(".", "/") + number + ".ogg";
 			if(var7 != null && var5 > 0.0F) {
 				if(var5 > 1.0F) {
 					var5 = 1.0F;

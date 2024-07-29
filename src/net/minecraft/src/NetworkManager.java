@@ -168,10 +168,10 @@ public class NetworkManager {
 				} catch(EOFException e) {
 					stream.reset();
 					break;
-				} catch(IOException e) {
+				} catch(Exception e) {
 					continue;
 				} catch(Throwable t) {
-					t.printStackTrace();
+					continue;
 				}
 			}
 			

@@ -429,13 +429,13 @@ public class Minecraft implements Runnable {
 				}
 			}
 		} catch (MinecraftError var20) {
-		} catch (Throwable var21) {
+		} /*catch (Throwable var21) {
 			this.func_28002_e();
 			var21.printStackTrace();
 			this.onMinecraftCrash(new UnexpectedThrowable("Unexpected error", var21));
 		} finally {
 			this.shutdownMinecraftApplet();
-		}
+		}*/
 
 	}
 
