@@ -29,6 +29,7 @@ public class RenderEngine {
 	private List<SpriteSheetTexture> textureSpriteList = new ArrayList();
 	
 	private BufferedImage missingTextureImage;
+	private IntBuffer imageDataB1 = GLAllocation.createDirectIntBuffer(0x100000);
 
 	public RenderEngine(GameSettings var2) {
 		this.options = var2;
@@ -304,15 +305,14 @@ public class RenderEngine {
 
 		for (int i = 0; i < textureList.size(); i++) {
 			TextureFX texturefx = (TextureFX) textureList.get(i);
-			texturefx.anaglyphEnabled = options.anaglyph;
+			texturefx.anaglyphEnabled = this.options.anaglyph;
 			texturefx.onTick();
+			texturefx.bindImage(this);
 			int tileSize = 16 * 16 * 4;
 			imageData.clear();
 			imageData.put(texturefx.imageData);
 			imageData.position(0).limit(tileSize);
-			texturefx.bindImage(this);
-			GL11.glTexSubImage2D(3553 /* GL_TEXTURE_2D */, 0, (texturefx.iconIndex % 16) * 16, (texturefx.iconIndex / 16) * 16, 16, 16,
-					6408 /* GL_RGBA */, 5121 /* GL_UNSIGNED_BYTE */, imageData);
+			GL11.glTexSubImage2D(3553, 0, (texturefx.iconIndex % 16) * 16, (texturefx.iconIndex / 16) * 16, 16, 16, 6408, 5121, imageData);
 		}
 
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, getTexture("/terrain.png"));
@@ -320,11 +320,15 @@ public class RenderEngine {
 			SpriteSheetTexture sp = textureSpriteList.get(i);
 			sp.update();
 			int w = 16;
-			for(int j = 0; j < 5; ++j) {
-				GL11.glTexSubImage2D(3553 /* GL_TEXTURE_2D */, j, (sp.iconIndex % 16) * w, (sp.iconIndex / 16) * w, w * sp.iconTileSize, w * sp.iconTileSize,
-						6408 /* GL_RGBA */, 5121 /* GL_UNSIGNED_BYTE */, sp.grabFrame(j));
+			int tileSize = (w * sp.iconTileSize) * (w * sp.iconTileSize) * 4;
+			//for(int j = 0; j < 5; ++j) {
+				imageDataB1.clear();
+				imageDataB1.put(sp.grabFrame(0));
+				imageDataB1.position(0).limit(tileSize);
+				GL11.glTexSubImage2D(3553, 0, (sp.iconIndex % 16) * w, (sp.iconIndex / 16) * w, w * sp.iconTileSize, w * sp.iconTileSize,
+						6408, 5121, imageDataB1);
 				w /= 2;
-			}
+			//}
 		}
 
 	}
