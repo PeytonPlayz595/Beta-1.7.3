@@ -4568,11 +4568,6 @@ public class GL11 implements JSObject {
 		private static int playbackId = 0;
 		private static final HashMap<String,AudioBufferX> loadedSoundFiles = new HashMap();
 		private static AudioContext audioctx = null;
-		private static float playbackOffsetDelay = 0.03f;
-		
-		public static final void setPlaybackOffsetDelay(float f) {
-			playbackOffsetDelay = f;
-		}
 		
 		@Async
 		public static native AudioBuffer decodeAudioAsync(ArrayBuffer buffer);
@@ -4644,7 +4639,7 @@ public class GL11 implements JSObject {
 			s.connect(g);
 			g.connect(p);
 			p.connect(audioctx.getDestination());
-			s.start(0.0d, playbackOffsetDelay);
+			s.start(0.0d);
 			final int theId = ++playbackId;
 			activeSoundEffects.put(theId, new AudioBufferSourceNodeX(s, p, g));
 			s.setOnEnded(new EventListener<MediaEvent>() {
@@ -4667,7 +4662,7 @@ public class GL11 implements JSObject {
 			g.getGain().setValue(volume > 1.0f ? 1.0f : volume);
 			s.connect(g);
 			g.connect(audioctx.getDestination());
-			s.start(0.0d, playbackOffsetDelay);
+			s.start(0.0d);
 			final int theId = ++playbackId;
 			activeSoundEffects.put(theId, new AudioBufferSourceNodeX(s, null, g));
 			s.setOnEnded(new EventListener<MediaEvent>() {
