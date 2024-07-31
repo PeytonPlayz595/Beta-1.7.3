@@ -61,6 +61,7 @@ import net.minecraft.src.RenderEngine;
 import net.minecraft.src.RenderGlobal;
 import net.minecraft.src.RenderManager;
 import net.minecraft.src.ScaledResolution;
+import net.minecraft.src.ScreenShotHelper;
 import net.minecraft.src.Session;
 import net.minecraft.src.SoundManager;
 import net.minecraft.src.StatFileWriter;
@@ -241,6 +242,10 @@ public class Minecraft implements Runnable {
 		var9.addVertexWithUV((double)(var1 + var5), (double)(var2 + 0), 0.0D, (double)((float)(var3 + var5) * var7), (double)((float)(var4 + 0) * var8));
 		var9.addVertexWithUV((double)(var1 + 0), (double)(var2 + 0), 0.0D, (double)((float)(var3 + 0) * var7), (double)((float)(var4 + 0) * var8));
 		var9.draw();
+	}
+	
+	public String getSaveDir() {
+		return this.minecraftDir;
 	}
 
 	public ISaveFormat getSaveLoader() {
@@ -777,20 +782,24 @@ public class Minecraft implements Runnable {
 											if(Keyboard.getEventKey() == 1) {
 												this.displayInGameMenu();
 											}
-
-											if(Keyboard.getEventKey() == 33 && Keyboard.isKeyDown(2)) {
+											
+											if(Keyboard.isFunctionKeyDown(this.gameSettings.keyBindToggleFog.keyCode, 2)) {
 												this.gameSettings.hideGUI = !this.gameSettings.hideGUI;
 											}
-
-											if(Keyboard.getEventKey() == 33 && Keyboard.isKeyDown(4)) {
+											
+											if(Keyboard.isFunctionKeyDown(this.gameSettings.keyBindToggleFog.keyCode, 3)) {
+												this.ingameGUI.addChatMessage(ScreenShotHelper.saveScreenshot());
+											}
+											
+											if(Keyboard.isFunctionKeyDown(this.gameSettings.keyBindToggleFog.keyCode, 4)) {
 												this.gameSettings.showDebugInfo = !this.gameSettings.showDebugInfo;
 											}
-
-											if(Keyboard.getEventKey() == 33 && Keyboard.isKeyDown(6)) {
+											
+											if(Keyboard.isFunctionKeyDown(this.gameSettings.keyBindToggleFog.keyCode, 6)) {
 												this.gameSettings.thirdPersonView = !this.gameSettings.thirdPersonView;
 											}
-
-											if(Keyboard.getEventKey() == 33 && Keyboard.isKeyDown(9)) {
+											
+											if(Keyboard.isFunctionKeyDown(this.gameSettings.keyBindToggleFog.keyCode, 9)) {
 												this.gameSettings.smoothCamera = !this.gameSettings.smoothCamera;
 											}
 
@@ -808,14 +817,15 @@ public class Minecraft implements Runnable {
 										}
 
 										for(int var6 = 0; var6 < 9; ++var6) {
-											if(Keyboard.getEventKey() == 2 + var6) {
+											if(Keyboard.getEventKey() == 2 + var6 && !Keyboard.isKeyDown(this.gameSettings.keyBindToggleFog.keyCode)) {
 												this.thePlayer.inventory.currentItem = var6;
 											}
 										}
 
-										if(Keyboard.getEventKey() == this.gameSettings.keyBindToggleFog.keyCode) {
-											this.gameSettings.setOptionValue(EnumOptions.RENDER_DISTANCE, !Keyboard.isKeyDown(42) && !Keyboard.isKeyDown(54) ? 1 : -1);
-										}
+										//rip
+										//if(Keyboard.getEventKey() == this.gameSettings.keyBindToggleFog.keyCode) {
+											//this.gameSettings.setOptionValue(EnumOptions.RENDER_DISTANCE, !Keyboard.isKeyDown(42) && !Keyboard.isKeyDown(54) ? 1 : -1);
+										//}
 									}
 								}
 							}

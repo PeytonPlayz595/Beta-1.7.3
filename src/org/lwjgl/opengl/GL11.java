@@ -30,6 +30,7 @@ import org.teavm.interop.AsyncCallback;
 import org.teavm.jso.JSBody;
 import org.teavm.jso.JSFunctor;
 import org.teavm.jso.JSObject;
+import org.teavm.jso.JSProperty;
 import org.teavm.jso.ajax.ReadyStateChangeHandler;
 import org.teavm.jso.ajax.XMLHttpRequest;
 import org.teavm.jso.browser.Storage;
@@ -49,7 +50,9 @@ import org.teavm.jso.dom.html.HTMLCanvasElement;
 import org.teavm.jso.dom.html.HTMLDocument;
 import org.teavm.jso.dom.html.HTMLElement;
 import org.teavm.jso.dom.html.HTMLImageElement;
+import org.teavm.jso.dom.html.HTMLInputElement;
 import org.teavm.jso.typedarrays.ArrayBuffer;
+import org.teavm.jso.typedarrays.ArrayBufferView;
 import org.teavm.jso.typedarrays.DataView;
 import org.teavm.jso.typedarrays.Float32Array;
 import org.teavm.jso.typedarrays.Int32Array;
@@ -82,6 +85,7 @@ import com.jcraft.jzlib.InflaterInputStream;
 import net.PeytonPlayz585.Client;
 import net.PeytonPlayz585.awt.image.BufferedImage;
 import net.PeytonPlayz585.awt.image.ImageIO;
+import net.PeytonPlayz585.fileutils.FileChooserResult;
 import net.PeytonPlayz585.glemu.FixedFunctionShader;
 import net.PeytonPlayz585.glemu.StreamBuffer;
 import net.PeytonPlayz585.glemu.StreamBuffer.StreamBufferInstance;
@@ -1227,6 +1231,8 @@ public class GL11 implements JSObject {
 	}
 
 	public static final void glPolygonOffset(float p1, float p2) {
+		p1 = -p1;
+		p2 = -p2;
 		if(p1 != polygonOffset1 || p2 != polygonOffset2) {
 			_wglPolygonOffset(p1, p2);
 			polygonOffset1 = p1;
@@ -5533,7 +5539,7 @@ public class GL11 implements JSObject {
 			cc.setFillStyle("black");
 			cc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 			cc.drawImage(canvas, 0, 0, canvas.getWidth(), canvas.getHeight());
-			String s = "screenshot_" + dateFormatSS.format(new Date()).toString() + ".png";
+			String s = "" + dateFormatSS.format(new Date()) + ".png";
 			saveScreenshot(s, retardedCanvas);
 			return s;
 		}
@@ -5944,6 +5950,91 @@ public class GL11 implements JSObject {
 				}catch(Throwable t) {
 				}
 			}
+			
+			@JSBody(params = { "name", "cvs" }, script = "var a=document.createElement(\"a\");a.href=URL.createObjectURL(new Blob([cvs],{type:\"application/octet-stream\"}));a.download=name;a.click();URL.revokeObjectURL(a.href);")
+			private static native void downloadFile0(String name, ArrayBuffer cvs);
+			
+			public static final void downloadFile(String filename, byte[] data) {
+				Uint8Array b = Uint8Array.create(data.length);
+				b.set(data);
+				downloadFile0(filename, b.getBuffer());
+			}
+			
+			@JSFunctor
+			private static interface FileChooserCallback extends JSObject {
+				void accept(String name, ArrayBuffer buffer);
+			}
+
+			private static class FileChooserCallbackImpl implements FileChooserCallback {
+
+				private static final FileChooserCallbackImpl instance = new FileChooserCallbackImpl();
+
+				@Override
+				public void accept(String name, ArrayBuffer buffer) {
+					fileChooserHasResult = true;
+					if(name == null) {
+						fileChooserResultObject = null;
+					}else {
+						fileChooserResultObject = new FileChooserResult(name, TeaVMUtils.wrapUnsignedByteArray(Uint8Array.create(buffer)));
+					}
+				}
+
+			}
+
+			private static volatile boolean fileChooserHasResult = false;
+			private static volatile FileChooserResult fileChooserResultObject = null;
+
+			@JSBody(params = { "inputElement", "callback" }, script = 
+					"if(inputElement.files.length > 0) {"
+					+ "const value = inputElement.files[0];"
+					+ "value.arrayBuffer().then(function(arr){ callback(value.name, arr); })"
+					+ ".catch(function(){ callback(null, null); });"
+					+ "} else callback(null, null);")
+			private static native void getFileChooserResult(HTMLInputElement inputElement, FileChooserCallback callback);
+
+			@JSBody(params = { "inputElement", "value" }, script = "inputElement.accept = value;")
+			private static native void setAcceptSelection(HTMLInputElement inputElement, String value);
+
+			@JSBody(params = { "inputElement", "enable" }, script = "inputElement.multiple = enable;")
+			private static native void setMultipleSelection(HTMLInputElement inputElement, boolean enable);
+
+			public static void displayFileChooser(String ext, String mime) {
+				final HTMLInputElement inputElement = (HTMLInputElement) Window.current().getDocument().createElement("input");
+				inputElement.setType("file");
+				if(mime == null) {
+					setAcceptSelection(inputElement, "." + ext);
+				}else {
+					setAcceptSelection(inputElement, mime);
+				}
+				setMultipleSelection(inputElement, false);
+				inputElement.addEventListener("change", new EventListener<Event>() {
+					@Override
+					public void handleEvent(Event evt) {
+						getFileChooserResult(inputElement, FileChooserCallbackImpl.instance);
+					}
+				});
+				inputElement.click();
+			}
+
+			public static boolean fileChooserHasResult() {
+				return fileChooserHasResult;
+			}
+
+			public static FileChooserResult getFileChooserResult() {
+				fileChooserHasResult = false;
+				FileChooserResult res = fileChooserResultObject;
+				fileChooserResultObject = null;
+				return res;
+			}
+			
+			private static class TeaVMUtils {
+				@JSBody(params = { "buf" }, script = "return $rt_createByteArray(buf.buffer)")
+				private static native JSObject wrapByteArray0(JSObject buf);
+				
+				public static byte[] wrapUnsignedByteArray(Uint8Array buf) {
+					return (byte[])(Object)wrapByteArray0(buf);
+				}
+			}
 	}
 	
 	
@@ -6133,7 +6224,7 @@ public class GL11 implements JSObject {
 	}
 	
 	@SuppressWarnings("unused")
-	private static class SHA1Digest extends GeneralDigest {
+	public static class SHA1Digest extends GeneralDigest {
 	    private static final int DIGEST_LENGTH = 20;
 
 	    private int H1, H2, H3, H4, H5;

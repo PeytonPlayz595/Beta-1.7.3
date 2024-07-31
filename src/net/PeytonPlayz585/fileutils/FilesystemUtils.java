@@ -16,7 +16,10 @@ public class FilesystemUtils {
 				File.deleteFile(t.path);
 			}
 		}
-		File.deleteFile(dir);
+		
+		
+		//Why THE FUCK was this even here in the first place
+		//File.deleteFile(dir);
 	}
 
 }

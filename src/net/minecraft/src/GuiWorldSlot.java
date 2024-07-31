@@ -20,6 +20,7 @@ class GuiWorldSlot extends GuiSlot {
 		GuiSelectWorld.getSelectButton(this.parentWorldGui).enabled = var3;
 		GuiSelectWorld.getRenameButton(this.parentWorldGui).enabled = var3;
 		GuiSelectWorld.getDeleteButton(this.parentWorldGui).enabled = var3;
+		GuiSelectWorld.getExportButton(this.parentWorldGui).enabled = var3;
 		if(var2 && var3) {
 			this.parentWorldGui.selectWorld(var1);
 		}

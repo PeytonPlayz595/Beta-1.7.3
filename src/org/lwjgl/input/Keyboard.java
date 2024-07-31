@@ -42,5 +42,9 @@ public class Keyboard {
 	public static char getEventCharacter() {
 		return GL11.EaglerAdapterImpl2.getEventChar();
 	}
+	
+	public static boolean isFunctionKeyDown(int p1, int p2) {
+		return isKeyDown(p1) && getEventKey() == p2;
+	}
 
 }

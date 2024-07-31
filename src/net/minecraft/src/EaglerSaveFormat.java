@@ -13,6 +13,7 @@ import java.util.function.Consumer;
 
 import net.PeytonPlayz585.fileutils.File;
 import net.PeytonPlayz585.fileutils.FileEntry;
+import net.PeytonPlayz585.fileutils.FilesystemUtils;
 
 public class EaglerSaveFormat implements ISaveFormat {
 	

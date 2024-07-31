@@ -5,6 +5,9 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.List;
 
+import net.PeytonPlayz585.GuiSomethingFailed;
+import net.PeytonPlayz585.ImportExport;
+
 public class GuiSelectWorld extends GuiScreen {
 	private final DateFormat dateFormatter = new SimpleDateFormat();
 	protected GuiScreen parentScreen;
@@ -19,6 +22,7 @@ public class GuiSelectWorld extends GuiScreen {
 	private GuiButton buttonRename;
 	private GuiButton buttonSelect;
 	private GuiButton buttonDelete;
+	private GuiButton export;
 
 	public GuiSelectWorld(GuiScreen var1) {
 		this.parentScreen = var1;
@@ -62,10 +66,12 @@ public class GuiSelectWorld extends GuiScreen {
 		this.controlList.add(this.buttonRename = new GuiButton(6, this.width / 2 - 154, this.height - 28, 70, 20, var1.translateKey("selectWorld.rename")));
 		this.controlList.add(this.buttonDelete = new GuiButton(2, this.width / 2 - 74, this.height - 28, 70, 20, var1.translateKey("selectWorld.delete")));
 		this.controlList.add(new GuiButton(3, this.width / 2 + 4, this.height - 52, 150, 20, var1.translateKey("selectWorld.create")));
-		this.controlList.add(new GuiButton(0, this.width / 2 + 4, this.height - 28, 150, 20, var1.translateKey("gui.cancel")));
+		this.controlList.add(export = new GuiButton(3000, this.width / 2 + 4, this.height - 28, 70, 20, var1.translateKey("Export")));
+		this.controlList.add(new GuiButton(0, this.width / 2 + 84, this.height - 28, 70, 20, var1.translateKey("gui.cancel")));
 		this.buttonSelect.enabled = false;
 		this.buttonRename.enabled = false;
 		this.buttonDelete.enabled = false;
+		this.export.enabled = false;
 	}
 
 	protected void actionPerformed(GuiButton var1) {
@@ -85,11 +91,20 @@ public class GuiSelectWorld extends GuiScreen {
 			} else if(var1.id == 1) {
 				this.selectWorld(this.selectedWorld);
 			} else if(var1.id == 3) {
-				this.mc.displayGuiScreen(new GuiCreateWorld(this));
+				mc.displayGuiScreen(new GuiCreateOrImport(this));
 			} else if(var1.id == 6) {
 				this.mc.displayGuiScreen(new GuiRenameWorld(this, this.getSaveFileName(this.selectedWorld)));
 			} else if(var1.id == 0) {
 				this.mc.displayGuiScreen(this.parentScreen);
+			} else if(var1.id == 3000) {
+				String var2 = this.getSaveFileName(selectedWorld);
+				if(var2 != null) {
+					if(!ImportExport.exportWorld(mc.loadingScreen, getSaveFileName(this.selectedWorld), getSaveName(this.selectedWorld) + ".epk")) {
+						mc.displayGuiScreen(new GuiSomethingFailed(this, "Export Failed", "An exception was encountered while exporting '" + getSaveFileName(this.selectedWorld) + "'", "Check the game's console"));
+					}else {
+						mc.displayGuiScreen(this);
+					}
+				}
 			} else {
 				this.worldSlotContainer.actionPerformed(var1);
 			}
@@ -155,6 +170,10 @@ public class GuiSelectWorld extends GuiScreen {
 
 	static GuiButton getDeleteButton(GuiSelectWorld var0) {
 		return var0.buttonDelete;
+	}
+	
+	static GuiButton getExportButton(GuiSelectWorld var0) {
+		return var0.export;
 	}
 
 	static String func_22087_f(GuiSelectWorld var0) {
