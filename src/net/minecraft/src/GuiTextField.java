@@ -41,7 +41,7 @@ public class GuiTextField extends Gui {
 				this.parentGuiScreen.selectNextField();
 			}
 
-			if(var1 == 22) {
+			if((int)var1 == 16 || (GuiScreen.isCtrlKeyDown() && var2 == 47)) {
 				String var3 = GuiScreen.getClipboardString();
 				if(var3 == null) {
 					var3 = "";
@@ -55,6 +55,8 @@ public class GuiTextField extends Gui {
 				if(var4 > 0) {
 					this.text = this.text + var3.substring(0, var4);
 				}
+				
+				return;
 			}
 
 			if(var2 == 14 && this.text.length() > 0) {

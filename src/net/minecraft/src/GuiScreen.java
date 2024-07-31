@@ -34,7 +34,12 @@ public class GuiScreen extends Gui {
 	}
 
 	public static String getClipboardString() {
-		return null;
+		try {
+			String s = GL11.EaglerAdapterImpl2.getClipboard();
+			return s == null ? "" : s;
+		}catch(Throwable t) {
+			return "";
+		}
 	}
 
 	protected void mouseClicked(int var1, int var2, int var3) {
@@ -151,5 +156,9 @@ public class GuiScreen extends Gui {
 	}
 
 	public void selectNextField() {
+	}
+	
+	public static boolean isCtrlKeyDown() {
+		return Keyboard.isKeyDown(29) || Keyboard.isKeyDown(157);
 	}
 }

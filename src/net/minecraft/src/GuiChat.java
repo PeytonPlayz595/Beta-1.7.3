@@ -21,7 +21,7 @@ public class GuiChat extends GuiScreen {
 
 	protected void keyTyped(char var1, int var2) {
 		if(var2 == 1) {
-			this.mc.displayGuiScreen((GuiScreen)null);
+			this.mc.displayGuiScreen(null);
 		} else if(var2 == 28) {
 			String var3 = this.message.trim();
 			if(var3.length() > 0) {
@@ -32,6 +32,16 @@ public class GuiChat extends GuiScreen {
 			}
 
 			this.mc.displayGuiScreen((GuiScreen)null);
+		} else if((int)var1 == 16 || (GuiScreen.isCtrlKeyDown() && var2 == 47)) {
+			String string = GuiScreen.getClipboardString();
+			if (string == null) {
+				string = "";
+			}
+			this.message = this.message + string;
+			if(this.message.length() > 100) {
+				this.message = this.message.substring(0, 100);
+			}
+			return;
 		} else {
 			if(var2 == 14 && this.message.length() > 0) {
 				this.message = this.message.substring(0, this.message.length() - 1);
@@ -40,7 +50,6 @@ public class GuiChat extends GuiScreen {
 			if(field_20082_i.indexOf(var1) >= 0 && this.message.length() < 100) {
 				this.message = this.message + var1;
 			}
-
 		}
 	}
 
