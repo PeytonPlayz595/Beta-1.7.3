@@ -69,6 +69,7 @@ import net.minecraft.src.StatList;
 import net.minecraft.src.StatStringFormatKeyInv;
 import net.minecraft.src.Teleporter;
 import net.minecraft.src.Tessellator;
+import net.minecraft.src.TexturePackList;
 import net.minecraft.src.Timer;
 import net.minecraft.src.UnexpectedThrowable;
 import net.minecraft.src.Vec3D;
@@ -109,6 +110,7 @@ public class Minecraft implements Runnable {
 	public GameSettings gameSettings;
 	public SoundManager sndManager = new SoundManager();
 	public MouseHelper mouseHelper;
+	public TexturePackList texturePackList;
 	private ISaveFormat saveLoader;
 	public static long[] frameTimes = new long[512];
 	public static long[] tickTimes = new long[512];
@@ -116,7 +118,7 @@ public class Minecraft implements Runnable {
 	public StatFileWriter statFileWriter;
 	private String serverName;
 	private int serverPort;
-	private static String minecraftDir = "minecraft";
+	private static final String minecraftDir = "minecraft";
 	public volatile boolean running = true;
 	public String debug = "";
 	boolean isTakingScreenshot = false;
@@ -151,7 +153,8 @@ public class Minecraft implements Runnable {
 	public void startGame() {
 		this.saveLoader = new EaglerSaveFormat(minecraftDir + "/" + "saves");
 		this.gameSettings = new GameSettings(this, minecraftDir);
-		this.renderEngine = new RenderEngine(this.gameSettings);
+		this.texturePackList = new TexturePackList(this, this.minecraftDir);
+		this.renderEngine = new RenderEngine(this.texturePackList, this.gameSettings);
 		this.fontRenderer = new FontRenderer(this.gameSettings, "/font/default.png", this.renderEngine);
 		ColorizerWater.func_28182_a(this.renderEngine.func_28149_a("/misc/watercolor.png"));
 		ColorizerGrass.func_28181_a(this.renderEngine.func_28149_a("/misc/grasscolor.png"));
@@ -245,7 +248,7 @@ public class Minecraft implements Runnable {
 	}
 	
 	public String getSaveDir() {
-		return this.minecraftDir;
+		return Minecraft.minecraftDir;
 	}
 
 	public ISaveFormat getSaveLoader() {

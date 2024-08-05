@@ -4394,8 +4394,8 @@ public class GL11 implements JSObject {
 		@JSBody(params = { }, script = "return window.assetsURI;")
 		private static native String getAssetsURI();
 		
-		public static final void initializeContext(String assetsURI) {
-			HTMLElement rootElement = Window.current().getDocument().getBody();
+		public static final void initializeContext(HTMLElement gameContainer, String assetsURI) {
+			HTMLElement rootElement = gameContainer;
 			parent = rootElement;
 			String s = parent.getAttribute("style");
 			parent.setAttribute("style", (s == null ? "" : s)+"overflow-x:hidden;overflow-y:hidden;");

@@ -20,5 +20,17 @@ public class FileEntry {
 			return path;
 		}
 	}
+
+	public boolean isFile() {
+		return !isDirectory;
+	}
+
+	public long length() {
+		return File.getFileSize(path);
+	}
+
+	public long lastModified() {
+		return File.getLastModified(path);
+	}
 	
 }

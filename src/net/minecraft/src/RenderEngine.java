@@ -21,19 +21,19 @@ public class RenderEngine {
 	private HashMap field_28151_c = new HashMap();
 	private HashMap textureNameToImageMap = new HashMap();
 	private IntBuffer singleIntBuffer = GLAllocation.createDirectIntBuffer(1);
-	private ByteBuffer imageData = GLAllocation.createDirectByteBuffer(1048576);
+	private ByteBuffer imageData = GLAllocation.createDirectByteBuffer(4194304 * 2); //Large enough (Maybe!?!?)
 	private List textureList = new ArrayList();
 	private GameSettings options;
 	private boolean clampTexture = false;
 	private boolean blurTexture = false;
 	private List<SpriteSheetTexture> textureSpriteList = new ArrayList();
-	
+	private TexturePackList texturePack;
 	private BufferedImage missingTextureImage;
-	private IntBuffer imageDataB1 = GLAllocation.createDirectIntBuffer(0x100000);
+	private IntBuffer imageDataB1 = GLAllocation.createDirectIntBuffer(4194304 * 2); //:> !?!?!?!?
 
-	public RenderEngine(GameSettings var2) {
+	public RenderEngine(TexturePackList var1, GameSettings var2) {
 		this.options = var2;
-		
+		this.texturePack = var1;
 		int[] missingTexture = new int[256];
 		for(int i = 0; i < 256; ++i) {
 			missingTexture[i] = ((i / 16 + (i % 16)) % 2 == 0) ? 0xffff00ff : 0xff000000;
@@ -42,6 +42,7 @@ public class RenderEngine {
 	}
 
 	public int[] func_28149_a(String var1) {
+		TexturePackBase var2 = this.texturePack.selectedTexturePack;
 		int[] var3 = (int[])this.field_28151_c.get(var1);
 		if(var3 != null) {
 			return var3;
@@ -50,14 +51,14 @@ public class RenderEngine {
 				Object var6 = null;
 				if(var1.startsWith("%clamp%")) {
 					this.clampTexture = true;
-					var3 = this.func_28148_b(this.readTextureImage(GL11.getResourceAsStream(var1.substring(7))));
+					var3 = this.func_28148_b(this.readTextureImage(var2.getResourceAsStream(var1.substring(7))));
 					this.clampTexture = false;
 				} else if(var1.startsWith("%blur%")) {
 					this.blurTexture = true;
-					var3 = this.func_28148_b(this.readTextureImage(GL11.getResourceAsStream(var1.substring(6))));
+					var3 = this.func_28148_b(this.readTextureImage(var2.getResourceAsStream(var1.substring(6))));
 					this.blurTexture = false;
 				} else {
-					InputStream var7 = GL11.getResourceAsStream(var1);
+					InputStream var7 = var2.getResourceAsStream(var1);
 					if(var7 == null) {
 						var3 = this.func_28148_b(this.missingTextureImage);
 					} else {
@@ -92,6 +93,7 @@ public class RenderEngine {
 	}
 
 	public int getTexture(String var1) {
+		TexturePackBase var2 = this.texturePack.selectedTexturePack;
 		Integer var3 = (Integer)this.textureMap.get(var1);
 		if(var3 != null) {
 			return var3.intValue();
@@ -102,14 +104,14 @@ public class RenderEngine {
 				int var6 = this.singleIntBuffer.get(0);
 				if(var1.startsWith("%clamp%")) {
 					this.clampTexture = true;
-					this.setupTexture(this.readTextureImage(GL11.getResourceAsStream(var1.substring(7))), var6);
+					this.setupTexture(this.readTextureImage(var2.getResourceAsStream(var1.substring(7))), var6);
 					this.clampTexture = false;
 				} else if(var1.startsWith("%blur%")) {
 					this.blurTexture = true;
-					this.setupTexture(this.readTextureImage(GL11.getResourceAsStream(var1.substring(6))), var6);
+					this.setupTexture(this.readTextureImage(var2.getResourceAsStream(var1.substring(6))), var6);
 					this.blurTexture = false;
 				} else {
-					InputStream var7 = GL11.getResourceAsStream(var1);
+					InputStream var7 = var2.getResourceAsStream(var1);
 					if(var7 == null) {
 						this.setupTexture(this.missingTextureImage, var6);
 					} else {
@@ -366,6 +368,7 @@ public class RenderEngine {
 	}
 
 	public void refreshTextures() {
+		TexturePackBase var1 = this.texturePack.selectedTexturePack;
 		Iterator var2 = this.textureNameToImageMap.keySet().iterator();
 
 		BufferedImage var4;
@@ -384,12 +387,12 @@ public class RenderEngine {
 			try {
 				if(var9.startsWith("%clamp%")) {
 					this.clampTexture = true;
-					var4 = this.readTextureImage(GL11.getResourceAsStream(var9.substring(7)));
+					var4 = this.readTextureImage(var1.getResourceAsStream(var9.substring(7)));
 				} else if(var9.startsWith("%blur%")) {
 					this.blurTexture = true;
-					var4 = this.readTextureImage(GL11.getResourceAsStream(var9.substring(6)));
+					var4 = this.readTextureImage(var1.getResourceAsStream(var9.substring(6)));
 				} else {
-					var4 = this.readTextureImage(GL11.getResourceAsStream(var9));
+					var4 = this.readTextureImage(var1.getResourceAsStream(var9));
 				}
 
 				int var5 = ((Integer)this.textureMap.get(var9)).intValue();
@@ -409,12 +412,12 @@ public class RenderEngine {
 			try {
 				if(var9.startsWith("%clamp%")) {
 					this.clampTexture = true;
-					var4 = this.readTextureImage(GL11.getResourceAsStream(var9.substring(7)));
+					var4 = this.readTextureImage(var1.getResourceAsStream(var9.substring(7)));
 				} else if(var9.startsWith("%blur%")) {
 					this.blurTexture = true;
-					var4 = this.readTextureImage(GL11.getResourceAsStream(var9.substring(6)));
+					var4 = this.readTextureImage(var1.getResourceAsStream(var9.substring(6)));
 				} else {
-					var4 = this.readTextureImage(GL11.getResourceAsStream(var9));
+					var4 = this.readTextureImage(var1.getResourceAsStream(var9));
 				}
 
 				this.func_28147_a(var4, (int[])this.field_28151_c.get(var9));

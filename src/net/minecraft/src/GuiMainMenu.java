@@ -45,9 +45,7 @@ public class GuiMainMenu extends GuiScreen {
 		int var4 = this.height / 4 + 48;
 		this.controlList.add(new GuiButton(1, this.width / 2 - 100, var4, var2.translateKey("menu.singleplayer")));
 		this.controlList.add(this.multiplayerButton = new GuiButton(2, this.width / 2 - 100, var4 + 24, var2.translateKey("menu.multiplayer")));
-		GuiButton button;
-		this.controlList.add(button = new GuiButton(3, this.width / 2 - 100, var4 + 48, var2.translateKey("menu.mods")));
-		button.enabled = false;
+		this.controlList.add(new GuiButton(3, this.width / 2 - 100, var4 + 48, var2.translateKey("menu.mods")));
 		this.controlList.add(new GuiButton(0, this.width / 2 - 100, var4 + 72, var2.translateKey("menu.options")));
 
 		if(this.mc.session == null) {
@@ -67,6 +65,10 @@ public class GuiMainMenu extends GuiScreen {
 
 		if(var1.id == 2) {
 			this.mc.displayGuiScreen(new GuiMultiplayer(this));
+		}
+		
+		if(var1.id == 3) {
+			this.mc.displayGuiScreen(new GuiTexturePacks(this));
 		}
 
 		if(var1.id == 4) {

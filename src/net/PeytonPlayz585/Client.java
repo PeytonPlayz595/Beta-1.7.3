@@ -33,7 +33,7 @@ public class Client {
 			
 			try {
 		    	JSONObject e = new JSONObject(getOpts());
-		    	initializeContext(e.getString("assetsLocation"));
+		    	initializeContext(rootElement = Window.current().getDocument().getElementById(e.getString("gameContainer")), e.getString("assetsLocation"));
 	    	}catch(Throwable ex2) {
 	    		StringWriter s = new StringWriter();
 	    		ex2.printStackTrace(new java.io.PrintWriter(s));

@@ -85,7 +85,7 @@ public class File {
 	}
 	
 	public static final FileEntry[] listFiles(String path) {
-		Collection<FileEntry> entries = IndexedDBFilesystem.listFiles(path, true, false);
+		Collection<FileEntry> entries = listFilesAndDirectories(path);
 		FileEntry[] entryArray = new FileEntry[entries.size()];
 		
 		int i = 0;
