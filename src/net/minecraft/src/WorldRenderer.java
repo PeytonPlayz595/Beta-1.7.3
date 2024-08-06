@@ -94,6 +94,7 @@ public class WorldRenderer {
 			this.tileEntityRenderers.clear();
 			byte var8 = 1;
 			ChunkCache var9 = new ChunkCache(this.worldObj, var1 - var8, var2 - var8, var3 - var8, var4 + var8, var5 + var8, var6 + var8);
+			GL11.hintAnisotropicFix(true);
 			RenderBlocks var10 = new RenderBlocks(var9);
 
 			for(int var11 = 0; var11 < 2; ++var11) {
@@ -146,8 +147,10 @@ public class WorldRenderer {
 
 				if(!var12) {
 					break;
-				}
+				}	
 			}
+			
+			GL11.hintAnisotropicFix(false);
 
 			HashSet var22 = new HashSet();
 			var22.addAll(this.tileEntityRenderers);

@@ -194,6 +194,9 @@ public class Minecraft implements Runnable {
 
 		this.checkGLError("Post startup");
 		this.ingameGUI = new GuiIngame(this);
+		
+		GL11.anisotropicPatch(GL11.EaglerAdapterImpl2.glNeedsAnisotropicFix());
+		
 		this.displayGuiScreen(new GuiMainMenu());
 	}
 

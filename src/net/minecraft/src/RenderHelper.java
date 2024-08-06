@@ -17,6 +17,7 @@ public class RenderHelper {
 		GL11.glEnable(GL11.GL_COLOR_MATERIAL);
 		GL11.glColorMaterial(GL11.GL_FRONT_AND_BACK, GL11.GL_AMBIENT_AND_DIFFUSE);
 		GL11.copyModelToLightMatrix2();
+		//GL11.flipSecondLightMatrix();
 		GL11.flipBothLightMatrix();
 	}
 }
