@@ -30,6 +30,7 @@ public class RenderEngine {
 	private TexturePackList texturePack;
 	private BufferedImage missingTextureImage;
 	private IntBuffer imageDataB1 = GLAllocation.createDirectIntBuffer(4194304 * 2); //:> !?!?!?!?
+	private int textureWidth;
 
 	public RenderEngine(TexturePackList var1, GameSettings var2) {
 		this.options = var2;
@@ -39,6 +40,16 @@ public class RenderEngine {
 			missingTexture[i] = ((i / 16 + (i % 16)) % 2 == 0) ? 0xffff00ff : 0xff000000;
 		}
 		this.missingTextureImage = new BufferedImage(16, 16, missingTexture, true);
+		
+		try {
+			BufferedImage img = this.readTextureImage(this.texturePack.selectedTexturePack.getResourceAsStream("/terrain.png"));
+			int width = img.getWidth();
+			int textureWidth = width / 16;
+			this.textureWidth = textureWidth;
+		} catch (IOException e) {
+			System.err.println("Unable to read terrain.png, using default 16x16 texture animations");
+			textureWidth = 16;
+		}
 	}
 
 	public int[] func_28149_a(String var1) {
@@ -314,7 +325,7 @@ public class RenderEngine {
 			imageData.clear();
 			imageData.put(texturefx.imageData);
 			imageData.position(0).limit(tileSize);
-			GL11.glTexSubImage2D(3553, 0, (texturefx.iconIndex % 16) * 16, (texturefx.iconIndex / 16) * 16, 16, 16, 6408, 5121, imageData);
+			GL11.glTexSubImage2D(3553, 0, (texturefx.iconIndex % this.textureWidth) * 16, (texturefx.iconIndex / this.textureWidth) * 16, 16, 16, 6408, 5121, imageData);
 		}
 
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, getTexture("/terrain.png"));
@@ -327,7 +338,7 @@ public class RenderEngine {
 				imageDataB1.clear();
 				imageDataB1.put(sp.grabFrame(0));
 				imageDataB1.position(0).limit(tileSize);
-				GL11.glTexSubImage2D(3553, 0, (sp.iconIndex % 16) * w, (sp.iconIndex / 16) * w, w * sp.iconTileSize, w * sp.iconTileSize,
+				GL11.glTexSubImage2D(3553, 0, (sp.iconIndex % this.textureWidth) * w, (sp.iconIndex / this.textureWidth) * w, w * sp.iconTileSize, w * sp.iconTileSize,
 						6408, 5121, imageDataB1);
 				w /= 2;
 			//}
@@ -430,6 +441,16 @@ public class RenderEngine {
 		
 		for(int j = 0, l = textureSpriteList.size(); j < l; ++j) {
 			textureSpriteList.get(j).reloadData();
+		}
+		
+		try {
+			BufferedImage img = this.readTextureImage(this.texturePack.selectedTexturePack.getResourceAsStream("/terrain.png"));
+			int width = img.getWidth();
+			int textureWidth = width / 16;
+			this.textureWidth = textureWidth;
+		} catch (IOException e) {
+			System.err.println("Unable to read terrain.png, using default 16x16 texture animations");
+			textureWidth = 16;
 		}
 
 	}
