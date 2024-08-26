@@ -24,7 +24,7 @@ sourceSets {
 
 teavm.js {
     addedToWebApp = true;
-    mainClass = "net.lax1dude.eaglercraft.Client"
+    mainClass = "net.PeytonPlayz585.Client"
     outputDir = file("web");
     targetFileName = "app.js";
     obfuscated = true;
