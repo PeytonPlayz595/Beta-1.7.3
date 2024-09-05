@@ -2,6 +2,8 @@ package net.minecraft.src;
 
 import org.lwjgl.input.Keyboard;
 
+import net.minecraft.client.Minecraft;
+
 public class GuiRenameWorld extends GuiScreen {
 	private GuiScreen field_22112_a;
 	private GuiTextField field_22114_h;
@@ -40,7 +42,7 @@ public class GuiRenameWorld extends GuiScreen {
 				this.mc.displayGuiScreen(this.field_22112_a);
 			} else if(var1.id == 0) {
 				ISaveFormat var2 = this.mc.getSaveLoader();
-				var2.func_22170_a(this.field_22113_i, this.field_22114_h.getText().trim());
+				var2.func_22170_a(Minecraft.getMinecraft().getSaveDir() + "/" + this.field_22113_i, this.field_22114_h.getText().trim());
 				this.mc.displayGuiScreen(this.field_22112_a);
 			}
 

@@ -16,11 +16,11 @@ public class EntitySlime extends EntityLiving implements IMob {
 
 	protected void entityInit() {
 		super.entityInit();
-		this.dataWatcher.addObject(16, new Byte((byte)1));
+		this.dataWatcher.addObject(16, (byte)1);
 	}
 
 	public void setSlimeSize(int var1) {
-		this.dataWatcher.updateObject(16, new Byte((byte)var1));
+		this.dataWatcher.updateObject(16, (byte)var1);
 		this.setSize(0.6F * (float)var1, 0.6F * (float)var1);
 		this.health = var1 * var1;
 		this.setPosition(this.posX, this.posY, this.posZ);

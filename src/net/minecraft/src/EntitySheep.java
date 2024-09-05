@@ -11,7 +11,7 @@ public class EntitySheep extends EntityAnimal {
 
 	protected void entityInit() {
 		super.entityInit();
-		this.dataWatcher.addObject(16, new Byte((byte)0));
+		this.dataWatcher.addObject(16,(byte)0);
 	}
 
 	public boolean attackEntityFrom(Entity var1, int var2) {

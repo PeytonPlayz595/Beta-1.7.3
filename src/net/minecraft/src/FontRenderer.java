@@ -12,6 +12,7 @@ import net.PeytonPlayz585.awt.image.BufferedImage;
 import net.PeytonPlayz585.awt.image.ImageIO;
 
 public class FontRenderer {
+	public static final char formatChar = '\247';
 	private int[] charWidth = new int[256];
 	public int fontTextureName = 0;
 	private int fontDisplayLists;

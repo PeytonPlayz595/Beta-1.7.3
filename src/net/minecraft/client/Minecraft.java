@@ -817,7 +817,7 @@ public class Minecraft implements Runnable {
 												this.thePlayer.dropCurrentItem();
 											}
 
-											if(this.isMultiplayerWorld() && Keyboard.getEventKey() == this.gameSettings.keyBindChat.keyCode) {
+											if(Keyboard.getEventKey() == this.gameSettings.keyBindChat.keyCode) {
 												this.displayGuiScreen(new GuiChat());
 											}
 										}
@@ -1232,5 +1232,13 @@ public class Minecraft implements Runnable {
 	
 	public static Minecraft getMinecraft() {
 		return theMinecraft;
+	}
+	
+	public void displayChat(String s) {
+		this.ingameGUI.addChatMessage(s);
+	}
+
+	public void displayErrorChat(String s) {
+		this.ingameGUI.addChatMessage(FontRenderer.formatChar + "c" + s);
 	}
 }

@@ -78,7 +78,12 @@ public class EaglerSaveFormat implements ISaveFormat {
 
 	//Returns world info for the world
 	public WorldInfo func_22173_b(String var1) {
-		byte[] lvl = File.readFile(saveDir + "/" + var1 + "/level.dat");
+		String s = saveDir + "/" + var1 + "/level.dat";
+		if(s.startsWith("saves/")) {
+			s.replace("saves/minecraft/", "minecraft/");
+		}
+		System.out.println(s);
+		byte[] lvl = File.readFile(s);
 		if(lvl != null) {
 			try {
 				NBTBase nbt = NBTBase.readTag(new DataInputStream(new ByteArrayInputStream(lvl)));

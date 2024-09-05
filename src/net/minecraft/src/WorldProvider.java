@@ -17,7 +17,7 @@ public abstract class WorldProvider {
 	}
 
 	protected void generateLightBrightnessTable() {
-		float var1 = 0.05F;
+		float var1 = 0.2F;
 
 		for(int var2 = 0; var2 <= 15; ++var2) {
 			float var3 = 1.0F - (float)var2 / 15.0F;

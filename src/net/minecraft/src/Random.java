@@ -1,33 +1,19 @@
 package net.minecraft.src;
 
-import java.util.concurrent.atomic.AtomicLong;
-
 public class Random {
 	
-	private final AtomicLong seed;
+	private long seed = 69;
 
 	private static final long multiplier = 0x5DEECE66DL;
-    private static final long addend = 0xBL;
-    private static final long mask = (1L << 48) - 1;
+	private static final long addend = 0xBL;
+	private static final long mask = (1L << 48) - 1;
 
-	public Random() {
-		this(seedUniquifier() ^ System.nanoTime());
+    public Random() {
+		this((long)(Math.random() * 9007199254740991.0));
 	}
-	
-	private static long seedUniquifier() {
-        for (;;) {
-            long current = seedUniquifier.get();
-            long next = current * 181783497276652981L;
-            if (seedUniquifier.compareAndSet(current, next))
-                return next;
-        }
-    }
-
-    private static final AtomicLong seedUniquifier
-        = new AtomicLong(8682522807148012L);
 
 	public Random(long seed) {
-		this.seed = new AtomicLong(initialScramble(seed));
+		setSeed(seed);
 	}
 	
 	private static long initialScramble(long seed) {
@@ -35,26 +21,19 @@ public class Random {
     }
 	
 	public void setSeed(long seed) {
-        this.seed.set(initialScramble(seed));
-        haveNextNextGaussian = false;
+		this.seed = initialScramble(seed);
+		haveNextNextGaussian = true;
     }
 
 	protected int next(int bits) {
-		long oldseed, nextseed;
-        AtomicLong seed = this.seed;
-        do {
-            oldseed = seed.get();
-            nextseed = (oldseed * multiplier + addend) & mask;
-        } while (!seed.compareAndSet(oldseed, nextseed));
-        return (int)(nextseed >>> (48 - bits));
+		seed = (seed * multiplier + addend) & mask;
+		return (int) (seed >>> (48 - bits));
 	}
 
 	public void nextBytes(byte[] bytes) {
-		for (int i = 0, len = bytes.length; i < len; )
-            for (int rnd = nextInt(),
-                     n = Math.min(len - i, Integer.SIZE/Byte.SIZE);
-                 n-- > 0; rnd >>= Byte.SIZE)
-                bytes[i++] = (byte)rnd;
+		for (int i = 0, len = bytes.length; i < len;)
+			for (int rnd = nextInt(), n = Math.min(len - i, Integer.SIZE / Byte.SIZE); n-- > 0; rnd >>= Byte.SIZE)
+				bytes[i++] = (byte) rnd;
 	}
 
 	public int nextInt() {

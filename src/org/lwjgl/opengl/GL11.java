@@ -1231,8 +1231,6 @@ public class GL11 implements JSObject {
 	}
 
 	public static final void glPolygonOffset(float p1, float p2) {
-		p1 = -p1;
-		p2 = -p2;
 		if(p1 != polygonOffset1 || p2 != polygonOffset2) {
 			_wglPolygonOffset(p1, p2);
 			polygonOffset1 = p1;
@@ -1587,6 +1585,11 @@ public class GL11 implements JSObject {
 	public static final void glGetQueryResult(int in, IntBuffer out) {
 		QueryGL q = queryObjs.get(in);
 		out.put(_wglGetQueryObjecti(q, _wGL_QUERY_RESULT_AVAILABLE));
+	}
+	
+	public static final void glGetQueryResult1(int in, IntBuffer out) {
+		QueryGL q = queryObjs.get(in);
+		out.put(_wglGetQueryObjecti(q, _wGL_QUERY_RESULT));
 	}
 
 	public static final int glGenTextures() {
@@ -5447,7 +5450,7 @@ public class GL11 implements JSObject {
 			webgl.bindFramebuffer(FRAMEBUFFER, backBuffer.obj);
 			resizeBackBuffer(w2, h2);
 			try {
-				Thread.sleep(1l);
+				Thread.sleep(0l);
 			} catch (InterruptedException e) {
 				;
 			}

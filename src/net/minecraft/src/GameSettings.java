@@ -38,7 +38,8 @@ public class GameSettings {
 	public KeyBinding keyBindChat = new KeyBinding("key.chat", 20);
 	public KeyBinding keyBindToggleFog = new KeyBinding("Function", 33);
 	public KeyBinding keyBindSneak = new KeyBinding("key.sneak", 42);
-	public KeyBinding[] keyBindings = new KeyBinding[]{this.keyBindForward, this.keyBindLeft, this.keyBindBack, this.keyBindRight, this.keyBindJump, this.keyBindSneak, this.keyBindDrop, this.keyBindInventory, this.keyBindChat, this.keyBindToggleFog};
+	public KeyBinding keyBindZoom = new KeyBinding("Zoom", 46);
+	public KeyBinding[] keyBindings = new KeyBinding[]{this.keyBindForward, this.keyBindLeft, this.keyBindBack, this.keyBindRight, this.keyBindJump, this.keyBindSneak, this.keyBindDrop, this.keyBindInventory, this.keyBindChat, this.keyBindToggleFog, this.keyBindZoom};
 	protected Minecraft mc;
 	private String optionsFile;
 	public int difficulty = 2;

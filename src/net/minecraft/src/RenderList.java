@@ -46,7 +46,12 @@ public class RenderList {
 
 			if(this.field_1236_g.remaining() > 0) {
 				GL11.glPushMatrix();
-				GL11.glTranslatef((float)this.field_1242_a - this.field_1239_d, (float)this.field_1241_b - this.field_1238_e, (float)this.field_1240_c - this.field_1237_f);
+				/*
+				 * What the fuck Notch lol
+				 * 
+				 * GL11.glTranslatef((float)this.field_1242_a - this.field_1239_d, (float)this.field_1241_b - this.field_1238_e, (float)this.field_1240_c - this.field_1237_f);
+				*/
+				GL11.glTranslatef(this.field_1242_a - this.field_1239_d, this.field_1241_b - this.field_1238_e, this.field_1240_c - this.field_1237_f);
 				GL11.glCallLists(this.field_1236_g);
 				GL11.glPopMatrix();
 			}

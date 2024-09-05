@@ -2,6 +2,8 @@ package net.minecraft.src;
 
 import org.lwjgl.input.Keyboard;
 
+import net.lax1dude.eaglercraft.beta.SingleplayerCommands;
+
 public class GuiChat extends GuiScreen {
 	protected String message = "";
 	private int updateCounter = 0;
@@ -26,7 +28,9 @@ public class GuiChat extends GuiScreen {
 			String var3 = this.message.trim();
 			if(var3.length() > 0) {
 				String var4 = this.message.trim();
-				if(!this.mc.lineIsCommand(var4)) {
+				if(!this.mc.isMultiplayerWorld() && var4.startsWith("/")) {
+					SingleplayerCommands.processCommand(this.mc, var4.substring(1));
+				} else {
 					this.mc.thePlayer.sendChatMessage(var4);
 				}
 			}
@@ -76,5 +80,9 @@ public class GuiChat extends GuiScreen {
 			}
 		}
 
+	}
+	
+	public boolean doesGuiPauseGame() {
+		return false;
 	}
 }

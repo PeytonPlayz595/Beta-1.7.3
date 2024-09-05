@@ -24,7 +24,7 @@ public class EntityWolf extends EntityAnimal {
 		super.entityInit();
 		this.dataWatcher.addObject(16, Byte.valueOf((byte)0));
 		this.dataWatcher.addObject(17, "");
-		this.dataWatcher.addObject(18, new Integer(this.health));
+		this.dataWatcher.addObject(18, this.health);
 	}
 
 	protected boolean canTriggerWalking() {

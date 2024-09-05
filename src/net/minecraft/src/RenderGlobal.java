@@ -1,11 +1,13 @@
 package net.minecraft.src;
 
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
+
 import org.lwjgl.opengl.GL11;
 
 public class RenderGlobal implements IWorldAccess {
@@ -208,14 +210,15 @@ public class RenderGlobal implements IWorldAccess {
 		for(var4 = 0; var4 < this.renderChunksWide; ++var4) {
 			for(int var5 = 0; var5 < this.renderChunksTall; ++var5) {
 				for(int var6 = 0; var6 < this.renderChunksDeep; ++var6) {
-					this.worldRenderers[(var6 * this.renderChunksTall + var5) * this.renderChunksWide + var4] = new WorldRenderer(this.worldObj, this.tileEntities, var4 * 16, var5 * 16, var6 * 16, 16, this.glRenderListBase + var2);
-					this.worldRenderers[(var6 * this.renderChunksTall + var5) * this.renderChunksWide + var4].isWaitingOnOcclusionQuery = false;
-					this.worldRenderers[(var6 * this.renderChunksTall + var5) * this.renderChunksWide + var4].isVisible = true;
-					this.worldRenderers[(var6 * this.renderChunksTall + var5) * this.renderChunksWide + var4].isInFrustum = true;
-					this.worldRenderers[(var6 * this.renderChunksTall + var5) * this.renderChunksWide + var4].chunkIndex = var3++;
-					this.worldRenderers[(var6 * this.renderChunksTall + var5) * this.renderChunksWide + var4].markDirty();
-					this.sortedWorldRenderers[(var6 * this.renderChunksTall + var5) * this.renderChunksWide + var4] = this.worldRenderers[(var6 * this.renderChunksTall + var5) * this.renderChunksWide + var4];
-					this.worldRenderersToUpdate.add(this.worldRenderers[(var6 * this.renderChunksTall + var5) * this.renderChunksWide + var4]);
+					int index = (var6 * this.renderChunksTall + var5) * this.renderChunksWide + var4;
+					WorldRenderer wr = (this.worldRenderers[index] = new WorldRenderer(this.worldObj, this.tileEntities, var4 * 16, var5 * 16, var6 * 16, 16, this.glRenderListBase + var2));
+					wr.isWaitingOnOcclusionQuery = false;
+					wr.isVisible = true;
+					wr.isInFrustum = true;
+					wr.chunkIndex = var3++;
+					wr.markDirty();
+					this.sortedWorldRenderers[(var6 * this.renderChunksTall + var5) * this.renderChunksWide + var4] = wr;
+					this.worldRenderersToUpdate.add(wr);
 					var2 += 3;
 				}
 			}
@@ -415,12 +418,14 @@ public class RenderGlobal implements IWorldAccess {
 					++this.renderersSkippingRenderPass;
 				} else if(!this.sortedWorldRenderers[var7].isInFrustum) {
 					++this.renderersBeingClipped;
+				} else if(!this.sortedWorldRenderers[var7].isVisible) {
+					++this.renderersBeingOccluded;
 				} else {
 					++this.renderersBeingRendered;
 				}
 			}
 
-			if(!this.sortedWorldRenderers[var7].skipRenderPass[var3] && this.sortedWorldRenderers[var7].isInFrustum) {
+			if(!this.sortedWorldRenderers[var7].skipRenderPass[var3] && this.sortedWorldRenderers[var7].isInFrustum && this.sortedWorldRenderers[var7].isVisible) {
 				int var8 = this.sortedWorldRenderers[var7].getGLCallListForPass(var3);
 				if(var8 >= 0) {
 					this.glRenderLists.add(this.sortedWorldRenderers[var7]);
@@ -796,147 +801,59 @@ public class RenderGlobal implements IWorldAccess {
 	}
 
 	public boolean updateRenderers(EntityLiving var1, boolean var2) {
-		boolean var3 = false;
-		if(var3) {
-			Collections.sort(this.worldRenderersToUpdate, new RenderSorter(var1));
-			int var17 = this.worldRenderersToUpdate.size() - 1;
-			int var18 = this.worldRenderersToUpdate.size();
+		byte var3 = 2;
+		RenderSorter var4 = new RenderSorter(var1);
+		WorldRenderer[] var5 = new WorldRenderer[var3];
+		ArrayList var6 = null;
+		int var7 = this.worldRenderersToUpdate.size();
+		int var8 = 0;
+		int var9;
+		WorldRenderer var10;
+		int var11;
+		int var12;
+		List laterUpdateList = new ArrayList(var7);
+		for (var9 = 0; var9 < var7; ++var9) {
+			var10 = (WorldRenderer) this.worldRenderersToUpdate.get(var9);
 
-			for(int var19 = 0; var19 < var18; ++var19) {
-				WorldRenderer var20 = (WorldRenderer)this.worldRenderersToUpdate.get(var17 - var19);
-				if(!var2) {
-					if(var20.distanceToEntitySquared(var1) > 256.0F) {
-						if(var20.isInFrustum) {
-							if(var19 >= 3) {
-								return false;
-							}
-						} else if(var19 >= 1) {
-							return false;
-						}
+			if (var10 != null) {
+				if (!var10.isInFrustum || !var10.isVisible) {
+					laterUpdateList.add(var10);
+				}else {
+					if (var6 == null) {
+						var6 = new ArrayList();
 					}
-				} else if(!var20.isInFrustum) {
-					continue;
+	
+					++var8;
+					var6.add(var10);
 				}
-
-				var20.updateRenderer();
-				this.worldRenderersToUpdate.remove(var20);
-				var20.needsUpdate = false;
-			}
-
-			return this.worldRenderersToUpdate.size() == 0;
-		} else {
-			byte var4 = 2;
-			RenderSorter var5 = new RenderSorter(var1);
-			WorldRenderer[] var6 = new WorldRenderer[var4];
-			ArrayList var7 = null;
-			int var8 = this.worldRenderersToUpdate.size();
-			int var9 = 0;
-
-			int var10;
-			WorldRenderer var11;
-			int var12;
-			int var13;
-			label169:
-			for(var10 = 0; var10 < var8; ++var10) {
-				var11 = (WorldRenderer)this.worldRenderersToUpdate.get(var10);
-				if(!var2) {
-					if(var11.distanceToEntitySquared(var1) > 256.0F) {
-						for(var12 = 0; var12 < var4 && (var6[var12] == null || var5.doCompare(var6[var12], var11) <= 0); ++var12) {
-						}
-
-						--var12;
-						if(var12 <= 0) {
-							continue;
-						}
-
-						var13 = var12;
-
-						while(true) {
-							--var13;
-							if(var13 == 0) {
-								var6[var12] = var11;
-								continue label169;
-							}
-
-							var6[var13 - 1] = var6[var13];
-						}
-					}
-				} else if(!var11.isInFrustum) {
-					continue;
-				}
-
-				if(var7 == null) {
-					var7 = new ArrayList();
-				}
-
-				++var9;
-				var7.add(var11);
-				this.worldRenderersToUpdate.set(var10, (Object)null);
-			}
-
-			if(var7 != null) {
-				if(var7.size() > 1) {
-					Collections.sort(var7, var5);
-				}
-
-				for(var10 = var7.size() - 1; var10 >= 0; --var10) {
-					var11 = (WorldRenderer)var7.get(var10);
-					var11.updateRenderer();
-					var11.needsUpdate = false;
-				}
-			}
-
-			var10 = 0;
-
-			int var21;
-			for(var21 = var4 - 1; var21 >= 0; --var21) {
-				WorldRenderer var22 = var6[var21];
-				if(var22 != null) {
-					if(!var22.isInFrustum && var21 != var4 - 1) {
-						var6[var21] = null;
-						var6[0] = null;
-						break;
-					}
-
-					var6[var21].updateRenderer();
-					var6[var21].needsUpdate = false;
-					++var10;
-				}
-			}
-
-			var21 = 0;
-			var12 = 0;
-
-			for(var13 = this.worldRenderersToUpdate.size(); var21 != var13; ++var21) {
-				WorldRenderer var14 = (WorldRenderer)this.worldRenderersToUpdate.get(var21);
-				if(var14 != null) {
-					boolean var15 = false;
-
-					for(int var16 = 0; var16 < var4 && !var15; ++var16) {
-						if(var14 == var6[var16]) {
-							var15 = true;
-						}
-					}
-
-					if(!var15) {
-						if(var12 != var21) {
-							this.worldRenderersToUpdate.set(var12, var14);
-						}
-
-						++var12;
-					}
-				}
-			}
-
-			while(true) {
-				--var21;
-				if(var21 < var12) {
-					return var8 == var9 + var10;
-				}
-
-				this.worldRenderersToUpdate.remove(var21);
 			}
 		}
+		
+		this.worldRenderersToUpdate = laterUpdateList;
+
+		int updates = 0;
+		int dropped = 0;
+		if (var6 != null) {
+			if (var6.size() > 1) {
+				Collections.sort(var6, var4);
+			}
+
+			for (var9 = var6.size() - 1; var9 >= 0; --var9) {
+				var10 = (WorldRenderer) var6.get(var9);
+				if(updates > 1) {
+					this.worldRenderersToUpdate.add(var10);
+					++dropped;
+				}else {
+					var10.updateRenderer();
+					var10.needsUpdate = false;
+					if(!var10.skipAllRenderPasses()) {
+						++updates;
+					}
+				}
+			}
+		}
+
+		return true;
 	}
 
 	public void drawBlockBreaking(EntityPlayer var1, MovingObjectPosition var2, int var3, ItemStack var4, float var5) {
@@ -956,7 +873,7 @@ public class RenderGlobal implements IWorldAccess {
 				var8 = this.worldObj.getBlockId(var2.blockX, var2.blockY, var2.blockZ);
 				Block var9 = var8 > 0 ? Block.blocksList[var8] : null;
 				GL11.glDisable(GL11.GL_ALPHA_TEST);
-				GL11.glPolygonOffset(-3.0F, -3.0F);
+				GL11.glPolygonOffset(3.0F, 3.0F);
 				GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
 				double var10 = var1.lastTickPosX + (var1.posX - var1.lastTickPosX) * (double)var5;
 				double var12 = var1.lastTickPosY + (var1.posY - var1.lastTickPosY) * (double)var5;
@@ -1148,9 +1065,6 @@ public class RenderGlobal implements IWorldAccess {
 
 	public void spawnParticle(String var1, double var2, double var4, double var6, double var8, double var10, double var12) {
 		if(this.mc != null && this.mc.renderViewEntity != null && this.mc.effectRenderer != null) {
-			if(isBehindPlayer(var2, var4, var6)) {
-        		return;
-        	}
 			double var14 = this.mc.renderViewEntity.posX - var2;
 			double var16 = this.mc.renderViewEntity.posY - var4;
 			double var18 = this.mc.renderViewEntity.posZ - var6;
@@ -1191,12 +1105,6 @@ public class RenderGlobal implements IWorldAccess {
 			}
 		}
 	}
-	
-	private boolean isBehindPlayer(double x, double y, double z) {
-        final Vec3D playerToBlock = new Vec3D(x - this.mc.thePlayer.posX, y - this.mc.thePlayer.posY, z - this.mc.thePlayer.posZ).normalize();
-        final Vec3D direction = (this.mc.thePlayer.getLookVec()).normalize();
-        return playerToBlock.dotProduct(direction) > 0.5;
-    }
 
 	public void obtainEntitySkin(Entity var1) {
 		var1.updateCloak();

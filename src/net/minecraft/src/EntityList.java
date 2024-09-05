@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EntityList {
-	private static Map stringToClassMapping = new HashMap();
+	private static Map<String, Class> stringToClassMapping = new HashMap();
 	private static Map classToStringMapping = new HashMap();
 	private static Map IDtoClassMapping = new HashMap();
 	private static Map classToIDMapping = new HashMap();
@@ -20,7 +20,12 @@ public class EntityList {
 		Entity var2 = null;
 
 		try {
-			Class var3 = (Class)stringToClassMapping.get(var0);
+			Class var3 = null;
+			for (Map.Entry<String, Class> entry : stringToClassMapping.entrySet()) {
+				if(entry.getKey().equalsIgnoreCase(var0)) {
+					var3 = (Class)entry.getValue();
+				}
+			}
 			if(var3 != null) {
 				var2 = SpawnerAnimals.newInstance(var3);
 			}
