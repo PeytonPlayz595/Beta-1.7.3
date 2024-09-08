@@ -2,12 +2,12 @@
 <classpath>
 	<classpathentry kind="src" path="src/main/java">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Minecraft Client/libraries/natives"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Minecraft Client/jars/natives"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path="src/teavm/java">
+	<classpathentry kind="src" path="src/lwjgl/java">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Minecraft Client/libraries/natives"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Minecraft Client/jars/natives"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
@@ -21,7 +21,7 @@
 	<classpathentry kind="lib" path="jars/jzlib-1.1.3.jar"/>
 	<classpathentry kind="lib" path="jars/lwjgl.jar">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="jars/natives"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Minecraft Client/jars/natives"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="jars/lwjgl_util.jar"/>
