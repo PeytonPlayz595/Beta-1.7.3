@@ -1,7 +1,7 @@
 package net.minecraft.src;
 
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
+import net.PeytonPlayz585.input.Keyboard;
+import net.PeytonPlayz585.opengl.GL11;
 
 public class GuiEditSign extends GuiScreen {
 	protected String screenTitle = "Edit sign message:";

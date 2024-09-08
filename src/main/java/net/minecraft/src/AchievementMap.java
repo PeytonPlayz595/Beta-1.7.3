@@ -5,7 +5,7 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.lwjgl.opengl.GL11;
+import net.PeytonPlayz585.opengl.GL11;
 
 public class AchievementMap {
 	public static AchievementMap instance = new AchievementMap();

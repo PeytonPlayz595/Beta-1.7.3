@@ -6,10 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.lwjgl.opengl.GL11;
-
 import net.PeytonPlayz585.awt.image.BufferedImage;
 import net.PeytonPlayz585.awt.image.ImageIO;
+import net.PeytonPlayz585.opengl.GL11;
 
 public class FontRenderer {
 	public static final char formatChar = '\247';

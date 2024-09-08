@@ -3,7 +3,7 @@ package net.minecraft.src;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-import org.lwjgl.opengl.GL11;
+import net.PeytonPlayz585.opengl.GL11;
 
 public class ChatAllowedCharacters {
 	public static final String allowedCharacters = getAllowedCharacters();

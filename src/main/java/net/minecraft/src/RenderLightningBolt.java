@@ -1,6 +1,6 @@
 package net.minecraft.src;
 
-import org.lwjgl.opengl.GL11;
+import net.PeytonPlayz585.opengl.GL11;
 
 public class RenderLightningBolt extends Render {
 	public void func_27002_a(EntityLightningBolt var1, double var2, double var4, double var6, float var8, float var9) {

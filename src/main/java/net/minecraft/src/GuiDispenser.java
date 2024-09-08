@@ -1,6 +1,6 @@
 package net.minecraft.src;
 
-import org.lwjgl.opengl.GL11;
+import net.PeytonPlayz585.opengl.GL11;
 
 public class GuiDispenser extends GuiContainer {
 	public GuiDispenser(InventoryPlayer var1, TileEntityDispenser var2) {

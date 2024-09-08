@@ -7,8 +7,7 @@ import java.io.IOException;
 //import java.net.UnknownHostException;
 import java.util.List;
 
-import org.lwjgl.opengl.GL11;
-
+import net.PeytonPlayz585.opengl.GL11;
 import net.PeytonPlayz585.socket.Socket;
 import net.minecraft.client.Minecraft;
 

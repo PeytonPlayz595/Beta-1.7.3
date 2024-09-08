@@ -1,6 +1,6 @@
 package net.minecraft.src;
 
-import org.lwjgl.input.Keyboard;
+import net.PeytonPlayz585.input.Keyboard;
 
 public class GuiCreateWorld extends GuiScreen {
 	private GuiScreen field_22131_a;

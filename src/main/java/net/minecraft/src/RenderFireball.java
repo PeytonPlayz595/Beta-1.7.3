@@ -1,7 +1,7 @@
 package net.minecraft.src;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
+import net.PeytonPlayz585.opengl.GL11;
+import net.PeytonPlayz585.opengl.GL12;
 
 public class RenderFireball extends Render {
 	public void func_4012_a(EntityFireball var1, double var2, double var4, double var6, float var8, float var9) {

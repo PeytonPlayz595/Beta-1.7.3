@@ -8,8 +8,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 import net.PeytonPlayz585.fileutils.File;
+import net.PeytonPlayz585.input.Keyboard;
 import net.minecraft.client.Minecraft;
-import org.lwjgl.input.Keyboard;
 
 public class GameSettings {
 	private static final String[] RENDER_DISTANCES = new String[]{"options.renderDistance.far", "options.renderDistance.normal", "options.renderDistance.short", "options.renderDistance.tiny"};

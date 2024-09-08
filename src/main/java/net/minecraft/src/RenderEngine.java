@@ -10,9 +10,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import org.lwjgl.opengl.GL11;
 
 import net.PeytonPlayz585.awt.image.BufferedImage;
+import net.PeytonPlayz585.opengl.GL11;
 import net.lax1dude.eaglercraft.SpriteSheetTexture;
 
 public class RenderEngine {

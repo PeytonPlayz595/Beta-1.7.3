@@ -1,17 +1,15 @@
 package net.PeytonPlayz585.glemu;
 
-import static org.lwjgl.opengl.GL11.EaglerAdapterImpl2.*;
-import static org.lwjgl.opengl.GL11.*;
+import static net.PeytonPlayz585.opengl.GL11.*;
+import static net.PeytonPlayz585.opengl.GL11.EaglerAdapterImpl2.*;
 
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL11.EaglerAdapterImpl2.ProgramGL;
-import org.lwjgl.opengl.GL11.EaglerAdapterImpl2.ShaderGL;
-import org.lwjgl.opengl.GL11.EaglerAdapterImpl2.UniformGL;
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector4f;
+import net.PeytonPlayz585.opengl.GL11;
+import net.PeytonPlayz585.util.vector.Vector2f;
+import net.PeytonPlayz585.util.vector.Vector4f;
 
 public class FixedFunctionShader {
 	

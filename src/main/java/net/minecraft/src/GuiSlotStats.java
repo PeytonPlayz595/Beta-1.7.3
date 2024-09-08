@@ -3,7 +3,8 @@ package net.minecraft.src;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import org.lwjgl.input.Mouse;
+
+import net.PeytonPlayz585.input.Mouse;
 
 abstract class GuiSlotStats extends GuiSlot {
 	protected int field_27268_b;

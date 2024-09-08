@@ -1,8 +1,8 @@
 package net.minecraft.src;
 
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
+import net.PeytonPlayz585.input.Mouse;
+import net.PeytonPlayz585.opengl.GL11;
+import net.PeytonPlayz585.opengl.GL12;
 
 public class GuiAchievements extends GuiScreen {
 	private static final int field_27126_s = AchievementList.minDisplayColumn * 24 - 112;

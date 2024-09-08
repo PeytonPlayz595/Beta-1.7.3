@@ -1,7 +1,7 @@
 package net.minecraft.src;
 
+import net.PeytonPlayz585.opengl.GL11;
 import net.minecraft.client.Minecraft;
-import org.lwjgl.opengl.GL11;
 
 public class GuiSlider extends GuiButton {
 	public float sliderValue = 1.0F;

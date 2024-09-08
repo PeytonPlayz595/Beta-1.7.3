@@ -1,7 +1,8 @@
 package net.minecraft.src;
 
 import java.nio.IntBuffer;
-import org.lwjgl.opengl.GL11;
+
+import net.PeytonPlayz585.opengl.GL11;
 
 public class RenderList {
 	private int field_1242_a;

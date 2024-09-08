@@ -1,10 +1,9 @@
 package net.minecraft.client;
 
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.GL11;
-
+import net.PeytonPlayz585.input.Keyboard;
+import net.PeytonPlayz585.input.Mouse;
+import net.PeytonPlayz585.opengl.Display;
+import net.PeytonPlayz585.opengl.GL11;
 import net.lax1dude.eaglercraft.TextureNewClockFX;
 import net.lax1dude.eaglercraft.TextureNewCompassFX;
 import net.minecraft.src.AchievementList;
@@ -544,6 +543,7 @@ public class Minecraft implements Runnable {
 
 	public void shutdown() {
 		this.running = false;
+		GL11.EaglerAdapterImpl2.exit();
 	}
 
 	public void setIngameFocus() {
@@ -789,23 +789,23 @@ public class Minecraft implements Runnable {
 												this.displayInGameMenu();
 											}
 											
-											if(Keyboard.isFunctionKeyDown(this.gameSettings.keyBindToggleFog.keyCode, 2)) {
+											if(Keyboard.isKeyDown(this.gameSettings.keyBindToggleFog.keyCode) && Keyboard.getEventKey() == 2) {
 												this.gameSettings.hideGUI = !this.gameSettings.hideGUI;
 											}
 											
-											if(Keyboard.isFunctionKeyDown(this.gameSettings.keyBindToggleFog.keyCode, 3)) {
+											if(Keyboard.isKeyDown(this.gameSettings.keyBindToggleFog.keyCode) && Keyboard.getEventKey() == 3) {
 												this.ingameGUI.addChatMessage(ScreenShotHelper.saveScreenshot());
 											}
 											
-											if(Keyboard.isFunctionKeyDown(this.gameSettings.keyBindToggleFog.keyCode, 4)) {
+											if(Keyboard.isKeyDown(this.gameSettings.keyBindToggleFog.keyCode) && Keyboard.getEventKey() == 4) {
 												this.gameSettings.showDebugInfo = !this.gameSettings.showDebugInfo;
 											}
 											
-											if(Keyboard.isFunctionKeyDown(this.gameSettings.keyBindToggleFog.keyCode, 6)) {
+											if(Keyboard.isKeyDown(this.gameSettings.keyBindToggleFog.keyCode) && Keyboard.getEventKey() == 6) {
 												this.gameSettings.thirdPersonView = !this.gameSettings.thirdPersonView;
 											}
 											
-											if(Keyboard.isFunctionKeyDown(this.gameSettings.keyBindToggleFog.keyCode, 9)) {
+											if(Keyboard.isKeyDown(this.gameSettings.keyBindToggleFog.keyCode) && Keyboard.getEventKey() == 9) {
 												this.gameSettings.smoothCamera = !this.gameSettings.smoothCamera;
 											}
 

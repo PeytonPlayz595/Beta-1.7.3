@@ -1,7 +1,7 @@
 package net.minecraft.src;
 
+import net.PeytonPlayz585.input.Keyboard;
 import net.minecraft.client.Minecraft;
-import org.lwjgl.input.Keyboard;
 
 public class StatStringFormatKeyInv implements IStatStringFormat {
 	final Minecraft mc;

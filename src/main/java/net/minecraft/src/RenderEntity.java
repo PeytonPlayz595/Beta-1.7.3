@@ -1,6 +1,6 @@
 package net.minecraft.src;
 
-import org.lwjgl.opengl.GL11;
+import net.PeytonPlayz585.opengl.GL11;
 
 public class RenderEntity extends Render {
 	public void doRender(Entity var1, double var2, double var4, double var6, float var8, float var9) {

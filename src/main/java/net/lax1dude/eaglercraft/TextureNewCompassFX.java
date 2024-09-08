@@ -1,7 +1,6 @@
 package net.lax1dude.eaglercraft;
 
-import org.lwjgl.opengl.GL11;
-
+import net.PeytonPlayz585.opengl.GL11;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.ChunkCoordinates;
 import net.minecraft.src.Item;

@@ -2,7 +2,7 @@ package net.PeytonPlayz585.socket;
 
 import java.io.IOException;
 
-import org.lwjgl.opengl.GL11;
+import net.PeytonPlayz585.opengl.GL11;
 
 public class Socket {
 	

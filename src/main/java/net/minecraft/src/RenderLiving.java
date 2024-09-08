@@ -1,8 +1,8 @@
 package net.minecraft.src;
 
+import net.PeytonPlayz585.opengl.GL11;
+import net.PeytonPlayz585.opengl.GL12;
 import net.minecraft.client.Minecraft;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 public class RenderLiving extends Render {
 	protected ModelBase mainModel;

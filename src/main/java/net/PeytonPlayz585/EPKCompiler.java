@@ -4,10 +4,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.nio.charset.Charset;
 
-import org.lwjgl.opengl.GL11;
-
 import com.jcraft.jzlib.Deflater;
 import com.jcraft.jzlib.DeflaterOutputStream;
+
+import net.PeytonPlayz585.opengl.GL11;
 
 public class EPKCompiler {
 	

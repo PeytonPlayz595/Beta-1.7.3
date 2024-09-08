@@ -2,11 +2,10 @@ package net.minecraft.src;
 
 import java.util.function.Consumer;
 
-import org.lwjgl.opengl.GL11;
-
 import net.PeytonPlayz585.GuiSomethingFailed;
 import net.PeytonPlayz585.ImportExport;
 import net.PeytonPlayz585.fileutils.FileChooserResult;
+import net.PeytonPlayz585.opengl.GL11;
 import net.minecraft.src.GuiButton;
 import net.minecraft.src.GuiCreateWorld;
 import net.minecraft.src.GuiScreen;

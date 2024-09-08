@@ -1,7 +1,7 @@
 package net.minecraft.src;
 
+import net.PeytonPlayz585.opengl.GL11;
 import net.minecraft.client.Minecraft;
-import org.lwjgl.opengl.GL11;
 
 public class RenderPlayer extends RenderLiving {
 	private ModelBiped modelBipedMain = (ModelBiped)this.mainModel;

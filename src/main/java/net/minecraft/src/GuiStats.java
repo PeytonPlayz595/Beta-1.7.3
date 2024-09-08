@@ -1,9 +1,10 @@
 package net.minecraft.src;
 
 import java.util.List;
+
+import net.PeytonPlayz585.opengl.GL11;
+import net.PeytonPlayz585.opengl.GL12;
 import net.minecraft.client.Minecraft;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 public class GuiStats extends GuiScreen {
 	private static RenderItem field_27153_j = new RenderItem();

@@ -2,10 +2,9 @@ package net.minecraft.src;
 
 import java.util.Arrays;
 
-import org.lwjgl.opengl.GL11;
-
 import net.PeytonPlayz585.awt.image.BufferedImage;
 import net.PeytonPlayz585.awt.image.ImageIO;
+import net.PeytonPlayz585.opengl.GL11;
 
 public class TerrainTextureManager {
 	private float[] field_1181_a = new float[768];

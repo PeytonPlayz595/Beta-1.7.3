@@ -1,7 +1,6 @@
 package net.minecraft.src;
 
-import org.lwjgl.input.Keyboard;
-
+import net.PeytonPlayz585.input.Keyboard;
 import net.minecraft.client.Minecraft;
 
 public class GuiRenameWorld extends GuiScreen {

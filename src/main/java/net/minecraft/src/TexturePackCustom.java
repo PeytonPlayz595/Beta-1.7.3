@@ -9,9 +9,9 @@ import java.util.zip.ZipEntry;
 import net.PeytonPlayz585.awt.image.BufferedImage;
 import net.PeytonPlayz585.awt.image.ImageIO;
 import net.PeytonPlayz585.fileutils.FileEntry;
+import net.PeytonPlayz585.opengl.GL11;
 import net.PeytonPlayz585.util.zip.ZipFile;
 import net.minecraft.client.Minecraft;
-import org.lwjgl.opengl.GL11;
 
 public class TexturePackCustom extends TexturePackBase {
 	private ZipFile texturePackZipFile;

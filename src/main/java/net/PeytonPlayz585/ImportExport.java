@@ -11,11 +11,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.lwjgl.opengl.GL11;
-
 import net.PeytonPlayz585.fileutils.File;
 import net.PeytonPlayz585.fileutils.FileEntry;
 import net.PeytonPlayz585.fileutils.FilesystemUtils;
+import net.PeytonPlayz585.opengl.GL11;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.IProgressUpdate;
 import net.minecraft.src.NBTBase;

@@ -1,6 +1,6 @@
 package net.minecraft.src;
 
-import org.lwjgl.opengl.GL11;
+import net.PeytonPlayz585.opengl.GL11;
 
 public class RenderCreeper extends RenderLiving {
 	private ModelBase field_27008_a = new ModelCreeper(2.0F);

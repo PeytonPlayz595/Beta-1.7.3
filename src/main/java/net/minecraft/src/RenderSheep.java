@@ -1,6 +1,6 @@
 package net.minecraft.src;
 
-import org.lwjgl.opengl.GL11;
+import net.PeytonPlayz585.opengl.GL11;
 
 public class RenderSheep extends RenderLiving {
 	public RenderSheep(ModelBase var1, ModelBase var2, float var3) {

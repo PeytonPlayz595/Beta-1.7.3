@@ -6,9 +6,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import net.PeytonPlayz585.opengl.GL11;
 import net.minecraft.client.Minecraft;
-
-import org.lwjgl.opengl.GL11;
 
 public class RenderGlobal implements IWorldAccess {
 	public List tileEntities = new ArrayList();

@@ -3,7 +3,7 @@ package net.minecraft.src;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.lwjgl.opengl.GL11;
+import net.PeytonPlayz585.opengl.GL11;
 
 public class StringTranslate {
 	private static StringTranslate instance = new StringTranslate();

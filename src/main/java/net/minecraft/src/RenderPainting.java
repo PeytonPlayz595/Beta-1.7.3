@@ -1,7 +1,7 @@
 package net.minecraft.src;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
+import net.PeytonPlayz585.opengl.GL11;
+import net.PeytonPlayz585.opengl.GL12;
 
 public class RenderPainting extends Render {
 	private Random rand = new Random();

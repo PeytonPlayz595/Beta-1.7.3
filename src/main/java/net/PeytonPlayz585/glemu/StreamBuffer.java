@@ -1,6 +1,6 @@
 package net.PeytonPlayz585.glemu;
 
-import static org.lwjgl.opengl.GL11.EaglerAdapterImpl2.*;
+import static net.PeytonPlayz585.opengl.GL11.EaglerAdapterImpl2.*;
 
 public class StreamBuffer {
 

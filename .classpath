@@ -5,6 +5,11 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Minecraft Client/libraries/natives"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="src" path="src/teavm/java">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Minecraft Client/libraries/natives"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="module" value="true"/>
@@ -12,7 +17,14 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="jars/teavm-jso-0.6.1.jar"/>
 	<classpathentry kind="lib" path="jars/teavm-jso-apis-0.6.1.jar"/>
-	<classpathentry kind="lib" path="jars/jzlib-1.1.3.jar"/>
 	<classpathentry kind="lib" path="jars/teavm-interop-0.6.1.jar"/>
+	<classpathentry kind="lib" path="jars/jzlib-1.1.3.jar"/>
+	<classpathentry kind="lib" path="jars/lwjgl.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="jars/natives"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="jars/lwjgl_util.jar"/>
+	<classpathentry kind="lib" path="jars/Java-WebSocket-1.5.1-with-dependencies.jar"/>
 	<classpathentry kind="output" path="output"/>
 </classpath>

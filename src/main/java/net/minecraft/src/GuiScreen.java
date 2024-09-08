@@ -2,10 +2,11 @@ package net.minecraft.src;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import net.PeytonPlayz585.input.Keyboard;
+import net.PeytonPlayz585.input.Mouse;
+import net.PeytonPlayz585.opengl.GL11;
 import net.minecraft.client.Minecraft;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
 
 public class GuiScreen extends Gui {
 	protected Minecraft mc;

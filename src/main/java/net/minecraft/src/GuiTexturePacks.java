@@ -1,9 +1,8 @@
 package net.minecraft.src;
 
-import org.lwjgl.opengl.GL11;
-
 import net.PeytonPlayz585.fileutils.File;
 import net.PeytonPlayz585.fileutils.FileChooserResult;
+import net.PeytonPlayz585.opengl.GL11;
 import net.minecraft.client.Minecraft;
 
 public class GuiTexturePacks extends GuiScreen {

@@ -1,6 +1,6 @@
 package net.minecraft.src;
 
-import org.lwjgl.input.Keyboard;
+import net.PeytonPlayz585.input.Keyboard;
 
 public class GuiSleepMP extends GuiChat {
 	public void initGui() {

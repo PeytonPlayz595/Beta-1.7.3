@@ -1,9 +1,8 @@
 package net.minecraft.src;
 
+import net.PeytonPlayz585.opengl.Display;
+import net.PeytonPlayz585.opengl.GL11;
 import net.minecraft.client.Minecraft;
-
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.GL11;
 
 public class LoadingScreenRenderer implements IProgressUpdate {
 	private String field_1004_a = "";

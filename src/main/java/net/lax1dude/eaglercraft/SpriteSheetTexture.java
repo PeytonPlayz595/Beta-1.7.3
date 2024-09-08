@@ -4,9 +4,8 @@ import java.nio.IntBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
-import org.lwjgl.opengl.GL11;
-
 import net.PeytonPlayz585.awt.image.BufferedImage;
+import net.PeytonPlayz585.opengl.GL11;
 import net.minecraft.src.GLAllocation;
 
 public class SpriteSheetTexture {

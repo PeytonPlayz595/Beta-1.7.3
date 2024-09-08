@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import net.PeytonPlayz585.awt.image.BufferedImage;
 import net.PeytonPlayz585.awt.image.ImageIO;
+import net.PeytonPlayz585.opengl.GL11;
 import net.minecraft.client.Minecraft;
-import org.lwjgl.opengl.GL11;
 
 public class TexturePackDefault extends TexturePackBase {
 	private int texturePackName = -1;

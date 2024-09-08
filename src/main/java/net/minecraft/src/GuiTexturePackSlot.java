@@ -1,7 +1,8 @@
 package net.minecraft.src;
 
 import java.util.List;
-import org.lwjgl.opengl.GL11;
+
+import net.PeytonPlayz585.opengl.GL11;
 
 class GuiTexturePackSlot extends GuiSlot {
 	final GuiTexturePacks parentTexturePackGui;

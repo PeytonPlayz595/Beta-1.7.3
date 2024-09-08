@@ -1,6 +1,6 @@
 package net.minecraft.src;
 
-import org.lwjgl.opengl.GL11;
+import net.PeytonPlayz585.opengl.GL11;
 
 public class RenderSquid extends RenderLiving {
 	public RenderSquid(ModelBase var1, float var2) {

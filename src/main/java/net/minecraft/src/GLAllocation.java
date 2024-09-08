@@ -6,7 +6,9 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import org.lwjgl.opengl.GL11;
+
+import net.PeytonPlayz585.BufferUtils;
+import net.PeytonPlayz585.opengl.GL11;
 
 public class GLAllocation {
 	private static List displayLists = new ArrayList();
@@ -49,14 +51,14 @@ public class GLAllocation {
 	}
 
 	public static ByteBuffer createDirectByteBuffer(int par0) {
-		return ByteBuffer.wrap(new byte[par0]).order(ByteOrder.nativeOrder());
+		return BufferUtils.createByteBuffer(par0);
 	}
 	
 	public static IntBuffer createDirectIntBuffer(int par0) {
-		return IntBuffer.wrap(new int[par0]);
+		return BufferUtils.createIntBuffer(par0);
 	}
 	
 	public static FloatBuffer createDirectFloatBuffer(int par0) {
-		return FloatBuffer.wrap(new float[par0]);
+		return BufferUtils.createFloatBuffer(par0);
 	}
 }

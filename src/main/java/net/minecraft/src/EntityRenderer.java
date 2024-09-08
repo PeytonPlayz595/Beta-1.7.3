@@ -4,13 +4,12 @@ import java.nio.FloatBuffer;
 import java.util.List;
 
 import net.PeytonPlayz585.glemu.GameOverlayFramebuffer;
+import net.PeytonPlayz585.input.Keyboard;
+import net.PeytonPlayz585.input.Mouse;
+import net.PeytonPlayz585.opengl.Display;
+import net.PeytonPlayz585.opengl.GL11;
+import net.PeytonPlayz585.util.glu.GLU;
 import net.minecraft.client.Minecraft;
-
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.glu.GLU;
 
 public class EntityRenderer {
 	public static boolean field_28135_a = false;
@@ -353,7 +352,7 @@ public class EntityRenderer {
 	}
 
 	public void updateCameraAndRender(float var1) {
-		if(!Display.isFocused()) {
+		if(!GL11.EaglerAdapterImpl2.isFocused()) {
 			this.mc.displayInGameMenu();
 		} else {
 			this.prevFrameTime = System.currentTimeMillis();

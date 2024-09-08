@@ -2,8 +2,9 @@ package net.minecraft.src;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import net.PeytonPlayz585.opengl.GL11;
 import net.minecraft.client.Minecraft;
-import org.lwjgl.opengl.GL11;
 
 public class GuiParticle extends Gui {
 	private List field_25090_a = new ArrayList();

@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 
-import org.lwjgl.opengl.GL11;
-
 import com.jcraft.jzlib.InflaterInputStream;
+
+import net.PeytonPlayz585.opengl.GL11;
 
 public class EPKDecompiler {
 	
