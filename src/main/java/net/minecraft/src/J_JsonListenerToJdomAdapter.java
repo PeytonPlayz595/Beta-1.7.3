@@ -1,9 +1,9 @@
 package net.minecraft.src;
 
-import java.util.LinkedList;
+import java.util.Stack;
 
 final class J_JsonListenerToJdomAdapter implements J_JsonListener {
-	private final LinkedList<J_NodeContainer> field_27210_a = new LinkedList<J_NodeContainer>();
+	private final Stack field_27210_a = new Stack();
 	private J_JsonNodeBuilder field_27209_b;
 
 	J_JsonRootNode func_27208_a() {

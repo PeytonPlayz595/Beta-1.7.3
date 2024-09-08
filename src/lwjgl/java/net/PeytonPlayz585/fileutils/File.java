@@ -14,7 +14,177 @@ private static final java.io.File filesystemBaseDirectory = new java.io.File("fi
 		filesystemBaseDirectory.mkdirs();
 	}
 	
+	private String path;
+	private transient int prefixLength;
+	private final char slash = '/';
+	private static final String pathSeperator = "/";
+	private static final String[] altPathSeperator = new String[] { "\\" };
+	
+	public File(String pathName) {
+		 if (pathName == null) {
+			 throw new NullPointerException();
+		 }
+		 this.path = this.normalize(pathName);
+		 this.prefixLength = this.prefixLength(this.path);
+	}
+	
+	public File(String parent, String child) {
+		if (child == null) {
+            throw new NullPointerException();
+        }
+		
+		if(parent != null) {
+			this.path = this.createPath(parent, child);
+		} else {
+			this.path = this.normalize(child);
+		}
+	}
+	
+	public File(File parent, String child) {
+		if (child == null) {
+            throw new NullPointerException();
+        }
+		if(parent != null) {
+			this.path = this.createPath(parent.path, child);
+		} else {
+			this.path = this.normalize(child);
+		}
+	}
+	
+	private int prefixLength(String path) {
+        char slash = this.slash;
+        int n = path.length();
+        if (n == 0) return 0;
+        char c0 = path.charAt(0);
+        char c1 = (n > 1) ? path.charAt(1) : 0;
+        if (c0 == slash) {
+            if (c1 == slash) return 2;
+            return 1;
+        }
+        if (isLetter(c0) && (c1 == ':')) {
+            if ((n > 2) && (path.charAt(2) == slash))
+                return 3;
+            return 2;
+        }
+        return 0;
+    }
+	
+	private boolean isLetter(char c) {
+        return ((c >= 'a') && (c <= 'z')) || ((c >= 'A') && (c <= 'Z'));
+    }
+	
+	private String normalize(String p) {
+		for(int i = 0; i < altPathSeperator.length; ++i) {
+			p = p.replace(altPathSeperator[i], pathSeperator);
+		}
+		if(p.startsWith(pathSeperator)) {
+			p = p.substring(1);
+		}
+		if(p.endsWith(pathSeperator)) {
+			p = p.substring(0, p.length() - pathSeperator.length());
+		}
+		return p;
+	}
+	
+	private String[] splitPath(String p) {
+		String[] pth = normalize(p).split(pathSeperator);
+		for(int i = 0; i < pth.length; ++i) {
+			pth[i] = pth[i].trim();
+		}
+		return pth;
+	}
+	
+	private String createPath(Object... p) {
+		ArrayList<String> r = new ArrayList();
+		for(int i = 0; i < p.length; ++i) {
+			if(p[i] == null) {
+				continue;
+			}
+			String gg = p[i].toString();
+			if(gg == null) {
+				continue;
+			}
+			String[] parts = splitPath(gg);
+			for(int j = 0; j < parts.length; ++j) {
+				if(parts[j] == null || parts[j].equals(".")) {
+					continue;
+				}else if(parts[j].equals("..") && r.size() > 0) {
+					int k = r.size() - 1;
+					if(!r.get(k).equals("..")) {
+						r.remove(k);
+					}else {
+						r.add("..");
+					}
+				}else {
+					r.add(parts[j]);
+				}
+			}
+		}
+		if(r.size() > 0) {
+			StringBuilder s = new StringBuilder();
+			for(int i = 0; i < r.size(); ++i) {
+				if(i > 0) {
+					s.append(pathSeperator);
+				}
+				s.append(r.get(i));
+			}
+			return s.toString();
+		}else {
+			return null;
+		}
+	}
+	
 	// ======== Virtual Filesystem Functions =============
+	
+	public String getName() {
+        int index = path.lastIndexOf(slash);
+        if (index < prefixLength) return path.substring(prefixLength);
+        return path.substring(index + 1);
+    }
+	
+	public String getPath() {
+        return path;
+    }
+	
+	public boolean exists() {
+		return exists(path);
+	}
+	
+	public boolean isDirectory() {
+		return exists(path) && directoryExists(path);
+	}
+	
+	public void renameTo(File newPath) {
+		renameFile(path, newPath.path);
+	}
+	
+	public byte[] read() {
+		return readFile(path);
+	}
+	
+	public void write(byte[] data) {
+		writeFile(path, data);
+	}
+	
+	public void delete() {
+		deleteFile(path);
+	}
+	
+	public void mkdir() {
+		(new java.io.File(filesystemBaseDirectory, stripPath(path))).mkdir();
+	}
+	
+	public File[] listFiles() {
+		Collection<FileEntry> collection = listFiles(path, false, false);
+		int size = collection.size();
+		FileEntry[] entries = collection.toArray(new FileEntry[size]);
+		File[] files = new File[size];
+		
+		for(int i = 0; i < size; i++) {
+			files[i] = new File(entries[i].path);
+		}
+		return files;
+	}
 	
 	public static final boolean exists(String path) {
 		return (new java.io.File(filesystemBaseDirectory, stripPath(path))).exists();

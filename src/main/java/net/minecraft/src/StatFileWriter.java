@@ -1,13 +1,11 @@
 package net.minecraft.src;
 
+import net.PeytonPlayz585.fileutils.File;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import net.PeytonPlayz585.fileutils.File;
-import net.PeytonPlayz585.fileutils.FileEntry;
 
 public class StatFileWriter {
 	private Map field_25102_a = new HashMap();
@@ -15,19 +13,23 @@ public class StatFileWriter {
 	private boolean field_27189_c = false;
 	private StatsSyncher statsSyncher;
 
-	public StatFileWriter(Session var1, String var2) {
-		String var3 = var2 + "/" + "stats";
+	public StatFileWriter(Session var1, String var2File) {
+		File var2 = new File(var2File);
+		File var3 = new File(var2, "stats");
+		if(!var3.exists()) {
+			var3.mkdir();
+		}
 
-		FileEntry[] var4 = File.listFiles(var2);
+		File[] var4 = var2.listFiles();
 		int var5 = var4.length;
 
 		for(int var6 = 0; var6 < var5; ++var6) {
-			FileEntry var7 = var4[var6];
+			File var7 = var4[var6];
 			if(var7.getName().startsWith("stats_") && var7.getName().endsWith(".dat")) {
-				String var8 = var3 + "/" + var7.getName();
-				if(!File.exists(var8)) {
+				File var8 = new File(var3, var7.getName());
+				if(!var8.exists()) {
 					System.out.println("Relocating " + var7.getName());
-					File.renameFile(var7.path, var8);
+					var7.renameTo(var8);
 				}
 			}
 		}
@@ -97,8 +99,8 @@ public class StatFileWriter {
 
 		try {
 			String var2 = "local";
-			String var3 = "";
-			J_JsonRootNode var4 = (new J_JdomParser()).func_27367_a(var0); //Crashes!?!?
+			StringBuilder var3 = new StringBuilder();
+			J_JsonRootNode var4 = (new J_JdomParser()).func_27367_a(var0);
 			List var5 = var4.func_27217_b(new Object[]{"stats-change"});
 			Iterator var6 = var5.iterator();
 
@@ -112,8 +114,8 @@ public class StatFileWriter {
 				if(var12 == null) {
 					System.out.println(var10 + " is not a valid stat");
 				} else {
-					var3 = var3 + StatList.func_27361_a(var10).statGuid + ",";
-					var3 = var3 + var11 + ",";
+					var3.append(StatList.func_27361_a(var10).statGuid).append(",");
+					var3.append(var11).append(",");
 					var1.put(var12, Integer.valueOf(var11));
 				}
 			}
@@ -132,41 +134,41 @@ public class StatFileWriter {
 	}
 
 	public static String func_27185_a(String var0, String var1, Map var2) {
-		String var3 = "";
-		String var4 = "";
+		StringBuilder var3 = new StringBuilder();
+		StringBuilder var4 = new StringBuilder();
 		boolean var5 = true;
-		var3 = var3 + "{\r\n";
+		var3.append("{\r\n");
 		if(var0 != null && var1 != null) {
-			var3 = var3 + "  \"user\":{\r\n";
-			var3 = var3 + "    \"name\":\"" + var0 + "\",\r\n";
-			var3 = var3 + "    \"sessionid\":\"" + var1 + "\"\r\n";
-			var3 = var3 + "  },\r\n";
+			var3.append("  \"user\":{\r\n");
+			var3.append("    \"name\":\"").append(var0).append("\",\r\n");
+			var3.append("    \"sessionid\":\"").append(var1).append("\"\r\n");
+			var3.append("  },\r\n");
 		}
 
-		var3 = var3 + "  \"stats-change\":[";
+		var3.append("  \"stats-change\":[");
 		Iterator var6 = var2.keySet().iterator();
 
 		while(var6.hasNext()) {
 			StatBase var7 = (StatBase)var6.next();
 			if(!var5) {
-				var3 = var3 + "},";
+				var3.append("},");
 			} else {
 				var5 = false;
 			}
 
-			var3 = var3 + "\r\n    {\"" + var7.statId + "\":" + var2.get(var7);
-			var4 = var4 + var7.statGuid + ",";
-			var4 = var4 + var2.get(var7) + ",";
+			var3.append("\r\n    {\"").append(var7.statId).append("\":").append(var2.get(var7));
+			var4.append(var7.statGuid).append(",");
+			var4.append(var2.get(var7)).append(",");
 		}
 
 		if(!var5) {
-			var3 = var3 + "}";
+			var3.append("}");
 		}
 
 		MD5String var8 = new MD5String(var1);
-		var3 = var3 + "\r\n  ],\r\n";
-		var3 = var3 + "  \"checksum\":\"" + var8.func_27369_a(var4) + "\"\r\n";
-		var3 = var3 + "}";
+		var3.append("\r\n  ],\r\n");
+		var3.append("  \"checksum\":\"").append(var8.func_27369_a(var4.toString())).append("\"\r\n");
+		var3.append("}");
 		return var3.toString();
 	}
 

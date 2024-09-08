@@ -61,11 +61,15 @@ public class IndexedDBFilesystem {
 		return AsyncHandlers.fileGetType(db, path) == FileExists.DIRECTORY;
 	}
 	
+	public static final boolean exists(String path) {
+		return AsyncHandlers.fileGetType(db, path) != FileExists.FALSE;
+	}
+	
 	public static final boolean pathExists(String path) {
 		return AsyncHandlers.fileExists(db, path).bool;
 	}
 	
-	private static final void mkdir(String dir) {
+	public static final void mkdir(String dir) {
 		if(directoryExists(dir)) {
 			return;
 		}

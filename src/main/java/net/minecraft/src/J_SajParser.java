@@ -5,7 +5,7 @@ import java.io.Reader;
 import java.util.Arrays;
 
 public final class J_SajParser {
-	public void func_27463_a(String var1, J_JsonListener var2) throws IOException, J_InvalidSyntaxException {
+	public void func_27463_a(Reader var1, J_JsonListener var2) throws IOException, J_InvalidSyntaxException {
 		J_PositionTrackingPushbackReader var3 = new J_PositionTrackingPushbackReader(var1);
 		char var4 = (char)var3.func_27333_c();
 		switch(var4) {
@@ -26,6 +26,8 @@ public final class J_SajParser {
 		int var5 = this.func_27448_l(var3);
 		if(var5 != -1) {
 			throw new J_InvalidSyntaxException("Got unexpected trailing character [" + (char)var5 + "].", var3);
+		} else {
+			var2.func_27204_c();
 		}
 	}
 
