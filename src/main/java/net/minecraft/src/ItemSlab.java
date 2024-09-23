@@ -16,6 +16,13 @@ public class ItemSlab extends ItemBlock {
 	}
 
 	public String getItemNameIS(ItemStack var1) {
-		return super.getItemName() + "." + BlockStep.field_22037_a[var1.getItemDamage()];
+		String s = "";
+		try {
+			s = super.getItemName() + "." + BlockStep.field_22037_a[var1.getItemDamage()];
+			return s;
+		} catch(Throwable t) {
+			s = "";
+			return s;
+		}
 	}
 }

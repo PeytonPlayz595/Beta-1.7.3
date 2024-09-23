@@ -1,120 +1,105 @@
 package net.minecraft.src;
 
-import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
 
 import net.PeytonPlayz585.awt.image.BufferedImage;
 import net.PeytonPlayz585.awt.image.ImageIO;
 import net.PeytonPlayz585.opengl.GL11;
+import net.PeytonPlayz585.textures.TextureLocation;
 
 public class FontRenderer {
 	public static final char formatChar = '\247';
 	private int[] charWidth = new int[256];
-	public int fontTextureName = 0;
-	private int fontDisplayLists;
-	private IntBuffer buffer = GLAllocation.createDirectIntBuffer(1024);
+	private int[] colorCode = new int[32];
+	private final TextureLocation fontTexture;
+	private float posX;
+	private float posY;
 	
-	private Map<Integer, Color3f> colorList = new HashMap<Integer, Color3f>();
-	
+	//color :3
+	private float red;
+	private float blue;
+	private float green;
+	private float alpha;
+
 	public FontRenderer(GameSettings var1, String var2, RenderEngine var3) {
-		BufferedImage var4;
-		try {
-			var4 = ImageIO.read(GL11.getResourceAsStream(var2));
-		} catch (Exception var18) {
-			throw new RuntimeException(var18);
+		this.fontTexture = new TextureLocation(var2);
+		fontTexture.bindTexture();
+		this.readFontTexture(var2);
+
+		for (int var5 = 0; var5 < 32; ++var5) {
+			int var6 = (var5 >> 3 & 1) * 85;
+			int var7 = (var5 >> 2 & 1) * 170 + var6;
+			int var8 = (var5 >> 1 & 1) * 170 + var6;
+			int var9 = (var5 >> 0 & 1) * 170 + var6;
+
+			if (var5 == 6) {
+				var7 += 85;
+			}
+
+			if (var1.anaglyph) {
+				int var10 = (var7 * 30 + var8 * 59 + var9 * 11) / 100;
+				int var11 = (var7 * 30 + var8 * 70) / 100;
+				int var12 = (var7 * 30 + var9 * 70) / 100;
+				var7 = var10;
+				var8 = var11;
+				var9 = var12;
+			}
+
+			if (var5 >= 16) {
+				var7 /= 4;
+				var8 /= 4;
+				var9 /= 4;
+			}
+
+			this.colorCode[var5] = (var7 & 255) << 16 | (var8 & 255) << 8 | var9 & 255;
 		}
+	}
+	
+	private void readFontTexture(String par1Str) {
+		BufferedImage e;
+		try {
+			e = ImageIO.read(GL11.getResourceAsStream(par1Str));
+		} catch (IOException e1) {
+			throw new RuntimeException(e1);
+		}
+		int[] var5 = e.getData();
+		int var3 = e.getWidth();
+		int var6 = 0;
 
-		int var5 = var4.getWidth();
-		int var6 = var4.getHeight();
-		int[] var7 = new int[var5 * var6];
-		var4.getRGB(0, 0, var5, var6, var7, 0, var5);
+		while (var6 < 256) {
+			int var7 = var6 % 16;
+			int var8 = var6 / 16;
+			int var9 = 7;
 
-		int var9;
-		int var10;
-		int var11;
-		int var12;
-		int var15;
-		int var16;
-		for(int var8 = 0; var8 < 256; ++var8) {
-			var9 = var8 % 16;
-			var10 = var8 / 16;
+			while (true) {
+				if (var9 >= 0) {
+					int var10 = var7 * 8 + var9;
+					boolean var11 = true;
 
-			for(var11 = 7; var11 >= 0; --var11) {
-				var12 = var9 * 8 + var11;
-				boolean var13 = true;
+					for (int var12 = 0; var12 < 8 && var11; ++var12) {
+						int var13 = (var8 * 8 + var12) * var3;
+						int var14 = var5[var10 + var13] & 255;
 
-				for(int var14 = 0; var14 < 8 && var13; ++var14) {
-					var15 = (var10 * 8 + var14) * var5;
-					var16 = var7[var12 + var15] & 255;
-					if(var16 > 0) {
-						var13 = false;
+						if (var14 > 0) {
+							var11 = false;
+						}
+					}
+
+					if (var11) {
+						--var9;
+						continue;
 					}
 				}
 
-				if(!var13) {
-					break;
+				if (var6 == 32) {
+					var9 = 2;
 				}
-			}
 
-			if(var8 == 32) {
-				var11 = 2;
+				this.charWidth[var6] = var9 + 2;
+				++var6;
+				break;
 			}
-
-			this.charWidth[var8] = var11 + 2;
 		}
-
-		this.fontTextureName = var3.allocateAndSetupTexture(var4);
-		this.fontDisplayLists = GLAllocation.generateDisplayLists(288);
-		Tessellator var19 = Tessellator.instance;
-
-		for(var9 = 0; var9 < 256; ++var9) {
-			GL11.glNewList(this.fontDisplayLists + var9, GL11.GL_COMPILE);
-			var19.startDrawingQuads();
-			var10 = var9 % 16 * 8;
-			var11 = var9 / 16 * 8;
-			float var20 = 7.99F;
-			float var21 = 0.0F;
-			float var23 = 0.0F;
-			var19.addVertexWithUV(0.0D, (double)(0.0F + var20), 0.0D, (double)((float)var10 / 128.0F + var21), (double)(((float)var11 + var20) / 128.0F + var23));
-			var19.addVertexWithUV((double)(0.0F + var20), (double)(0.0F + var20), 0.0D, (double)(((float)var10 + var20) / 128.0F + var21), (double)(((float)var11 + var20) / 128.0F + var23));
-			var19.addVertexWithUV((double)(0.0F + var20), 0.0D, 0.0D, (double)(((float)var10 + var20) / 128.0F + var21), (double)((float)var11 / 128.0F + var23));
-			var19.addVertexWithUV(0.0D, 0.0D, 0.0D, (double)((float)var10 / 128.0F + var21), (double)((float)var11 / 128.0F + var23));
-			var19.draw();
-			GL11.glTranslatef((float)this.charWidth[var9], 0.0F, 0.0F);
-			GL11.glEndList();
-		}
-
-		for(var9 = 0; var9 < 32; ++var9) {
-			var10 = (var9 >> 3 & 1) * 85;
-			var11 = (var9 >> 2 & 1) * 170 + var10;
-			var12 = (var9 >> 1 & 1) * 170 + var10;
-			int var22 = (var9 >> 0 & 1) * 170 + var10;
-			if(var9 == 6) {
-				var11 += 85;
-			}
-
-			boolean var24 = var9 >= 16;
-			if(var1.anaglyph) {
-				var15 = (var11 * 30 + var12 * 59 + var22 * 11) / 100;
-				var16 = (var11 * 30 + var12 * 70) / 100;
-				int var17 = (var11 * 30 + var22 * 70) / 100;
-				var11 = var15;
-				var12 = var16;
-				var22 = var17;
-			}
-
-			if(var24) {
-				var11 /= 4;
-				var12 /= 4;
-				var22 /= 4;
-			}
-
-			colorList.put(this.fontDisplayLists + 256 + var9, new Color3f((float)var11 / 255.0F, (float)var12 / 255.0F, (float)var22 / 255.0F));
-		}
-
 	}
 
 	public void drawStringWithShadow(String var1, int var2, int var3, int var4) {
@@ -127,82 +112,25 @@ public class FontRenderer {
 	}
 
 	public void renderString(String var1, int var2, int var3, int var4, boolean var5) {
-		if(var1 != null) {
-			int var6;
-			if(var5) {
-				var6 = var4 & -16777216;
-				var4 = (var4 & 16579836) >> 2;
-				var4 += var6;
+		if (var1 == null) {
+			return;
+		} else {
+			if ((var4 & -67108864) == 0) {
+				var4 |= -16777216;
 			}
 
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.fontTextureName);
-			float var10 = (float)(var4 >> 16 & 255) / 255.0F;
-			float var7 = (float)(var4 >> 8 & 255) / 255.0F;
-			float var8 = (float)(var4 & 255) / 255.0F;
-			float var9 = (float)(var4 >> 24 & 255) / 255.0F;
-			if(var9 == 0.0F) {
-				var9 = 1.0F;
+			if (var5) {
+				var4 = (var4 & 16579836) >> 2 | var4 & -16777216;
 			}
 
-			GL11.glColor4f(var10, var7, var8, var9);
-			this.buffer.clear();
-			GL11.glPushMatrix();
-			GL11.glTranslatef((float)var2, (float)var3, 0.0F);
-
-			for(var6 = 0; var6 < var1.length(); ++var6) {
-				int var11;
-				for(; var1.length() > var6 + 1 && var1.charAt(var6) == 167; var6 += 2) {
-					var11 = "0123456789abcdef".indexOf(var1.toLowerCase().charAt(var6 + 1));
-					if(var11 < 0 || var11 > 15) {
-						var11 = 15;
-					}
-					
-					this.buffer.put(this.fontDisplayLists + 256 + var11 + (var5 ? 16 : 0));
-					if(this.buffer.remaining() == 0) {
-						this.buffer.flip();
-						while (buffer.hasRemaining()) {
-							int i = buffer.get();
-							Color3f color = colorList.get(i);
-							if(color != null) {
-								GL11.glColor3f(color.r, color.g, color.b);
-							}
-							GL11.glCallList(i);
-						}
-						this.buffer.clear();
-					}
-				}
-
-				if(var6 < var1.length()) {
-					var11 = ChatAllowedCharacters.allowedCharacters.indexOf(var1.charAt(var6));
-					if(var11 >= 0) {
-						this.buffer.put(this.fontDisplayLists + var11 + 32);
-					}
-				}
-
-				if(this.buffer.remaining() == 0) {
-					this.buffer.flip();
-					while (buffer.hasRemaining()) {
-						int i = buffer.get();
-						Color3f color = colorList.get(i);
-						if(color != null) {
-							GL11.glColor3f(color.r, color.g, color.b);
-						}
-						GL11.glCallList(i);
-					}
-					this.buffer.clear();
-				}
-			}
-
-			this.buffer.flip();
-			while (buffer.hasRemaining()) {
-				int i = buffer.get();
-				Color3f color = colorList.get(i);
-				if(color != null) {
-					GL11.glColor3f(color.r, color.g, color.b);
-				}
-				GL11.glCallList(i);
-			}
-			GL11.glPopMatrix();
+			this.red = (float) (var4 >> 16 & 255) / 255.0F;
+			this.blue = (float) (var4 >> 8 & 255) / 255.0F;
+			this.green = (float) (var4 & 255) / 255.0F;
+			this.alpha = (float) (var4 >> 24 & 255) / 255.0F;
+			GL11.glColor4f(this.red, this.blue, this.green, this.alpha);
+			this.posX = (float) var2;
+			this.posY = (float) var3;
+			this.renderStringAtPos(var1, var5);
 		}
 	}
 
@@ -306,5 +234,82 @@ public class FontRenderer {
 
 			return var6;
 		}
+	}
+	
+	/**
+	 * Render a single line string at the current (posX,posY) and update posX
+	 */
+	private void renderStringAtPos(String par1Str, boolean par2) {
+		Tessellator t = Tessellator.instance;
+		this.fontTexture.bindTexture();
+		t.startDrawingQuads();
+		for (int var3 = 0; var3 < par1Str.length(); ++var3) {
+			char var4 = par1Str.charAt(var3);
+			int var5;
+			int var6;
+
+			if (var4 == '\u00a7' && var3 + 1 < par1Str.length()) {
+				var5 = "0123456789abcdefklmnor".indexOf((char)Character.toLowerCase(par1Str.charAt(var3 + 1)));
+
+				if (var5 < 16) {
+					if (var5 < 0 || var5 > 15) {
+						var5 = 15;
+					}
+
+					if (par2) {
+						var5 += 16;
+					}
+					
+					t.draw();
+					t.startDrawingQuads();
+
+					var6 = this.colorCode[var5];
+					GL11.glColor4f((float) ((var6 >> 16) & 255) / 255.0F, (float) ((var6 >> 8) & 255) / 255.0F, (float) (var6 & 255) / 255.0F, this.alpha);
+				} else if (var5 == 21) {
+					t.draw();
+					t.startDrawingQuads();
+					GL11.glColor4f(this.red, this.blue, this.green, this.alpha);
+				}
+
+				++var3;
+			} else {
+				var5 = ChatAllowedCharacters.allowedCharacters.indexOf(var4);
+
+				float var11 = 0.98F;
+				boolean var7 = (var5 <= 0) && par2;
+
+				if (var7) {
+					this.posX -= var11;
+					this.posY -= var11;
+				}
+
+				float var8 = this.renderCharAtPos(var5, var4);
+
+				if (var7) {
+					this.posX += var11;
+					this.posY += var11;
+				}
+
+				this.posX += (float) ((int) var8);
+			}
+		}
+		t.draw();
+	}
+	
+	private float renderCharAtPos(int par1, char par2) {
+		return par2 == 32 ? 4.0F : this.renderDefaultChar(par1 + 32);
+	}
+	
+	private float renderDefaultChar(int par1) {
+		float var3 = (float) (par1 % 16 * 8);
+		float var4 = (float) (par1 / 16 * 8);
+		float var5 = 0.0F;
+		float var6 = (float) this.charWidth[par1] - 0.02F;
+		Tessellator t = Tessellator.instance;
+		t.addVertexWithUV(this.posX + 0.01F + var5, this.posY + 0.01F, 0.0F, (var3 + 0.02F) / 128.0F, (var4 + 0.02F) / 128.0F);
+		t.addVertexWithUV(this.posX + 0.01F - var5, this.posY + 7.99F, 0.0F, (var3 + 0.02F) / 128.0F, (var4 + 7.96F) / 128.0F);
+		t.addVertexWithUV(this.posX + var6 - var5, this.posY + 7.99F, 0.0F, (var3 + var6) / 128.0F, (var4 + 7.96F) / 128.0F);
+		t.addVertexWithUV(this.posX + var6 + var5, this.posY + 0.01F, 0.0F, (var3 + var6) / 128.0F, (var4 + 0.02F) / 128.0F);
+		return (float) this.charWidth[par1];
 	}
 }
