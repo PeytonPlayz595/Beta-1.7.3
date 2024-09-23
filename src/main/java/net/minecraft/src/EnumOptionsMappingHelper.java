@@ -28,6 +28,11 @@ class EnumOptionsMappingHelper {
 			enumOptionsMappingHelperArray[EnumOptions.AMBIENT_OCCLUSION.ordinal()] = 5;
 		} catch (NoSuchFieldError var1) {
 		}
+		
+		try {
+			enumOptionsMappingHelperArray[EnumOptions.PARTICLES.ordinal()] = 6;
+		} catch (NoSuchFieldError var1) {
+		}
 
 	}
 }

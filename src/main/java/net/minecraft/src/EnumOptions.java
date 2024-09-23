@@ -13,7 +13,8 @@ public enum EnumOptions {
 	DIFFICULTY("options.difficulty", false, false),
 	GRAPHICS("options.graphics", false, false),
 	AMBIENT_OCCLUSION("options.ao", false, true),
-	GUI_SCALE("options.guiScale", false, false);
+	GUI_SCALE("options.guiScale", false, false),
+	PARTICLES("Particles", false, true);
 
 	private final boolean enumFloat;
 	private final boolean enumBoolean;

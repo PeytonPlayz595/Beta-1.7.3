@@ -557,7 +557,9 @@ public class EntityRenderer {
 			var6.func_1187_b(var4, var1);
 			RenderHelper.disableStandardItemLighting();
 			this.setupFog(0, var1);
-			var6.renderParticles(var4, var1);
+			if(this.mc.gameSettings.particles) {
+				var6.renderParticles(var4, var1);
+			}
 			EntityPlayer var21;
 			if(this.mc.objectMouseOver != null && var4.isInsideOfMaterial(Material.water) && var4 instanceof EntityPlayer) {
 				var21 = (EntityPlayer)var4;
@@ -629,6 +631,10 @@ public class EntityRenderer {
 	}
 
 	private void addRainParticles() {
+		if(!this.mc.gameSettings.particles) {
+			return;
+		}
+		
 		float var1 = this.mc.theWorld.func_27162_g(1.0F);
 		if(!this.mc.gameSettings.fancyGraphics) {
 			var1 /= 2.0F;

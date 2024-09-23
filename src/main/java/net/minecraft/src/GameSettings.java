@@ -27,6 +27,7 @@ public class GameSettings {
 	public int limitFramerate = 1;
 	public boolean fancyGraphics = true;
 	public boolean ambientOcclusion = true;
+	public boolean particles = true;
 	public String skin = "Default";
 	public KeyBinding keyBindForward = new KeyBinding("key.forward", 17);
 	public KeyBinding keyBindLeft = new KeyBinding("key.left", 30);
@@ -138,6 +139,10 @@ public class GameSettings {
 			this.ambientOcclusion = !this.ambientOcclusion;
 			this.mc.renderGlobal.loadRenderers();
 		}
+		
+		if(var1 == EnumOptions.PARTICLES) {
+			this.particles = !this.particles;
+		}
 
 		this.saveOptions();
 	}
@@ -147,6 +152,7 @@ public class GameSettings {
 	}
 
 	public boolean getOptionOrdinalValue(EnumOptions var1) {
+		System.out.println(EnumOptionsMappingHelper.enumOptionsMappingHelperArray[var1.ordinal()]);
 		switch(EnumOptionsMappingHelper.enumOptionsMappingHelperArray[var1.ordinal()]) {
 		case 1:
 			return this.invertMouse;
@@ -158,6 +164,8 @@ public class GameSettings {
 			return this.advancedOpengl;
 		case 5:
 			return this.ambientOcclusion;
+		case 6:
+			return this.particles;
 		default:
 			return false;
 		}
@@ -256,6 +264,10 @@ public class GameSettings {
 					if(var3[0].equals("lastServer") && var3.length >= 2) {
 						this.lastServer = var3[1];
 					}
+					
+					if(var3[0].equals("particles")) {
+						this.particles = var3[1].equals("true");
+					}
 
 					for(int var4 = 0; var4 < this.keyBindings.length; ++var4) {
 						if(var3[0].equals("key_" + this.keyBindings[var4].keyDescription)) {
@@ -296,6 +308,7 @@ public class GameSettings {
 			var1.println("ao:" + this.ambientOcclusion);
 			var1.println("skin:" + this.skin);
 			var1.println("lastServer:" + this.lastServer);
+			var1.println("particles:" + this.particles);
 
 			for(int var2 = 0; var2 < this.keyBindings.length; ++var2) {
 				var1.println("key_" + this.keyBindings[var2].keyDescription + ":" + this.keyBindings[var2].keyCode);

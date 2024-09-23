@@ -186,7 +186,6 @@ public class NetworkManager {
 	}
 
 	private void onNetworkError(Exception var1) {
-		var1.printStackTrace();
 		this.networkShutdown("disconnect.genericReason", new Object[]{"Internal exception: " + var1.toString()});
 	}
 
