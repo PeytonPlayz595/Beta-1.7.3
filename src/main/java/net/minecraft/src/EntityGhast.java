@@ -12,7 +12,6 @@ public class EntityGhast extends EntityFlying implements IMob {
 
 	public EntityGhast(World var1) {
 		super(var1);
-		this.texture = "/mob/ghast.png";
 		this.setSize(4.0F, 4.0F);
 		this.isImmuneToFire = true;
 	}
@@ -25,7 +24,6 @@ public class EntityGhast extends EntityFlying implements IMob {
 	public void onUpdate() {
 		super.onUpdate();
 		byte var1 = this.dataWatcher.getWatchableObjectByte(16);
-		this.texture = var1 == 1 ? "/mob/ghast_fire.png" : "/mob/ghast.png";
 	}
 
 	protected void updatePlayerActionState() {

@@ -2,9 +2,15 @@ package net.minecraft.src;
 
 import net.PeytonPlayz585.opengl.GL11;
 import net.PeytonPlayz585.opengl.GL12;
+import net.PeytonPlayz585.textures.TextureLocation;
 import net.minecraft.client.Minecraft;
 
 public class ItemRenderer {
+	
+	private static final TextureLocation terrainTexture = new TextureLocation("/terrain.png");
+	private static final TextureLocation itemsTextures = new TextureLocation("/gui/items.png");
+	private static final TextureLocation waterTexture = new TextureLocation("/misc/water.png");
+	
 	private Minecraft mc;
 	private ItemStack itemToRender = null;
 	private float equippedProgress = 0.0F;
@@ -21,13 +27,13 @@ public class ItemRenderer {
 	public void renderItem(EntityLiving var1, ItemStack var2) {
 		GL11.glPushMatrix();
 		if(var2.itemID < 256 && RenderBlocks.renderItemIn3d(Block.blocksList[var2.itemID].getRenderType())) {
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.mc.renderEngine.getTexture("/terrain.png"));
+			terrainTexture.bindTexture();
 			this.renderBlocksInstance.renderBlockOnInventory(Block.blocksList[var2.itemID], var2.getItemDamage(), var1.getEntityBrightness(1.0F));
 		} else {
 			if(var2.itemID < 256) {
-				GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.mc.renderEngine.getTexture("/terrain.png"));
+				terrainTexture.bindTexture();
 			} else {
-				GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.mc.renderEngine.getTexture("/gui/items.png"));
+				itemsTextures.bindTexture();
 			}
 
 			Tessellator var3 = Tessellator.instance;
@@ -279,8 +285,7 @@ public class ItemRenderer {
 		GL11.glDisable(GL11.GL_ALPHA_TEST);
 		int var2;
 		if(this.mc.thePlayer.isBurning()) {
-			var2 = this.mc.renderEngine.getTexture("/terrain.png");
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, var2);
+			terrainTexture.bindTexture();
 			this.renderFireInFirstPerson(var1);
 		}
 
@@ -288,8 +293,7 @@ public class ItemRenderer {
 			var2 = MathHelper.floor_double(this.mc.thePlayer.posX);
 			int var3 = MathHelper.floor_double(this.mc.thePlayer.posY);
 			int var4 = MathHelper.floor_double(this.mc.thePlayer.posZ);
-			int var5 = this.mc.renderEngine.getTexture("/terrain.png");
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, var5);
+			terrainTexture.bindTexture();
 			int var6 = this.mc.theWorld.getBlockId(var2, var3, var4);
 			if(this.mc.theWorld.isBlockNormalCube(var2, var3, var4)) {
 				this.renderInsideOfBlock(var1, Block.blocksList[var6].getBlockTextureFromSide(2));
@@ -313,8 +317,7 @@ public class ItemRenderer {
 		}
 
 		if(this.mc.thePlayer.isInsideOfMaterial(Material.water)) {
-			var2 = this.mc.renderEngine.getTexture("/misc/water.png");
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, var2);
+			waterTexture.bindTexture();
 			this.renderWarpedTextureOverlay(var1);
 		}
 

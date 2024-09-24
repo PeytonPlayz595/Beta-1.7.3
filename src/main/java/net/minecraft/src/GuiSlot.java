@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.PeytonPlayz585.input.Mouse;
 import net.PeytonPlayz585.opengl.GL11;
+import net.PeytonPlayz585.textures.TextureLocation;
 import net.minecraft.client.Minecraft;
 
 public abstract class GuiSlot {
@@ -25,6 +26,8 @@ public abstract class GuiSlot {
 	private boolean field_25123_p = true;
 	private boolean field_27262_q;
 	private int field_27261_r;
+	
+	private static final TextureLocation backgroundTexture = new TextureLocation("/gui/background.png");
 
 	public GuiSlot(Minecraft var1, int var2, int var3, int var4, int var5, int var6) {
 		this.mc = var1;
@@ -186,7 +189,7 @@ public abstract class GuiSlot {
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glDisable(GL11.GL_FOG);
 		Tessellator var16 = Tessellator.instance;
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.mc.renderEngine.getTexture("/gui/background.png"));
+		backgroundTexture.bindTexture();
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		float var17 = 32.0F;
 		var16.startDrawingQuads();
@@ -302,7 +305,7 @@ public abstract class GuiSlot {
 
 	private void overlayBackground(int var1, int var2, int var3, int var4) {
 		Tessellator var5 = Tessellator.instance;
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.mc.renderEngine.getTexture("/gui/background.png"));
+		backgroundTexture.bindTexture();
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		float var6 = 32.0F;
 		var5.startDrawingQuads();

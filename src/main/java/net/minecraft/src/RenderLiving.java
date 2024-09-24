@@ -4,7 +4,7 @@ import net.PeytonPlayz585.opengl.GL11;
 import net.PeytonPlayz585.opengl.GL12;
 import net.minecraft.client.Minecraft;
 
-public class RenderLiving extends Render {
+public abstract class RenderLiving extends Render {
 	protected ModelBase mainModel;
 	protected ModelBase renderPassModel;
 

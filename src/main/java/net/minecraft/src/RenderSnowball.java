@@ -2,8 +2,11 @@ package net.minecraft.src;
 
 import net.PeytonPlayz585.opengl.GL11;
 import net.PeytonPlayz585.opengl.GL12;
+import net.PeytonPlayz585.textures.TextureLocation;
 
 public class RenderSnowball extends Render {
+	
+	private static final TextureLocation itemTexture = new TextureLocation("/gui/items.png");
 	private int itemIconIndex;
 
 	public RenderSnowball(int var1) {
@@ -15,7 +18,7 @@ public class RenderSnowball extends Render {
 		GL11.glTranslatef((float)var2, (float)var4, (float)var6);
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 		GL11.glScalef(0.5F, 0.5F, 0.5F);
-		this.loadTexture("/gui/items.png");
+		itemTexture.bindTexture();
 		Tessellator var10 = Tessellator.instance;
 		float var11 = (float)(this.itemIconIndex % 16 * 16 + 0) / 256.0F;
 		float var12 = (float)(this.itemIconIndex % 16 * 16 + 16) / 256.0F;
@@ -35,5 +38,10 @@ public class RenderSnowball extends Render {
 		var10.draw();
 		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 		GL11.glPopMatrix();
+	}
+	
+	@Override
+	protected boolean loadDownloadableImageTexture(String s, String s1) {
+		return true;
 	}
 }

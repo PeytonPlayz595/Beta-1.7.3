@@ -1,6 +1,8 @@
 package net.minecraft.src;
 
 import net.PeytonPlayz585.opengl.GL11;
+import net.PeytonPlayz585.profile.Profile;
+import net.PeytonPlayz585.textures.TextureLocation;
 import net.minecraft.client.Minecraft;
 
 public class RenderPlayer extends RenderLiving {
@@ -8,6 +10,14 @@ public class RenderPlayer extends RenderLiving {
 	private ModelBiped modelArmorChestplate = new ModelBiped(1.0F);
 	private ModelBiped modelArmor = new ModelBiped(0.5F);
 	private static final String[] armorFilenamePrefix = new String[]{"cloth", "chain", "iron", "diamond", "gold"};
+	private static final TextureLocation[][] armorTextures = new TextureLocation[armorFilenamePrefix.length][2];
+
+	static {
+		for(int i = 0; i < armorFilenamePrefix.length; ++i) {
+			armorTextures[i][0] = new TextureLocation("/armor/" + armorFilenamePrefix[i] + "_1.png");
+			armorTextures[i][1] = new TextureLocation("/armor/" + armorFilenamePrefix[i] + "_2.png");
+		}
+	}
 
 	public RenderPlayer() {
 		super(new ModelBiped(0.0F), 0.5F);
@@ -19,7 +29,7 @@ public class RenderPlayer extends RenderLiving {
 			Item var5 = var4.getItem();
 			if(var5 instanceof ItemArmor) {
 				ItemArmor var6 = (ItemArmor)var5;
-				this.loadTexture("/armor/" + armorFilenamePrefix[var6.renderIndex] + "_" + (var2 == 2 ? 2 : 1) + ".png");
+				armorTextures[var6.renderIndex][var2 != 2 ? 0 : 1].bindTexture();
 				ModelBiped var7 = var2 == 2 ? this.modelArmor : this.modelArmorChestplate;
 				var7.bipedHead.showModel = var2 == 0;
 				var7.bipedHeadwear.showModel = var2 == 0;
@@ -277,5 +287,17 @@ public class RenderPlayer extends RenderLiving {
 
 	public void doRender(Entity var1, double var2, double var4, double var6, float var8, float var9) {
 		this.renderPlayer((EntityPlayer)var1, var2, var4, var6, var8, var9);
+	}
+	
+	private static final TextureLocation defaultPlayerSkin = new TextureLocation("/mob/char.png");
+	
+	@Override
+	protected boolean loadDownloadableImageTexture(String s, String s1) {
+		if(Minecraft.getMinecraft().theWorld.multiplayerWorld) {
+			defaultPlayerSkin.bindTexture();
+		} else {
+			Profile.defaultOptionsTextures[Profile.presetSkinId].bindTexture();
+		}
+		return true;
 	}
 }

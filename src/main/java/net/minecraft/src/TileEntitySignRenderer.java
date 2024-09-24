@@ -1,9 +1,12 @@
 package net.minecraft.src;
 
 import net.PeytonPlayz585.opengl.GL11;
+import net.PeytonPlayz585.textures.TextureLocation;
 
 public class TileEntitySignRenderer extends TileEntitySpecialRenderer {
 	private SignModel signModel = new SignModel();
+	
+	private static final TextureLocation signTexture = new TextureLocation("/item/sign.png");
 
 	public void renderTileEntitySignAt(TileEntitySign var1, double var2, double var4, double var6, float var8) {
 		Block var9 = var1.getBlockType();
@@ -36,7 +39,7 @@ public class TileEntitySignRenderer extends TileEntitySpecialRenderer {
 			this.signModel.signStick.showModel = false;
 		}
 
-		this.bindTextureByName("/item/sign.png");
+		signTexture.bindTexture();
 		GL11.glPushMatrix();
 		GL11.glScalef(var10, -var10, -var10);
 		this.signModel.func_887_a();

@@ -1,9 +1,13 @@
 package net.minecraft.src;
 
 import net.PeytonPlayz585.opengl.GL11;
+import net.PeytonPlayz585.textures.TextureLocation;
 
 public class RenderMinecart extends Render {
 	protected ModelBase modelMinecart;
+	
+	private static final TextureLocation terrainTexture = new TextureLocation("/terrain.png");
+	private static final TextureLocation minecartTexture = new TextureLocation("/item/cart.png");
 
 	public RenderMinecart() {
 		this.shadowSize = 0.5F;
@@ -54,7 +58,7 @@ public class RenderMinecart extends Render {
 		}
 
 		if(var1.minecartType != 0) {
-			this.loadTexture("/terrain.png");
+			terrainTexture.bindTexture();
 			float var25 = 12.0F / 16.0F;
 			GL11.glScalef(var25, var25, var25);
 			GL11.glTranslatef(0.0F, 5.0F / 16.0F, 0.0F);
@@ -70,7 +74,7 @@ public class RenderMinecart extends Render {
 			GL11.glScalef(1.0F / var25, 1.0F / var25, 1.0F / var25);
 		}
 
-		this.loadTexture("/item/cart.png");
+		minecartTexture.bindTexture();
 		GL11.glScalef(-1.0F, -1.0F, 1.0F);
 		this.modelMinecart.render(0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 1.0F / 16.0F);
 		GL11.glPopMatrix();
@@ -78,5 +82,10 @@ public class RenderMinecart extends Render {
 
 	public void doRender(Entity var1, double var2, double var4, double var6, float var8, float var9) {
 		this.func_152_a((EntityMinecart)var1, var2, var4, var6, var8, var9);
+	}
+	
+	@Override
+	protected boolean loadDownloadableImageTexture(String s, String s1) {
+		return true;
 	}
 }

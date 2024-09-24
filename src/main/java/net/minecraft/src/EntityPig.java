@@ -3,7 +3,6 @@ package net.minecraft.src;
 public class EntityPig extends EntityAnimal {
 	public EntityPig(World var1) {
 		super(var1);
-		this.texture = "/mob/pig.png";
 		this.setSize(0.9F, 0.9F);
 	}
 

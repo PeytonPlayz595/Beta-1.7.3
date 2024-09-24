@@ -48,7 +48,6 @@ public abstract class EntityPlayer extends EntityLiving {
 		this.field_9351_C = "humanoid";
 		this.field_9353_B = 180.0F;
 		this.fireResistance = 20;
-		this.texture = "/mob/char.png";
 	}
 
 	protected void entityInit() {

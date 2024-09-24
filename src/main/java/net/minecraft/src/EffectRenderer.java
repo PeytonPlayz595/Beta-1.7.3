@@ -4,12 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.PeytonPlayz585.opengl.GL11;
+import net.PeytonPlayz585.textures.TextureLocation;
 
 public class EffectRenderer {
 	protected World worldObj;
 	private List[] fxLayers = new List[4];
 	private RenderEngine renderer;
 	private Random rand = new Random();
+	
+	private static final TextureLocation particlesTexture = new TextureLocation("/particles.png");
+	private static final TextureLocation terrainTexture = new TextureLocation("/terrain.png");
+	private static final TextureLocation itemsTexture = new TextureLocation("/gui/items.png");
 
 	public EffectRenderer(World var1, RenderEngine var2) {
 		if(var1 != null) {
@@ -58,20 +63,18 @@ public class EffectRenderer {
 
 		for(int var8 = 0; var8 < 3; ++var8) {
 			if(this.fxLayers[var8].size() != 0) {
-				int var9 = 0;
 				if(var8 == 0) {
-					var9 = this.renderer.getTexture("/particles.png");
+					particlesTexture.bindTexture();
 				}
 
 				if(var8 == 1) {
-					var9 = this.renderer.getTexture("/terrain.png");
+					terrainTexture.bindTexture();
 				}
 
 				if(var8 == 2) {
-					var9 = this.renderer.getTexture("/gui/items.png");
+					itemsTexture.bindTexture();
 				}
 
-				GL11.glBindTexture(GL11.GL_TEXTURE_2D, var9);
 				Tessellator var10 = Tessellator.instance;
 				var10.startDrawingQuads();
 

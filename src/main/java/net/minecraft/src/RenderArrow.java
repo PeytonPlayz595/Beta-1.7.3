@@ -2,11 +2,15 @@ package net.minecraft.src;
 
 import net.PeytonPlayz585.opengl.GL11;
 import net.PeytonPlayz585.opengl.GL12;
+import net.PeytonPlayz585.textures.TextureLocation;
 
 public class RenderArrow extends Render {
+	
+	private static final TextureLocation arrowsTexture = new TextureLocation("/item/arrows.png");
+	
 	public void renderArrow(EntityArrow var1, double var2, double var4, double var6, float var8, float var9) {
 		if(var1.prevRotationYaw != 0.0F || var1.prevRotationPitch != 0.0F) {
-			this.loadTexture("/item/arrows.png");
+			arrowsTexture.bindTexture();
 			GL11.glPushMatrix();
 			GL11.glTranslatef((float)var2, (float)var4, (float)var6);
 			GL11.glRotatef(var1.prevRotationYaw + (var1.rotationYaw - var1.prevRotationYaw) * var9 - 90.0F, 0.0F, 1.0F, 0.0F);
@@ -65,5 +69,10 @@ public class RenderArrow extends Render {
 
 	public void doRender(Entity var1, double var2, double var4, double var6, float var8, float var9) {
 		this.renderArrow((EntityArrow)var1, var2, var4, var6, var8, var9);
+	}
+	
+	@Override
+	protected boolean loadDownloadableImageTexture(String s, String s1) {
+		return true;
 	}
 }

@@ -7,7 +7,6 @@ public class EntitySlime extends EntityLiving implements IMob {
 
 	public EntitySlime(World var1) {
 		super(var1);
-		this.texture = "/mob/slime.png";
 		int var2 = 1 << this.rand.nextInt(3);
 		this.yOffset = 0.0F;
 		this.slimeJumpDelay = this.rand.nextInt(20) + 10;

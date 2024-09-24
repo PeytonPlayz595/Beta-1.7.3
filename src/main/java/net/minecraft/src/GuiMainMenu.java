@@ -8,8 +8,12 @@ import java.util.Calendar;
 import java.util.Date;
 
 import net.PeytonPlayz585.opengl.GL11;
+import net.PeytonPlayz585.textures.TextureLocation;
 
 public class GuiMainMenu extends GuiScreen {
+	
+	private static final TextureLocation logoTexture = new TextureLocation("/title/mclogo.png");
+	
 	private static final Random rand = new Random();
 	private float updateCounter = 0.0F;
 	private String splashText = "missingno";
@@ -83,7 +87,7 @@ public class GuiMainMenu extends GuiScreen {
 		short var5 = 274;
 		int var6 = this.width / 2 - var5 / 2;
 		byte var7 = 30;
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.mc.renderEngine.getTexture("/title/mclogo.png"));
+		logoTexture.bindTexture();
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		this.drawTexturedModalRect(var6 + 0, var7 + 0, 0, 0, 155, 44);
 		this.drawTexturedModalRect(var6 + 155, var7 + 0, 0, 45, 155, 44);

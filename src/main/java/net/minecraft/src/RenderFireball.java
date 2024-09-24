@@ -2,8 +2,12 @@ package net.minecraft.src;
 
 import net.PeytonPlayz585.opengl.GL11;
 import net.PeytonPlayz585.opengl.GL12;
+import net.PeytonPlayz585.textures.TextureLocation;
 
 public class RenderFireball extends Render {
+	
+	private static final TextureLocation itemsTexture = new TextureLocation("/gui/items.png");
+	
 	public void func_4012_a(EntityFireball var1, double var2, double var4, double var6, float var8, float var9) {
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)var2, (float)var4, (float)var6);
@@ -11,7 +15,7 @@ public class RenderFireball extends Render {
 		float var10 = 2.0F;
 		GL11.glScalef(var10 / 1.0F, var10 / 1.0F, var10 / 1.0F);
 		int var11 = Item.snowball.getIconFromDamage(0);
-		this.loadTexture("/gui/items.png");
+		itemsTexture.bindTexture();
 		Tessellator var12 = Tessellator.instance;
 		float var13 = (float)(var11 % 16 * 16 + 0) / 256.0F;
 		float var14 = (float)(var11 % 16 * 16 + 16) / 256.0F;
@@ -35,5 +39,10 @@ public class RenderFireball extends Render {
 
 	public void doRender(Entity var1, double var2, double var4, double var6, float var8, float var9) {
 		this.func_4012_a((EntityFireball)var1, var2, var4, var6, var8, var9);
+	}
+	
+	@Override
+	protected boolean loadDownloadableImageTexture(String s, String s1) {
+		return true;
 	}
 }

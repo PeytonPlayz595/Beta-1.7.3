@@ -6,7 +6,6 @@ public class EntityCreeper extends EntityMob {
 
 	public EntityCreeper(World var1) {
 		super(var1);
-		this.texture = "/mob/creeper.png";
 	}
 
 	protected void entityInit() {

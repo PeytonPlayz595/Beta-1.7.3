@@ -8,4 +8,9 @@ public class RenderEntity extends Render {
 		renderOffsetAABB(var1.boundingBox, var2 - var1.lastTickPosX, var4 - var1.lastTickPosY, var6 - var1.lastTickPosZ);
 		GL11.glPopMatrix();
 	}
+	
+	@Override
+	protected boolean loadDownloadableImageTexture(String s, String s1) {
+		return true;
+	}
 }

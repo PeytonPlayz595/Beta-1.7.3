@@ -18,7 +18,6 @@ public class EntitySquid extends EntityWaterMob {
 
 	public EntitySquid(World var1) {
 		super(var1);
-		this.texture = "/mob/squid.png";
 		this.setSize(0.95F, 0.95F);
 		this.field_21080_l = 1.0F / (this.rand.nextFloat() + 1.0F) * 0.2F;
 	}

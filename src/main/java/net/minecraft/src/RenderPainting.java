@@ -2,9 +2,12 @@ package net.minecraft.src;
 
 import net.PeytonPlayz585.opengl.GL11;
 import net.PeytonPlayz585.opengl.GL12;
+import net.PeytonPlayz585.textures.TextureLocation;
 
 public class RenderPainting extends Render {
 	private Random rand = new Random();
+	
+	private static final TextureLocation paintingTexture = new TextureLocation("/art/kz.png");
 
 	public void func_158_a(EntityPainting var1, double var2, double var4, double var6, float var8, float var9) {
 		this.rand.setSeed(187L);
@@ -12,7 +15,7 @@ public class RenderPainting extends Render {
 		GL11.glTranslatef((float)var2, (float)var4, (float)var6);
 		GL11.glRotatef(var8, 0.0F, 1.0F, 0.0F);
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-		this.loadTexture("/art/kz.png");
+		paintingTexture.bindTexture();
 		EnumArt var10 = var1.art;
 		float var11 = 1.0F / 16.0F;
 		GL11.glScalef(var11, var11, var11);
@@ -114,5 +117,10 @@ public class RenderPainting extends Render {
 
 	public void doRender(Entity var1, double var2, double var4, double var6, float var8, float var9) {
 		this.func_158_a((EntityPainting)var1, var2, var4, var6, var8, var9);
+	}
+	
+	@Override
+	protected boolean loadDownloadableImageTexture(String s, String s1) {
+		return true;
 	}
 }

@@ -1,6 +1,11 @@
 package net.minecraft.src;
 
+import net.PeytonPlayz585.textures.TextureLocation;
+
 public class RenderWolf extends RenderLiving {
+	
+	private static final TextureLocation wolfTexture = new TextureLocation("/mob/wolf.png");
+	
 	public RenderWolf(ModelBase var1, float var2) {
 		super(var1, var2);
 	}
@@ -30,5 +35,11 @@ public class RenderWolf extends RenderLiving {
 
 	public void doRender(Entity var1, double var2, double var4, double var6, float var8, float var9) {
 		this.renderWolf((EntityWolf)var1, var2, var4, var6, var8, var9);
+	}
+	
+	@Override
+	protected boolean loadDownloadableImageTexture(String s, String s1) {
+		wolfTexture.bindTexture();
+		return true;
 	}
 }

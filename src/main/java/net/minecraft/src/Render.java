@@ -1,8 +1,13 @@
 package net.minecraft.src;
 
 import net.PeytonPlayz585.opengl.GL11;
+import net.PeytonPlayz585.textures.TextureLocation;
 
 public abstract class Render {
+	
+	private static final TextureLocation terrainTexture = new TextureLocation("/terrain.png");
+	private static final TextureLocation shadowTexture = new TextureLocation("%clamp%/misc/shadow.png");
+	
 	protected RenderManager renderManager;
 	private ModelBase modelBase = new ModelBiped();
 	private RenderBlocks renderBlocks = new RenderBlocks();
@@ -11,21 +16,13 @@ public abstract class Render {
 
 	public abstract void doRender(Entity var1, double var2, double var4, double var6, float var8, float var9);
 
+	@Deprecated
 	protected void loadTexture(String var1) {
 		RenderEngine var2 = this.renderManager.renderEngine;
 		var2.bindTexture(var2.getTexture(var1));
 	}
 
-	protected boolean loadDownloadableImageTexture(String var1, String var2) {
-		RenderEngine var3 = this.renderManager.renderEngine;
-		int var4 = var3.getTextureForDownloadableImage(var1, var2);
-		if(var4 >= 0) {
-			var3.bindTexture(var4);
-			return true;
-		} else {
-			return false;
-		}
-	}
+	protected abstract boolean loadDownloadableImageTexture(String s, String s1);
 
 	private void renderEntityOnFire(Entity var1, double var2, double var4, double var6, float var8) {
 		GL11.glDisable(GL11.GL_LIGHTING);
@@ -40,7 +37,7 @@ public abstract class Render {
 		GL11.glTranslatef((float)var2, (float)var4, (float)var6);
 		float var16 = var1.width * 1.4F;
 		GL11.glScalef(var16, var16, var16);
-		this.loadTexture("/terrain.png");
+		terrainTexture.bindTexture();
 		Tessellator var17 = Tessellator.instance;
 		float var18 = 0.5F;
 		float var19 = 0.0F;
@@ -92,7 +89,7 @@ public abstract class Render {
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		RenderEngine var10 = this.renderManager.renderEngine;
-		var10.bindTexture(var10.getTexture("%clamp%/misc/shadow.png"));
+		shadowTexture.bindTexture();
 		World var11 = this.getWorldFromRenderManager();
 		GL11.glDepthMask(false);
 		float var12 = this.shadowSize;

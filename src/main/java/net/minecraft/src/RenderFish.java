@@ -2,8 +2,12 @@ package net.minecraft.src;
 
 import net.PeytonPlayz585.opengl.GL11;
 import net.PeytonPlayz585.opengl.GL12;
+import net.PeytonPlayz585.textures.TextureLocation;
 
 public class RenderFish extends Render {
+	
+	private static final TextureLocation particlesTexture = new TextureLocation("/particles.png");
+	
 	public void func_4011_a(EntityFish var1, double var2, double var4, double var6, float var8, float var9) {
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)var2, (float)var4, (float)var6);
@@ -11,7 +15,7 @@ public class RenderFish extends Render {
 		GL11.glScalef(0.5F, 0.5F, 0.5F);
 		byte var10 = 1;
 		byte var11 = 2;
-		this.loadTexture("/particles.png");
+		particlesTexture.bindTexture();
 		Tessellator var12 = Tessellator.instance;
 		float var13 = (float)(var10 * 8 + 0) / 128.0F;
 		float var14 = (float)(var10 * 8 + 8) / 128.0F;
@@ -80,5 +84,10 @@ public class RenderFish extends Render {
 
 	public void doRender(Entity var1, double var2, double var4, double var6, float var8, float var9) {
 		this.func_4011_a((EntityFish)var1, var2, var4, var6, var8, var9);
+	}
+	
+	@Override
+	protected boolean loadDownloadableImageTexture(String s, String s1) {
+		return true;
 	}
 }

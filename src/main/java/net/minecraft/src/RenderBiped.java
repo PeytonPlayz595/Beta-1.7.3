@@ -1,13 +1,17 @@
 package net.minecraft.src;
 
 import net.PeytonPlayz585.opengl.GL11;
+import net.PeytonPlayz585.textures.TextureLocation;
 
 public class RenderBiped extends RenderLiving {
 	protected ModelBiped modelBipedMain;
+	
+	protected TextureLocation texture;
 
-	public RenderBiped(ModelBiped var1, float var2) {
+	public RenderBiped(ModelBiped var1, float var2, String tex) {
 		super(var1, var2);
 		this.modelBipedMain = var1;
+		texture = new TextureLocation(tex);
 	}
 
 	protected void renderEquippedItems(EntityLiving var1, float var2) {
@@ -43,5 +47,11 @@ public class RenderBiped extends RenderLiving {
 			GL11.glPopMatrix();
 		}
 
+	}
+	
+	@Override
+	protected boolean loadDownloadableImageTexture(String s, String s1) {
+		texture.bindTexture();
+		return true;
 	}
 }

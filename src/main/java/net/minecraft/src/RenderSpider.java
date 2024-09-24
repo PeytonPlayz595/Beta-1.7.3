@@ -1,8 +1,13 @@
 package net.minecraft.src;
 
 import net.PeytonPlayz585.opengl.GL11;
+import net.PeytonPlayz585.textures.TextureLocation;
 
 public class RenderSpider extends RenderLiving {
+	
+	private static final TextureLocation spiderTexture = new TextureLocation("/mob/spider.png");
+	private static final TextureLocation spiderEyesTexture = new TextureLocation("/mob/spider_eyes.png");
+	
 	public RenderSpider() {
 		super(new ModelSpider(), 1.0F);
 		this.setRenderPassModel(new ModelSpider());
@@ -18,7 +23,7 @@ public class RenderSpider extends RenderLiving {
 		} else if(var2 != 0) {
 			return false;
 		} else {
-			this.loadTexture("/mob/spider_eyes.png");
+			spiderEyesTexture.bindTexture();
 			float var4 = (1.0F - var1.getEntityBrightness(1.0F)) * 0.5F;
 			GL11.glEnable(GL11.GL_BLEND);
 			GL11.glDisable(GL11.GL_ALPHA_TEST);
@@ -34,5 +39,11 @@ public class RenderSpider extends RenderLiving {
 
 	protected boolean shouldRenderPass(EntityLiving var1, int var2, float var3) {
 		return this.setSpiderEyeBrightness((EntitySpider)var1, var2, var3);
+	}
+	
+	@Override
+	protected boolean loadDownloadableImageTexture(String s, String s1) {
+		spiderTexture.bindTexture();
+		return true;
 	}
 }

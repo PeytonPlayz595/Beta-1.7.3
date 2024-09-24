@@ -1,8 +1,12 @@
 package net.minecraft.src;
 
 import net.PeytonPlayz585.opengl.GL11;
+import net.PeytonPlayz585.textures.TextureLocation;
 
 public class RenderSquid extends RenderLiving {
+	
+	private static final TextureLocation squidTexture = new TextureLocation("/mob/squid.png");
+	
 	public RenderSquid(ModelBase var1, float var2) {
 		super(var1, var2);
 	}
@@ -47,5 +51,11 @@ public class RenderSquid extends RenderLiving {
 
 	public void doRender(Entity var1, double var2, double var4, double var6, float var8, float var9) {
 		this.func_21008_a((EntitySquid)var1, var2, var4, var6, var8, var9);
+	}
+	
+	@Override
+	protected boolean loadDownloadableImageTexture(String s, String s1) {
+		squidTexture.bindTexture();
+		return true;
 	}
 }

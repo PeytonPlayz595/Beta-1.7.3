@@ -6,6 +6,7 @@ import java.util.List;
 import net.PeytonPlayz585.input.Keyboard;
 import net.PeytonPlayz585.input.Mouse;
 import net.PeytonPlayz585.opengl.GL11;
+import net.PeytonPlayz585.textures.TextureLocation;
 import net.minecraft.client.Minecraft;
 
 public class GuiScreen extends Gui {
@@ -17,6 +18,8 @@ public class GuiScreen extends Gui {
 	protected FontRenderer fontRenderer;
 	public GuiParticle field_25091_h;
 	private GuiButton selectedButton = null;
+	
+	private static final TextureLocation backgroundTexture = new TextureLocation("/gui/background.png");
 
 	public void drawScreen(int var1, int var2, float var3) {
 		for(int var4 = 0; var4 < this.controlList.size(); ++var4) {
@@ -137,7 +140,7 @@ public class GuiScreen extends Gui {
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glDisable(GL11.GL_FOG);
 		Tessellator var2 = Tessellator.instance;
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.mc.renderEngine.getTexture("/gui/background.png"));
+		backgroundTexture.bindTexture();
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		float var3 = 32.0F;
 		var2.startDrawingQuads();

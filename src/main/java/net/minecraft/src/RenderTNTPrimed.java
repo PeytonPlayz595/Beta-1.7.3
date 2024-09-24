@@ -1,8 +1,12 @@
 package net.minecraft.src;
 
 import net.PeytonPlayz585.opengl.GL11;
+import net.PeytonPlayz585.textures.TextureLocation;
 
 public class RenderTNTPrimed extends Render {
+	
+	private static final TextureLocation terrainTexture = new TextureLocation("/terrain.png");
+	
 	private RenderBlocks blockRenderer = new RenderBlocks();
 
 	public RenderTNTPrimed() {
@@ -30,7 +34,7 @@ public class RenderTNTPrimed extends Render {
 		}
 
 		var10 = (1.0F - ((float)var1.fuse - var9 + 1.0F) / 100.0F) * 0.8F;
-		this.loadTexture("/terrain.png");
+		terrainTexture.bindTexture();
 		this.blockRenderer.renderBlockOnInventory(Block.tnt, 0, var1.getEntityBrightness(var9));
 		if(var1.fuse / 5 % 2 == 0) {
 			GL11.glDisable(GL11.GL_TEXTURE_2D);
@@ -50,5 +54,10 @@ public class RenderTNTPrimed extends Render {
 
 	public void doRender(Entity var1, double var2, double var4, double var6, float var8, float var9) {
 		this.func_153_a((EntityTNTPrimed)var1, var2, var4, var6, var8, var9);
+	}
+	
+	@Override
+	protected boolean loadDownloadableImageTexture(String s, String s1) {
+		return true;
 	}
 }

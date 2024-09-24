@@ -134,9 +134,11 @@ public class NetworkManager {
 			readChunks.add(oldChunkBuffer);
 		}
 		
-		byte[] packet;
-		while((packet = this.networkSocket.read()) != null) {
-			readChunks.add(ByteBuffer.wrap(packet));
+		if(this.networkSocket.socketOpen()) {
+			byte[] packet;
+			while((packet = this.networkSocket.read()) != null) {
+				readChunks.add(ByteBuffer.wrap(packet));
+			}
 		}
 		
 		if(!readChunks.isEmpty()) {
@@ -186,6 +188,7 @@ public class NetworkManager {
 	}
 
 	private void onNetworkError(Exception var1) {
+		var1.printStackTrace();
 		this.networkShutdown("disconnect.genericReason", new Object[]{"Internal exception: " + var1.toString()});
 	}
 
@@ -198,7 +201,6 @@ public class NetworkManager {
 
 			try {
 				this.networkSocket.close();
-				this.networkSocket = null;
 			} catch (Throwable var4) {
 			}
 

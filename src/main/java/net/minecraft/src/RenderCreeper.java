@@ -1,6 +1,7 @@
 package net.minecraft.src;
 
 import net.PeytonPlayz585.opengl.GL11;
+import net.PeytonPlayz585.textures.TextureLocation;
 
 public class RenderCreeper extends RenderLiving {
 	private ModelBase field_27008_a = new ModelCreeper(2.0F);
@@ -98,5 +99,13 @@ public class RenderCreeper extends RenderLiving {
 
 	protected boolean func_27005_b(EntityLiving var1, int var2, float var3) {
 		return this.func_27007_b((EntityCreeper)var1, var2, var3);
+	}
+	
+	private static final TextureLocation texture = new TextureLocation("/mob/creeper.png");
+
+	@Override
+	protected boolean loadDownloadableImageTexture(String s, String s1) {
+		texture.bindTexture();
+		return true;
 	}
 }

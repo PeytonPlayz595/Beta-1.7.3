@@ -1,8 +1,13 @@
 package net.minecraft.src;
 
 import net.PeytonPlayz585.opengl.GL11;
+import net.PeytonPlayz585.textures.TextureLocation;
 
 public class RenderBoat extends Render {
+	
+	private static final TextureLocation terrainTexture = new TextureLocation("/terrain.png");
+	private static final TextureLocation boatTexture = new TextureLocation("/item/boat.png");
+	
 	protected ModelBase modelBoat;
 
 	public RenderBoat() {
@@ -24,11 +29,11 @@ public class RenderBoat extends Render {
 			GL11.glRotatef(MathHelper.sin(var10) * var10 * var11 / 10.0F * (float)var1.boatRockDirection, 1.0F, 0.0F, 0.0F);
 		}
 
-		this.loadTexture("/terrain.png");
+		terrainTexture.bindTexture();
 		float var12 = 12.0F / 16.0F;
 		GL11.glScalef(var12, var12, var12);
 		GL11.glScalef(1.0F / var12, 1.0F / var12, 1.0F / var12);
-		this.loadTexture("/item/boat.png");
+		boatTexture.bindTexture();
 		GL11.glScalef(-1.0F, -1.0F, 1.0F);
 		this.modelBoat.render(0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 1.0F / 16.0F);
 		GL11.glPopMatrix();
@@ -36,5 +41,10 @@ public class RenderBoat extends Render {
 
 	public void doRender(Entity var1, double var2, double var4, double var6, float var8, float var9) {
 		this.func_157_a((EntityBoat)var1, var2, var4, var6, var8, var9);
+	}
+	
+	@Override
+	protected boolean loadDownloadableImageTexture(String s, String s1) {
+		return true;
 	}
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import net.PeytonPlayz585.awt.Color;
 import net.PeytonPlayz585.opengl.GL11;
 import net.PeytonPlayz585.opengl.GL12;
+import net.PeytonPlayz585.textures.TextureLocation;
 import net.minecraft.client.Minecraft;
 
 public class GuiIngame extends Gui {
@@ -20,6 +21,12 @@ public class GuiIngame extends Gui {
 	private boolean field_22065_l = false;
 	public float damageGuiPartialTime;
 	float prevVignetteBrightness = 1.0F;
+	
+	private static final TextureLocation guiTexture = new TextureLocation("/gui/gui.png");
+	private static final TextureLocation iconsTexture = new TextureLocation("/gui/icons.png");
+	private static final TextureLocation pumpkinBlur = new TextureLocation("%blur%/misc/pumpkinblur.png");
+	private static final TextureLocation vignette = new TextureLocation("%blur%/misc/vignette.png");
+	private static final TextureLocation terrainTexture = new TextureLocation("/terrain.png");
 
 	public GuiIngame(Minecraft var1) {
 		this.mc = var1;
@@ -44,12 +51,12 @@ public class GuiIngame extends Gui {
 		}
 
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.mc.renderEngine.getTexture("/gui/gui.png"));
+		guiTexture.bindTexture();
 		InventoryPlayer var11 = this.mc.thePlayer.inventory;
 		this.zLevel = -90.0F;
 		this.drawTexturedModalRect(var6 / 2 - 91, var7 - 22, 0, 0, 182, 22);
 		this.drawTexturedModalRect(var6 / 2 - 91 - 1 + var11.currentItem * 20, var7 - 22 - 1, 0, 22, 24, 22);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.mc.renderEngine.getTexture("/gui/icons.png"));
+		iconsTexture.bindTexture();
 		GL11.glEnable(GL11.GL_BLEND);
 		boolean var12 = this.mc.thePlayer.heartsLife / 3 % 2 == 1;
 		if(this.mc.thePlayer.heartsLife < 10) {
@@ -257,7 +264,7 @@ public class GuiIngame extends Gui {
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GL11.glDisable(GL11.GL_ALPHA_TEST);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.mc.renderEngine.getTexture("%blur%/misc/pumpkinblur.png"));
+		pumpkinBlur.bindTexture();
 		Tessellator var3 = Tessellator.instance;
 		var3.startDrawingQuads();
 		var3.addVertexWithUV(0.0D, (double)var2, -90.0D, 0.0D, 1.0D);
@@ -287,7 +294,7 @@ public class GuiIngame extends Gui {
 		GL11.glDepthMask(false);
 		GL11.glBlendFunc(GL11.GL_ZERO, GL11.GL_ONE_MINUS_SRC_COLOR);
 		GL11.glColor4f(this.prevVignetteBrightness, this.prevVignetteBrightness, this.prevVignetteBrightness, 1.0F);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.mc.renderEngine.getTexture("%blur%/misc/vignette.png"));
+		vignette.bindTexture();
 		Tessellator var4 = Tessellator.instance;
 		var4.startDrawingQuads();
 		var4.addVertexWithUV(0.0D, (double)var3, -90.0D, 0.0D, 1.0D);
@@ -313,7 +320,7 @@ public class GuiIngame extends Gui {
 		GL11.glDepthMask(false);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, var1);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.mc.renderEngine.getTexture("/terrain.png"));
+		terrainTexture.bindTexture();
 		float var4 = (float)(Block.portal.blockIndexInTexture % 16) / 16.0F;
 		float var5 = (float)(Block.portal.blockIndexInTexture / 16) / 16.0F;
 		float var6 = (float)(Block.portal.blockIndexInTexture % 16 + 1) / 16.0F;
@@ -400,7 +407,7 @@ public class GuiIngame extends Gui {
 	}
 	
 	public void renderCrossHairs(int w, int h) {
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.mc.renderEngine.getTexture("/gui/icons.png"));
+		iconsTexture.bindTexture();
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		GL11.glEnable(GL11.GL_BLEND);

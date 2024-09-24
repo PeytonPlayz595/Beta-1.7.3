@@ -5341,7 +5341,7 @@ public class GL11_1 {
 		}
 		public static final byte[] loadLocalStorage(String key) {
 			try {
-				File f = new File("_eaglercraft_beta."+key+".dat");
+				File f = new File("filesystem/_eaglercraft_beta."+key+".dat");
 				byte[] b = new byte[(int)f.length()];
 				FileInputStream s = new FileInputStream(f);
 				s.read(b);
@@ -5353,7 +5353,7 @@ public class GL11_1 {
 		}
 		public static final void saveLocalStorage(String key, byte[] data) {
 			try {
-				FileOutputStream f = new FileOutputStream(new File("_eaglercraft_beta."+key+".dat"));
+				FileOutputStream f = new FileOutputStream(new File("filesystem/_eaglercraft_beta."+key+".dat"));
 				f.write(data);
 				f.close();
 			} catch (IOException e) {

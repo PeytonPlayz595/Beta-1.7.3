@@ -14,7 +14,6 @@ public class EntityWolf extends EntityAnimal {
 
 	public EntityWolf(World var1) {
 		super(var1);
-		this.texture = "/mob/wolf.png";
 		this.setSize(0.8F, 0.8F);
 		this.moveSpeed = 1.1F;
 		this.health = 8;

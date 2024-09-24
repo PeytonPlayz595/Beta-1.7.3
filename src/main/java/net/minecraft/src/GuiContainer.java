@@ -3,8 +3,12 @@ package net.minecraft.src;
 import net.PeytonPlayz585.input.Keyboard;
 import net.PeytonPlayz585.opengl.GL11;
 import net.PeytonPlayz585.opengl.GL12;
+import net.PeytonPlayz585.textures.TextureLocation;
 
 public abstract class GuiContainer extends GuiScreen {
+	
+	private static final TextureLocation itemTexture = new TextureLocation("/gui/items.png");
+	
 	private static RenderItem itemRenderer = new RenderItem();
 	protected int xSize = 176;
 	protected int ySize = 166;
@@ -93,7 +97,7 @@ public abstract class GuiContainer extends GuiScreen {
 			int var5 = var1.getBackgroundIconIndex();
 			if(var5 >= 0) {
 				GL11.glDisable(GL11.GL_LIGHTING);
-				this.mc.renderEngine.bindTexture(this.mc.renderEngine.getTexture("/gui/items.png"));
+				itemTexture.bindTexture();
 				this.drawTexturedModalRect(var2, var3, var5 % 16 * 16, var5 / 16 * 16, 16, 16);
 				GL11.glEnable(GL11.GL_LIGHTING);
 				return;

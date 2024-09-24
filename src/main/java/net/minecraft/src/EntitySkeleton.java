@@ -5,7 +5,6 @@ public class EntitySkeleton extends EntityMob {
 
 	public EntitySkeleton(World var1) {
 		super(var1);
-		this.texture = "/mob/skeleton.png";
 	}
 
 	protected String getLivingSound() {

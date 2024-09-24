@@ -1,9 +1,12 @@
 package net.minecraft.src;
 
 import net.PeytonPlayz585.opengl.GL11;
+import net.PeytonPlayz585.textures.TextureLocation;
 
 public class RenderSlime extends RenderLiving {
 	private ModelBase scaleAmount;
+	
+	private static final TextureLocation slimeTexture = new TextureLocation("/mob/slime.png");
 
 	public RenderSlime(ModelBase var1, ModelBase var2, float var3) {
 		super(var1, var3);
@@ -41,5 +44,11 @@ public class RenderSlime extends RenderLiving {
 
 	protected boolean shouldRenderPass(EntityLiving var1, int var2, float var3) {
 		return this.renderSlimePassModel((EntitySlime)var1, var2, var3);
+	}
+	
+	@Override
+	protected boolean loadDownloadableImageTexture(String s, String s1) {
+		slimeTexture.bindTexture();
+		return true;
 	}
 }

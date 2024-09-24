@@ -10,6 +10,7 @@ import net.PeytonPlayz585.awt.image.BufferedImage;
 import net.PeytonPlayz585.awt.image.ImageIO;
 import net.PeytonPlayz585.fileutils.FileEntry;
 import net.PeytonPlayz585.opengl.GL11;
+import net.PeytonPlayz585.textures.TextureLocation;
 import net.PeytonPlayz585.util.zip.ZipFile;
 import net.minecraft.client.Minecraft;
 
@@ -18,6 +19,8 @@ public class TexturePackCustom extends TexturePackBase {
 	private int texturePackName = -1;
 	private BufferedImage texturePackThumbnail;
 	private FileEntry texturePackFile;
+	
+	private static final TextureLocation unknownPack = new TextureLocation("/gui/unknown_pack.png");
 
 	public TexturePackCustom(FileEntry var1) {
 		this.texturePackFileName = var1.getName();
@@ -90,7 +93,7 @@ public class TexturePackCustom extends TexturePackBase {
 		if(this.texturePackThumbnail != null) {
 			var1.renderEngine.bindTexture(this.texturePackName);
 		} else {
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, var1.renderEngine.getTexture("/gui/unknown_pack.png"));
+			unknownPack.bindTexture();
 		}
 
 	}

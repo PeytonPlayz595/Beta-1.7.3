@@ -5,6 +5,7 @@ public abstract class TileEntitySpecialRenderer {
 
 	public abstract void renderTileEntityAt(TileEntity var1, double var2, double var4, double var6, float var8);
 
+	@Deprecated
 	protected void bindTextureByName(String var1) {
 		RenderEngine var2 = this.tileEntityRenderer.renderEngine;
 		var2.bindTexture(var2.getTexture(var1));

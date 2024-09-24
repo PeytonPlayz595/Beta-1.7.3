@@ -4,6 +4,8 @@ import net.PeytonPlayz585.input.Keyboard;
 import net.PeytonPlayz585.input.Mouse;
 import net.PeytonPlayz585.opengl.Display;
 import net.PeytonPlayz585.opengl.GL11;
+import net.PeytonPlayz585.textures.TextureLocation;
+import net.lax1dude.eaglercraft.GuiScreenEditProfile;
 import net.lax1dude.eaglercraft.TextureNewClockFX;
 import net.lax1dude.eaglercraft.TextureNewCompassFX;
 import net.minecraft.src.AchievementList;
@@ -129,6 +131,8 @@ public class Minecraft implements Runnable {
 	private int joinPlayerCounter = 0;
 	
 	public static int debugFPS;
+	
+	private static final TextureLocation terrainTexture = new TextureLocation("/terrain.png");
 
 	public Minecraft() {
 		StatList.func_27360_a();
@@ -196,7 +200,7 @@ public class Minecraft implements Runnable {
 		
 		GL11.anisotropicPatch(GL11.EaglerAdapterImpl2.glNeedsAnisotropicFix());
 		
-		this.displayGuiScreen(new GuiMainMenu());
+		this.displayGuiScreen(new GuiScreenEditProfile(new GuiMainMenu()));
 	}
 
 	private void loadScreen() {
@@ -719,7 +723,7 @@ public class Minecraft implements Runnable {
 			this.playerController.updateController();
 		}
 
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.renderEngine.getTexture("/terrain.png"));
+		terrainTexture.bindTexture();
 		if(!this.isGamePaused) {
 			this.renderEngine.updateDynamicTextures();
 		}

@@ -5,11 +5,14 @@ import java.io.IOException;
 import net.PeytonPlayz585.awt.image.BufferedImage;
 import net.PeytonPlayz585.awt.image.ImageIO;
 import net.PeytonPlayz585.opengl.GL11;
+import net.PeytonPlayz585.textures.TextureLocation;
 import net.minecraft.client.Minecraft;
 
 public class TexturePackDefault extends TexturePackBase {
 	private int texturePackName = -1;
 	private BufferedImage texturePackThumbnail;
+	
+	private static final TextureLocation unknownPack = new TextureLocation("/gui/unknown_pack.png");
 
 	public TexturePackDefault() {
 		this.texturePackFileName = "Default";
@@ -38,7 +41,7 @@ public class TexturePackDefault extends TexturePackBase {
 		if(this.texturePackThumbnail != null) {
 			var1.renderEngine.bindTexture(this.texturePackName);
 		} else {
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, var1.renderEngine.getTexture("/gui/unknown_pack.png"));
+			unknownPack.bindTexture();
 		}
 
 	}

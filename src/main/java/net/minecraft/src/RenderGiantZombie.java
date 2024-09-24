@@ -17,4 +17,9 @@ public class RenderGiantZombie extends RenderLiving {
 	protected void preRenderCallback(EntityLiving var1, float var2) {
 		this.preRenderScale((EntityGiantZombie)var1, var2);
 	}
+
+	@Override
+	protected boolean loadDownloadableImageTexture(String s, String s1) {
+		return true;
+	}
 }
