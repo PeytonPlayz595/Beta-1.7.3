@@ -32,7 +32,6 @@ public class RenderEngine {
 	private TexturePackList texturePack;
 	private BufferedImage missingTextureImage;
 	private ByteBuffer imageDataB1 = GLAllocation.createDirectByteBuffer(4194304 * 2);
-	private ByteBuffer imageDataB2 = GLAllocation.createDirectByteBuffer(4194304 * 2);
 	private int textureWidth;
 
 	public RenderEngine(TexturePackList var1, GameSettings var2) {
@@ -144,59 +143,86 @@ public class RenderEngine {
 			GL11.glTexParameteri(3553 /* GL_TEXTURE_2D */, 10242 /* GL_TEXTURE_WRAP_S */, 10497 /* GL_REPEAT */);
 			GL11.glTexParameteri(3553 /* GL_TEXTURE_2D */, 10243 /* GL_TEXTURE_WRAP_T */, 10497 /* GL_REPEAT */);
 		}
-		int j = var1.getWidth();
-		int k = var1.getHeight();
-		int ai[] = var1.getData();
-		byte abyte0[] = new byte[j * k * 4];
-		for (int l = 0; l < ai.length; l++) {
-			int j1 = ai[l] >> 24 & 0xff;
-			int l1 = ai[l] >> 16 & 0xff;
-			int j2 = ai[l] >> 8 & 0xff;
-			int l2 = ai[l] >> 0 & 0xff;
-			if (options != null && options.anaglyph) {
-				int j3 = (l1 * 30 + j2 * 59 + l2 * 11) / 100;
-				int l3 = (l1 * 30 + j2 * 70) / 100;
-				int j4 = (l1 * 30 + l2 * 70) / 100;
-				l1 = j3;
-				j2 = l3;
-				l2 = j4;
+		int var3 = var1.getWidth();
+		int var4 = var1.getHeight();
+		int[] var5 = new int[var3 * var4];
+		byte[] var6 = new byte[var3 * var4 * 4];
+		var1.getRGB(0, 0, var3, var4, var5, 0, var3);
+
+		int var7;
+		int var8;
+		int var9;
+		int var10;
+		int var11;
+		int var12;
+		int var13;
+		int var14;
+		for(var7 = 0; var7 < var5.length; ++var7) {
+			var8 = var5[var7] >> 24 & 255;
+			var9 = var5[var7] >> 16 & 255;
+			var10 = var5[var7] >> 8 & 255;
+			var11 = var5[var7] & 255;
+			if(this.options != null && this.options.anaglyph) {
+				var12 = (var9 * 30 + var10 * 59 + var11 * 11) / 100;
+				var13 = (var9 * 30 + var10 * 70) / 100;
+				var14 = (var9 * 30 + var11 * 70) / 100;
+				var9 = var12;
+				var10 = var13;
+				var11 = var14;
 			}
-			abyte0[l * 4 + 0] = (byte) l1;
-			abyte0[l * 4 + 1] = (byte) j2;
-			abyte0[l * 4 + 2] = (byte) l2;
-			abyte0[l * 4 + 3] = (byte) j1;
+
+			var6[var7 * 4 + 0] = (byte)var9;
+			var6[var7 * 4 + 1] = (byte)var10;
+			var6[var7 * 4 + 2] = (byte)var11;
+			var6[var7 * 4 + 3] = (byte)var8;
 		}
-		imageDataB1.clear();
-		imageDataB1.put(abyte0);
-		imageDataB1.position(0).limit(abyte0.length);
-		GL11.glTexImage2D(3553 /* GL_TEXTURE_2D */, 0, 6408 /* GL_RGBA */, j, k, 0, 6408 /* GL_RGBA */,
-				5121 /* GL_UNSIGNED_BYTE */, imageDataB1);
-		if (useMipmaps) {
-			for (int i1 = 1; i1 <= 4; i1++) {
-				int k1 = j >> i1 - 1;
-				int i2 = j >> i1;
-				int k2 = k >> i1;
-				imageDataB2.clear();
-				for (int i3 = 0; i3 < i2; i3++) {
-					for (int k3 = 0; k3 < k2; k3++) {
-						int i4 = imageDataB1.getInt((i3 * 2 + 0 + (k3 * 2 + 0) * k1) * 4);
-						int k4 = imageDataB1.getInt((i3 * 2 + 1 + (k3 * 2 + 0) * k1) * 4);
-						int l4 = imageDataB1.getInt((i3 * 2 + 1 + (k3 * 2 + 1) * k1) * 4);
-						int i5 = imageDataB1.getInt((i3 * 2 + 0 + (k3 * 2 + 1) * k1) * 4);
-						int j5 = averageColor(averageColor(i4, k4), averageColor(l4, i5));
-						imageDataB2.putInt((i3 + k3 * i2) * 4, j5);
+
+		this.imageDataB1.clear();
+		this.imageDataB1.put(var6);
+		this.imageDataB1.position(0).limit(var6.length);
+		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, var3, var4, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, (ByteBuffer)this.imageDataB1);
+		if(useMipmaps) {
+			for(var7 = 1; var7 <= 4; ++var7) {
+				var8 = var3 >> var7 - 1;
+				var9 = var3 >> var7;
+				var10 = var4 >> var7;
+
+				for(var11 = 0; var11 < var9; ++var11) {
+					for(var12 = 0; var12 < var10; ++var12) {
+						var13 = this.imageDataB1.getInt((var11 * 2 + 0 + (var12 * 2 + 0) * var8) * 4);
+						var14 = this.imageDataB1.getInt((var11 * 2 + 1 + (var12 * 2 + 0) * var8) * 4);
+						int var15 = this.imageDataB1.getInt((var11 * 2 + 1 + (var12 * 2 + 1) * var8) * 4);
+						int var16 = this.imageDataB1.getInt((var11 * 2 + 0 + (var12 * 2 + 1) * var8) * 4);
+						int var17 = this.averageColor(this.averageColor(var13, var14), this.averageColor(var15, var16));
+						this.imageDataB1.putInt((var11 + var12 * var9) * 4, var17);
 					}
-
 				}
-				
-				GL11.glTexImage2D(3553 /* GL_TEXTURE_2D */, i1, 6408 /* GL_RGBA */, i2, k2, 0, 6408 /* GL_RGBA */,
-						5121 /* GL_UNSIGNED_BYTE */, imageDataB2);
-				ByteBuffer tmp = imageDataB1;
-				imageDataB1 = imageDataB2;
-				imageDataB2 = tmp;
-			}
 
+				GL11.glTexImage2D(GL11.GL_TEXTURE_2D, var7, GL11.GL_RGBA, var9, var10, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, (ByteBuffer)this.imageDataB1);
+			}
 		}
+//		if (useMipmaps) {
+//			for (int i1 = 1; i1 <= 4; i1++) {
+//				int k1 = j >> i1 - 1;
+//				int i2 = j >> i1;
+//				int k2 = k >> i1;
+//				imageDataB1.clear();
+//				for (int i3 = 0; i3 < i2; i3++) {
+//					for (int k3 = 0; k3 < k2; k3++) {
+//						int i4 = imageDataB1.getInt((i3 * 2 + 0 + (k3 * 2 + 0) * k1) * 4);
+//						int k4 = imageDataB1.getInt((i3 * 2 + 1 + (k3 * 2 + 0) * k1) * 4);
+//						int l4 = imageDataB1.getInt((i3 * 2 + 1 + (k3 * 2 + 1) * k1) * 4);
+//						int i5 = imageDataB1.getInt((i3 * 2 + 0 + (k3 * 2 + 1) * k1) * 4);
+//						int j5 = averageColor(averageColor(i4, k4), averageColor(l4, i5));
+//						imageDataB1.putInt((i3 + k3 * i2) * 4, j5);
+//					}
+//
+//				}
+//				
+//				GL11.glTexImage2D(GL11.GL_TEXTURE_2D, i1, GL11.GL_RGBA, i2, k2, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, (ByteBuffer)imageDataB1);
+//			}
+//
+//		}
 	}
 	
 	public void func_28150_a(int[] var1, int var2, int var3, int var4) {
