@@ -14,6 +14,7 @@ import java.util.Map;
 import net.PeytonPlayz585.awt.image.BufferedImage;
 import net.PeytonPlayz585.opengl.GL11;
 import net.PeytonPlayz585.profile.Profile;
+import net.PeytonPlayz585.textures.TextureLocation;
 import net.lax1dude.eaglercraft.SpriteSheetTexture;
 import net.minecraft.client.Minecraft;
 
@@ -137,8 +138,8 @@ public class RenderEngine {
 			GL11.glTexParameteri(3553 /* GL_TEXTURE_2D */, 10240 /* GL_TEXTURE_MAG_FILTER */, 9729 /* GL_LINEAR */);
 		}
 		if (clampTexture) {
-			GL11.glTexParameteri(3553 /* GL_TEXTURE_2D */, 10242 /* GL_TEXTURE_WRAP_S */, 10496 /* GL_CLAMP */);
-			GL11.glTexParameteri(3553 /* GL_TEXTURE_2D */, 10243 /* GL_TEXTURE_WRAP_T */, 10496 /* GL_CLAMP */);
+			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP);
+			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_CLAMP);
 		} else {
 			GL11.glTexParameteri(3553 /* GL_TEXTURE_2D */, 10242 /* GL_TEXTURE_WRAP_S */, 10497 /* GL_REPEAT */);
 			GL11.glTexParameteri(3553 /* GL_TEXTURE_2D */, 10243 /* GL_TEXTURE_WRAP_T */, 10497 /* GL_REPEAT */);
@@ -348,64 +349,35 @@ public class RenderEngine {
 	}
 
 	public void refreshTextures() {
+		TextureLocation.freeTextures();
 		TexturePackBase var1 = this.texturePack.selectedTexturePack;
-		Iterator var2 = this.textureNameToImageMap.keySet().iterator();
-
-		BufferedImage var4;
-		while(var2.hasNext()) {
-			int var3 = ((Integer)var2.next()).intValue();
-			var4 = (BufferedImage)this.textureNameToImageMap.get(Integer.valueOf(var3));
-			this.setupTexture(var4, var3);
+		int i;
+		BufferedImage bufferedimage;
+		for (Iterator iterator = textureNameToImageMap.keySet().iterator(); iterator
+				.hasNext(); setupTexture(bufferedimage, i)) {
+			i = ((Integer) iterator.next()).intValue();
+			bufferedimage = (BufferedImage) textureNameToImageMap.get(Integer.valueOf(i));
 		}
 
-		var2 = this.textureMap.keySet().iterator();
-
-		String var9;
-		while(var2.hasNext()) {
-			var9 = (String)var2.next();
-
+		for (Iterator iterator2 = textureMap.keySet().iterator(); iterator2.hasNext();) {
+			String s = (String) iterator2.next();
 			try {
-				if(var9.startsWith("%clamp%")) {
-					this.clampTexture = true;
-					var4 = this.readTextureImage(var1.getResourceAsStream(var9.substring(7)));
-				} else if(var9.startsWith("%blur%")) {
-					this.blurTexture = true;
-					var4 = this.readTextureImage(var1.getResourceAsStream(var9.substring(6)));
+				BufferedImage bufferedimage1;
+				if (s.startsWith("%clamp%")) {
+					clampTexture = true;
+					bufferedimage1 = readTextureImage(var1.getResourceAsStream(s.substring(7)));
+				} else if (s.startsWith("%blur%")) {
+					blurTexture = true;
+					bufferedimage1 = readTextureImage(var1.getResourceAsStream(s.substring(6)));
 				} else {
-					var4 = this.readTextureImage(var1.getResourceAsStream(var9));
+					bufferedimage1 = readTextureImage(var1.getResourceAsStream(s));
 				}
-
-				int var5 = ((Integer)this.textureMap.get(var9)).intValue();
-				this.setupTexture(var4, var5);
-				this.blurTexture = false;
-				this.clampTexture = false;
-			} catch (IOException var7) {
-				var7.printStackTrace();
-			}
-		}
-
-		var2 = this.field_28151_c.keySet().iterator();
-
-		while(var2.hasNext()) {
-			var9 = (String)var2.next();
-
-			try {
-				if(var9.startsWith("%clamp%")) {
-					this.clampTexture = true;
-					var4 = this.readTextureImage(var1.getResourceAsStream(var9.substring(7)));
-				} else if(var9.startsWith("%blur%")) {
-					this.blurTexture = true;
-					var4 = this.readTextureImage(var1.getResourceAsStream(var9.substring(6)));
-				} else {
-					var4 = this.readTextureImage(var1.getResourceAsStream(var9));
-				}
-
-				int j = ((Integer) textureMap.get(var9)).intValue();
-				setupTexture(var4, j);
-				this.blurTexture = false;
-				this.clampTexture = false;
-			} catch (IOException var6) {
-				var6.printStackTrace();
+				int j = ((Integer) textureMap.get(s)).intValue();
+				setupTexture(bufferedimage1, j);
+				blurTexture = false;
+				clampTexture = false;
+			} catch (IOException ioexception) {
+				ioexception.printStackTrace();
 			}
 		}
 		
@@ -422,7 +394,7 @@ public class RenderEngine {
 			System.err.println("Unable to read terrain.png, using default 16x16 texture animations");
 			textureWidth = 16;
 		}
-
+		
 	}
 
 	private BufferedImage readTextureImage(InputStream var1) throws IOException {

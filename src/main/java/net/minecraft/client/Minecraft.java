@@ -164,7 +164,7 @@ public class Minecraft implements Runnable {
 		ColorizerFoliage.func_28152_a(this.renderEngine.func_28149_a("/misc/foliagecolor.png"));
 		this.entityRenderer = new EntityRenderer(this);
 		RenderManager.instance.itemRenderer = new ItemRenderer(this);
-		this.statFileWriter = new StatFileWriter(this.session, minecraftDir + "/statsNew");
+		this.statFileWriter = new StatFileWriter(this.session, minecraftDir + "/misc");
 		AchievementList.openInventory.setStatStringFormatter(new StatStringFormatKeyInv(this));
 		this.loadScreen();
 		this.mouseHelper = new MouseHelper();
