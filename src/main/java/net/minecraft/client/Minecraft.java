@@ -399,7 +399,6 @@ public class Minecraft implements Runnable {
 					}
 
 					this.guiAchievement.updateAchievementWindow();
-					Thread.yield();
 
 					if(GL11.EaglerAdapterImpl2.getCanvasWidth() != this.displayWidth || GL11.EaglerAdapterImpl2.getCanvasHeight() != this.displayHeight) {
 						this.displayWidth = GL11.EaglerAdapterImpl2.getCanvasWidth();

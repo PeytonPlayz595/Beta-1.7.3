@@ -3,8 +3,6 @@ package net.minecraft.src;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,6 +14,8 @@ import net.PeytonPlayz585.opengl.GL11;
 import net.PeytonPlayz585.profile.Profile;
 import net.PeytonPlayz585.textures.TextureLocation;
 import net.lax1dude.eaglercraft.SpriteSheetTexture;
+import net.lax1dude.eaglercraft.internal.buffer.ByteBuffer;
+import net.lax1dude.eaglercraft.internal.buffer.IntBuffer;
 import net.minecraft.client.Minecraft;
 
 public class RenderEngine {
@@ -32,7 +32,7 @@ public class RenderEngine {
 	private TexturePackList texturePack;
 	private BufferedImage missingTextureImage;
 	private ByteBuffer imageDataB1 = GLAllocation.createDirectByteBuffer(4194304 * 2);
-	private int textureWidth;
+	//private ByteBuffer imageDataB2 = GLAllocation.createDirectByteBuffer(4194304 * 2);
 
 	public RenderEngine(TexturePackList var1, GameSettings var2) {
 		this.options = var2;
@@ -42,16 +42,6 @@ public class RenderEngine {
 			missingTexture[i] = ((i / 16 + (i % 16)) % 2 == 0) ? 0xffff00ff : 0xff000000;
 		}
 		this.missingTextureImage = new BufferedImage(16, 16, missingTexture, true);
-		
-		try {
-			BufferedImage img = this.readTextureImage(this.texturePack.selectedTexturePack.getResourceAsStream("/terrain.png"));
-			int width = img.getWidth();
-			int textureWidth = width / 16;
-			this.textureWidth = textureWidth;
-		} catch (IOException e) {
-			System.err.println("Unable to read terrain.png, using default 16x16 texture animations");
-			textureWidth = 16;
-		}
 	}
 	
 	public int getTexture(String var1) {
@@ -74,7 +64,7 @@ public class RenderEngine {
 					this.blurTexture = false;
 				} else {
 					if(var1.equals("/terrain.png")) {
-						useMipmaps = true;
+						//useMipmaps = true;
 					}
 					InputStream var7 = var2.getResourceAsStream(var1);
 					if(var7 == null) {
@@ -145,9 +135,8 @@ public class RenderEngine {
 		}
 		int var3 = var1.getWidth();
 		int var4 = var1.getHeight();
-		int[] var5 = new int[var3 * var4];
+		int var5[] = var1.getData();
 		byte[] var6 = new byte[var3 * var4 * 4];
-		var1.getRGB(0, 0, var3, var4, var5, 0, var3);
 
 		int var7;
 		int var8;
@@ -181,48 +170,6 @@ public class RenderEngine {
 		this.imageDataB1.put(var6);
 		this.imageDataB1.position(0).limit(var6.length);
 		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, var3, var4, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, (ByteBuffer)this.imageDataB1);
-		if(useMipmaps) {
-			for(var7 = 1; var7 <= 4; ++var7) {
-				var8 = var3 >> var7 - 1;
-				var9 = var3 >> var7;
-				var10 = var4 >> var7;
-
-				for(var11 = 0; var11 < var9; ++var11) {
-					for(var12 = 0; var12 < var10; ++var12) {
-						var13 = this.imageDataB1.getInt((var11 * 2 + 0 + (var12 * 2 + 0) * var8) * 4);
-						var14 = this.imageDataB1.getInt((var11 * 2 + 1 + (var12 * 2 + 0) * var8) * 4);
-						int var15 = this.imageDataB1.getInt((var11 * 2 + 1 + (var12 * 2 + 1) * var8) * 4);
-						int var16 = this.imageDataB1.getInt((var11 * 2 + 0 + (var12 * 2 + 1) * var8) * 4);
-						int var17 = this.averageColor(this.averageColor(var13, var14), this.averageColor(var15, var16));
-						this.imageDataB1.putInt((var11 + var12 * var9) * 4, var17);
-					}
-				}
-
-				GL11.glTexImage2D(GL11.GL_TEXTURE_2D, var7, GL11.GL_RGBA, var9, var10, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, (ByteBuffer)this.imageDataB1);
-			}
-		}
-//		if (useMipmaps) {
-//			for (int i1 = 1; i1 <= 4; i1++) {
-//				int k1 = j >> i1 - 1;
-//				int i2 = j >> i1;
-//				int k2 = k >> i1;
-//				imageDataB1.clear();
-//				for (int i3 = 0; i3 < i2; i3++) {
-//					for (int k3 = 0; k3 < k2; k3++) {
-//						int i4 = imageDataB1.getInt((i3 * 2 + 0 + (k3 * 2 + 0) * k1) * 4);
-//						int k4 = imageDataB1.getInt((i3 * 2 + 1 + (k3 * 2 + 0) * k1) * 4);
-//						int l4 = imageDataB1.getInt((i3 * 2 + 1 + (k3 * 2 + 1) * k1) * 4);
-//						int i5 = imageDataB1.getInt((i3 * 2 + 0 + (k3 * 2 + 1) * k1) * 4);
-//						int j5 = averageColor(averageColor(i4, k4), averageColor(l4, i5));
-//						imageDataB1.putInt((i3 + k3 * i2) * 4, j5);
-//					}
-//
-//				}
-//				
-//				GL11.glTexImage2D(GL11.GL_TEXTURE_2D, i1, GL11.GL_RGBA, i2, k2, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, (ByteBuffer)imageDataB1);
-//			}
-//
-//		}
 	}
 	
 	public void func_28150_a(int[] var1, int var2, int var3, int var4) {
@@ -313,11 +260,7 @@ public class RenderEngine {
 	}
 	
 	private int[] func_28148_b(BufferedImage var1) {
-		int var2 = var1.getWidth();
-		int var3 = var1.getHeight();
-		int[] var4 = new int[var2 * var3];
-		var1.getRGB(0, 0, var2, var3, var4, 0, var2);
-		return var4;
+		return var1.getData();
 	}
 
 	public void deleteTexture(int var1) {
@@ -347,21 +290,21 @@ public class RenderEngine {
 			imageDataB1.clear();
 			imageDataB1.put(texturefx.imageData);
 			imageDataB1.position(0).limit(tileSize);
-			GL11.glTexSubImage2D(3553 /* GL_TEXTURE_2D */, 0, (texturefx.iconIndex % this.textureWidth) * 16, (texturefx.iconIndex / this.textureWidth) * 16, 16, 16,
+			GL11.glTexSubImage2D(3553 /* GL_TEXTURE_2D */, 0, (texturefx.iconIndex % 16) * 16, (texturefx.iconIndex / 16) * 16, 16, 16,
 					6408 /* GL_RGBA */, 5121 /* GL_UNSIGNED_BYTE */, imageDataB1);
 		}
 		
-		TextureFX.terrainTexture.bindTexture();
-		for(int i = 0, l = textureSpriteList.size(); i < l; ++i) {
-			SpriteSheetTexture sp = textureSpriteList.get(i);
-			sp.update();
-			int w = 16;
-			for(int j = 0; j < 5; ++j) {
-				GL11.glTexSubImage2D(3553 /* GL_TEXTURE_2D */, j, (sp.iconIndex % this.textureWidth) * w, (sp.iconIndex / this.textureWidth) * w, w * sp.iconTileSize, w * sp.iconTileSize,
-						6408 /* GL_RGBA */, 5121 /* GL_UNSIGNED_BYTE */, sp.grabFrame(j));
-				w /= 2;
-			}
-		}
+//		TextureFX.terrainTexture.bindTexture();
+//		for(int i = 0, l = textureSpriteList.size(); i < l; ++i) {
+//			SpriteSheetTexture sp = textureSpriteList.get(i);
+//			sp.update();
+//			int w = 16;
+//			for(int j = 0; j < 5; ++j) {
+//				GL11.glTexSubImage2D(3553 /* GL_TEXTURE_2D */, j, (sp.iconIndex % this.textureWidth) * w, (sp.iconIndex / this.textureWidth) * w, w * sp.iconTileSize, w * sp.iconTileSize,
+//						6408 /* GL_RGBA */, 5121 /* GL_UNSIGNED_BYTE */, sp.grabFrame(j));
+//				w /= 2;
+//			}
+//		}
 	}
 	
 	public void registerSpriteSheet(String name, int iconIndex, int iconTileSize) {
@@ -371,7 +314,23 @@ public class RenderEngine {
 	private int averageColor(int var1, int var2) {
 		int var3 = (var1 & -16777216) >> 24 & 255;
 		int var4 = (var2 & -16777216) >> 24 & 255;
-		return (var3 + var4 >> 1 << 24) + ((var1 & 16711422) + (var2 & 16711422) >> 1);
+		short var5 = 255;
+		if(var3 + var4 == 0) {
+			var3 = 1;
+			var4 = 1;
+			var5 = 0;
+		}
+
+		int var6 = (var1 >> 16 & 255) * var3;
+		int var7 = (var1 >> 8 & 255) * var3;
+		int var8 = (var1 & 255) * var3;
+		int var9 = (var2 >> 16 & 255) * var4;
+		int var10 = (var2 >> 8 & 255) * var4;
+		int var11 = (var2 & 255) * var4;
+		int var12 = (var6 + var9) / (var3 + var4);
+		int var13 = (var7 + var10) / (var3 + var4);
+		int var14 = (var8 + var11) / (var3 + var4);
+		return var5 << 24 | var12 << 16 | var13 << 8 | var14;
 	}
 
 	public void refreshTextures() {
@@ -409,18 +368,7 @@ public class RenderEngine {
 		
 		for(int j = 0, l = textureSpriteList.size(); j < l; ++j) {
 			textureSpriteList.get(j).reloadData();
-		}
-		
-		try {
-			BufferedImage img = this.readTextureImage(this.texturePack.selectedTexturePack.getResourceAsStream("/terrain.png"));
-			int width = img.getWidth();
-			int textureWidth = width / 16;
-			this.textureWidth = textureWidth;
-		} catch (IOException e) {
-			System.err.println("Unable to read terrain.png, using default 16x16 texture animations");
-			textureWidth = 16;
-		}
-		
+		}	
 	}
 
 	private BufferedImage readTextureImage(InputStream var1) throws IOException {

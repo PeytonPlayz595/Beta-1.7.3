@@ -107,7 +107,7 @@ public class FixedFunctionShader {
 	private final boolean enable_texture1;
 	private final boolean enable_TEX_GEN_STRQ;
 	private final boolean enable_lighting;
-	private final boolean enable_fog;
+	private final boolean stateEnableFog;
 	private final boolean enable_alphatest;
 	private final boolean enable_unit0;
 	private final boolean enable_unit1;
@@ -119,12 +119,17 @@ public class FixedFunctionShader {
 	private UniformGL u_matrix_p = null;
 	private UniformGL u_matrix_t = null;
 	
-	private UniformGL u_fogColor = null;
-	//private UniformGL u_fogMode = null;
-	//private UniformGL u_fogStart = null;
-	//private UniformGL u_fogEnd = null;
-	//private UniformGL u_fogDensity = null;
-	private UniformGL u_fogParam = null;
+	private final UniformGL stateFogParamUniform4f;
+	private boolean stateFogEXP = false;
+	private float stateFogDensity = -999.0f;
+	private float stateFogStart = -999.0f;
+	private float stateFogEnd = -999.0f;
+	private final UniformGL stateFogColorUniform4f;
+	private float stateFogColorR = -999.0f;
+	private float stateFogColorG = -999.0f;
+	private float stateFogColorB = -999.0f;
+	private float stateFogColorA = -999.0f;
+	private int stateFogSerial = -1;
 
 	private UniformGL u_colorUniform = null;
 	private UniformGL u_normalUniform = null;
@@ -169,7 +174,7 @@ public class FixedFunctionShader {
 		enable_texture1 = CC_a_texture1;
 		enable_TEX_GEN_STRQ = CC_TEX_GEN_STRQ;
 		enable_lighting = CC_lighting;
-		enable_fog = CC_fog;
+		stateEnableFog = CC_fog;
 		enable_alphatest = CC_alphatest;
 		enable_unit0 = CC_unit0;
 		enable_unit1 = CC_unit1;
@@ -187,7 +192,7 @@ public class FixedFunctionShader {
 		if(enable_texture1) source += "#define CC_a_texture1\n";
 		if(enable_TEX_GEN_STRQ) source += "#define CC_TEX_GEN_STRQ\n";
 		if(enable_lighting) source += "#define CC_lighting\n";
-		if(enable_fog) source += "#define CC_fog\n";
+		if(stateEnableFog) source += "#define CC_fog\n";
 		if(enable_alphatest) source += "#define CC_alphatest\n";
 		if(enable_unit0) source += "#define CC_unit0\n";
 		if(enable_unit1) source += "#define CC_unit1\n";
@@ -275,14 +280,21 @@ public class FixedFunctionShader {
 			u_light1Pos = _wglGetUniformLocation(globject, "light1Pos");
 		}
 		
-		if(enable_fog) {
-			u_fogColor = _wglGetUniformLocation(globject, "fogColor");
-			//u_fogMode = _wglGetUniformLocation(globject, "fogMode");
-			//u_fogStart = _wglGetUniformLocation(globject, "fogStart");
-			//u_fogEnd = _wglGetUniformLocation(globject, "fogEnd");
-			//u_fogDensity = _wglGetUniformLocation(globject, "fogDensity");
-			u_fogParam = _wglGetUniformLocation(globject, "fogParam");
-		}
+		//if(stateEnableFog) {
+			stateFogParamUniform4f = stateEnableFog ? _wglGetUniformLocation(globject,
+					"fogParam") : null;
+			stateFogColorUniform4f = stateEnableFog ? _wglGetUniformLocation(globject,
+					"fogColor") : null;
+		//}
+		
+//		if(enable_fog) {
+//			u_fogColor = _wglGetUniformLocation(globject, "fogColor");
+//			//u_fogMode = _wglGetUniformLocation(globject, "fogMode");
+//			//u_fogStart = _wglGetUniformLocation(globject, "fogStart");
+//			//u_fogEnd = _wglGetUniformLocation(globject, "fogEnd");
+//			//u_fogDensity = _wglGetUniformLocation(globject, "fogDensity");
+//			u_fogParam = _wglGetUniformLocation(globject, "fogParam");
+//		}
 		
 		if(enable_alphatest) {
 			u_alphaTestF = _wglGetUniformLocation(globject, "alphaTestF");
@@ -559,33 +571,63 @@ public class FixedFunctionShader {
 				_wglUniform4f(u_textureGenQ_V, x, y, z, w);
 			}
 		}
-		if(fogColorSerial != GL11.fogColorSerial) {
-			float r = GL11.fogColorR;
-			float g = GL11.fogColorG;
-			float b = GL11.fogColorB;
-			float a = GL11.fogColorA;
-			fogColorSerial = GL11.fogColorSerial;
-			if(fogColorR != r || fogColorG != g || fogColorB != b || fogColorA != a) {
-				fogColorR = r;
-				fogColorG = g;
-				fogColorB = b;
-				fogColorA = a;
-				_wglUniform4f(u_fogColor, r, g, b, a);
-			}
-		}
-		if(fogCfgSerial != GL11.fogCfgSerial) {
-			int fogModex = GL11.fogMode;
-			float fogStarty = GL11.fogStart;
-			float fogEndz = GL11.fogEnd - fogStarty;
-			float fogDensityw = GL11.fogDensity;
-			fogCfgSerial = GL11.fogCfgSerial;
-			if(fogMode != fogModex || fogStart != fogStarty ||
-					fogEnd != fogEndz || fogDensity != fogDensityw) {
-				fogMode = fogModex;
-				fogStart = fogStarty;
-				fogEnd = fogEndz;
-				fogDensity = fogDensityw;
-				_wglUniform4f(u_fogParam, fogModex, fogStarty, fogEndz, fogDensityw);
+//		if(fogColorSerial != GL11.fogColorSerial) {
+//			float r = GL11.fogColorR;
+//			float g = GL11.fogColorG;
+//			float b = GL11.fogColorB;
+//			float a = GL11.fogColorA;
+//			fogColorSerial = GL11.fogColorSerial;
+//			if(fogColorR != r || fogColorG != g || fogColorB != b || fogColorA != a) {
+//				fogColorR = r;
+//				fogColorG = g;
+//				fogColorB = b;
+//				fogColorA = a;
+//				_wglUniform4f(u_fogColor, r, g, b, a);
+//			}
+//		}
+//		if(fogCfgSerial != GL11.fogCfgSerial) {
+//			int fogModex = GL11.fogMode;
+//			float fogStarty = GL11.fogStart;
+//			float fogEndz = GL11.fogEnd - fogStarty;
+//			float fogDensityw = GL11.fogDensity;
+//			fogCfgSerial = GL11.fogCfgSerial;
+//			if(fogMode != fogModex || fogStart != fogStarty ||
+//					fogEnd != fogEndz || fogDensity != fogDensityw) {
+//				fogMode = fogModex;
+//				fogStart = fogStarty;
+//				fogEnd = fogEndz;
+//				fogDensity = fogDensityw;
+//				_wglUniform4f(u_fogParam, fogModex, fogStarty, fogEndz, fogDensityw);
+//			}
+//		}
+		if(stateEnableFog) {
+			int serial = GL11.stateFogSerial;
+			if(stateFogSerial != serial) {
+				stateFogSerial = serial;
+				boolean fogEXP = GL11.stateFogEXP;
+				float fogDensity = GL11.stateFogDensity;
+				float fogStart = GL11.stateFogStart;
+				float fogEnd = GL11.stateFogEnd;
+				if(stateFogEXP != fogEXP || stateFogDensity != fogDensity ||
+						stateFogStart != fogStart || stateFogEnd != fogEnd) {
+					stateFogEXP = fogEXP;
+					stateFogDensity = fogDensity;
+					stateFogStart = fogStart;
+					stateFogEnd = fogEnd;
+					_wglUniform4f(stateFogParamUniform4f, fogEXP ? 1.0f : 0.0f, fogDensity, fogStart, fogEnd);
+				}
+				float r = GL11.stateFogColorR;
+				float g = GL11.stateFogColorG;
+				float b = GL11.stateFogColorB;
+				float a = GL11.stateFogColorA;
+				if(stateFogColorR != r || stateFogColorG != g ||
+						stateFogColorB != b || stateFogColorA != a) {
+					stateFogColorR = r;
+					stateFogColorG = g;
+					stateFogColorB = b;
+					stateFogColorA = a;
+					_wglUniform4f(stateFogColorUniform4f, r, g, b, a);
+				}
 			}
 		}
 		float limit = GL11.alphaThresh;

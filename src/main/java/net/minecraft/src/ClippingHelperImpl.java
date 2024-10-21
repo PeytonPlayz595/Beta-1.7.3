@@ -1,8 +1,7 @@
 package net.minecraft.src;
 
-import java.nio.FloatBuffer;
-
 import net.PeytonPlayz585.opengl.GL11;
+import net.lax1dude.eaglercraft.internal.buffer.FloatBuffer;
 
 public class ClippingHelperImpl extends ClippingHelper {
 	private static ClippingHelperImpl instance = new ClippingHelperImpl();

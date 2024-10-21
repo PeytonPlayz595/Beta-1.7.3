@@ -1,9 +1,7 @@
 package net.PeytonPlayz585.util.glu;
 
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-
 import net.PeytonPlayz585.opengl.GL11;
+import net.lax1dude.eaglercraft.internal.buffer.FloatBuffer;
 
 public class GLU {
 	

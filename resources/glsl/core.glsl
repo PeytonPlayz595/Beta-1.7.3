@@ -1,8 +1,3 @@
-
-// copyright (c) 2020-2023 lax1dude
-
-#line 4
-
 precision highp int;
 precision highp sampler2D;
 precision highp float;
@@ -85,10 +80,6 @@ uniform vec3 normalUniform;
 #endif
 #ifdef CC_fog
 uniform vec4 fogColor;
-//X = uniform float fogMode;
-//Y = uniform float fogStart;
-//Z = uniform float fogEnd - fogStart;
-//W = uniform float fogDensity;
 uniform vec4 fogParam;
 #endif
 uniform vec4 colorUniform;
@@ -96,10 +87,6 @@ uniform vec4 colorUniform;
 uniform float alphaTestF;
 #endif
 #ifdef CC_TEX_GEN_STRQ
-//uniform int textureGenS_M;
-//uniform int textureGenT_M;
-//uniform int textureGenR_M;
-//uniform int textureGenQ_M;
 uniform ivec4 textureGen_M;
 uniform vec4 textureGenS_V;
 uniform vec4 textureGenT_V;
@@ -161,24 +148,21 @@ void main(){
 #ifdef CC_a_texture0
 
 #ifdef CC_patch_anisotropic
-	vec2 uv = TEX_MAT3x2(matrix_t) * vec3(v_texture0, 1.0);
-	
+	//vec2 uv = TEX_MAT3x2(matrix_t) * vec3(v_texture0, 1.0);
 	/* https://bugs.chromium.org/p/angleproject/issues/detail?id=4994 */
-	uv = ((uv * anisotropic_fix) - fract(uv * anisotropic_fix) + 0.5) / anisotropic_fix;
-	
-	vec4 texColor = texture(tex0, uv);
+	//uv = ((uv * anisotropic_fix) - fract(uv * anisotropic_fix) + 0.5) / anisotropic_fix;
+	//vec4 texColor = texture(tex0, uv);
+
+	vec2 uv = floor(v_texture0 * anisotropic_fix) + 0.5;
+	color *= texture(tex0, uv / anisotropic_fix) * texColor.rgba;
 #else
-	vec4 texColor = texture(tex0, TEX_MAT3x2(matrix_t) * vec3(v_texture0, 1.0));
+	//vec4 texColor = texture(tex0, TEX_MAT3x2(matrix_t) * vec3(v_texture0, 1.0));
+	color *= texture(tex0, v_texture0);
 #endif
 
 #else
-	vec4 texColor = texture(tex0, TEX_MAT3x2(matrix_t) * vec3(texCoordV0, 1.0));
-#endif
-
-#ifdef CC_swap_rb
-	color *= texColor.rgba;
-#else
-	color *= texColor.bgra;
+	//vec4 texColor = texture(tex0, TEX_MAT3x2(matrix_t) * vec3(texCoordV0, 1.0));
+	color *= texture(tex0, texCoordV0);
 #endif
 
 #endif
@@ -210,9 +194,15 @@ void main(){
 #endif
 	
 #ifdef CC_fog
-	float dist = sqrt(dot(v_position, v_position));
-	float i = fogParam.x == 1.0 ? (dist - fogParam.y) / fogParam.z : 1.0 - exp(-fogParam.w * dist);
-	color.rgb = mix(color.rgb, fogColor.xyz, clamp(i, 0.0, 1.0) * fogColor.a);
+	vec3 fogPos = v_position.xyz / v_position.w;
+	float dist = length(fogPos);
+	float fogDensity = fogParam.y;
+	float fogStart = fogParam.z;
+	float fogEnd = fogParam.w;
+	//float f = fogParam.x == 1.0 ? 1.0 - exp(-fogDensity * dist) :
+		//(dist - fogStart) / (fogEnd - fogStart);
+	float f = ((dist * fogDensity) - fogStart) / (fogEnd - fogStart);
+	color.rgb = mix(color.rgb, fogColor.rgb, clamp(f, 0.0, 1.0) * fogColor.a);
 #endif
 	
 	fragColor = color;

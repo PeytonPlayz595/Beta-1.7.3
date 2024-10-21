@@ -20,13 +20,13 @@ public class GameSettings {
 	public float soundVolume = 1.0F;
 	public float mouseSensitivity = 0.5F;
 	public boolean invertMouse = false;
-	public int renderDistance = 0;
-	public boolean viewBobbing = true;
+	public int renderDistance = 3;
+	public boolean viewBobbing = false;
 	public boolean anaglyph = false;
 	public boolean advancedOpengl = false;
 	public int limitFramerate = 1;
-	public boolean fancyGraphics = true;
-	public boolean ambientOcclusion = true;
+	public boolean fancyGraphics = false;
+	public boolean ambientOcclusion = false;
 	public boolean particles = true;
 	public String skin = "Default";
 	public KeyBinding keyBindForward = new KeyBinding("key.forward", 17);
@@ -152,7 +152,6 @@ public class GameSettings {
 	}
 
 	public boolean getOptionOrdinalValue(EnumOptions var1) {
-		System.out.println(EnumOptionsMappingHelper.enumOptionsMappingHelperArray[var1.ordinal()]);
 		switch(EnumOptionsMappingHelper.enumOptionsMappingHelperArray[var1.ordinal()]) {
 		case 1:
 			return this.invertMouse;

@@ -1,11 +1,11 @@
 package net.lax1dude.eaglercraft;
 
-import java.nio.IntBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import net.PeytonPlayz585.awt.image.BufferedImage;
 import net.PeytonPlayz585.opengl.GL11;
+import net.lax1dude.eaglercraft.internal.buffer.IntBuffer;
 import net.minecraft.src.GLAllocation;
 
 public class SpriteSheetTexture {

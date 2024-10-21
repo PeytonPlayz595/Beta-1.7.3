@@ -1,5 +1,8 @@
 package net.PeytonPlayz585.opengl;
 
+import org.teavm.backend.javascript.spi.GeneratedBy;
+import org.teavm.backend.javascript.spi.InjectedBy;
+
 import static net.PeytonPlayz585.opengl.GL11.EaglerAdapterImpl2.*;
 import static net.PeytonPlayz585.opengl.GL11.WebGL2RenderingContext.*;
 
@@ -8,9 +11,6 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -36,6 +36,7 @@ import org.teavm.jso.browser.TimerHandler;
 import org.teavm.jso.browser.Window;
 import org.teavm.jso.canvas.CanvasRenderingContext2D;
 import org.teavm.jso.canvas.ImageData;
+import org.teavm.jso.core.JSString;
 import org.teavm.jso.dom.css.CSSStyleDeclaration;
 import org.teavm.jso.dom.events.Event;
 import org.teavm.jso.dom.events.EventListener;
@@ -92,11 +93,20 @@ import net.PeytonPlayz585.util.vector.Matrix4f;
 import net.PeytonPlayz585.util.vector.Vector2f;
 import net.PeytonPlayz585.util.vector.Vector3f;
 import net.PeytonPlayz585.util.vector.Vector4f;
+import net.lax1dude.eaglercraft.EaglercraftUUID;
+import net.lax1dude.eaglercraft.internal.buffer.ByteBuffer;
+import net.lax1dude.eaglercraft.internal.buffer.EaglerArrayBufferAllocator;
+import net.lax1dude.eaglercraft.internal.buffer.EaglerArrayIntBuffer;
+import net.lax1dude.eaglercraft.internal.buffer.FloatBuffer;
+import net.lax1dude.eaglercraft.internal.buffer.IntBuffer;
+import net.lax1dude.eaglercraft.internal.teavm.ImmediateContinue;
+import net.lax1dude.eaglercraft.internal.teavm.MessageChannel;
+import net.lax1dude.eaglercraft.internal.teavm.TeaVMUtilsUnwrapGenerator;
 import net.minecraft.src.MathHelper;
 import net.minecraft.src.ScaledResolution;
 import net.minecraft.src.Tessellator;
 
-public class GL11 implements JSObject {
+public class GL11 {
 
 	public static final int GL_ZERO = RealOpenGLEnums.GL_ZERO;
 	public static final int GL_ONE = RealOpenGLEnums.GL_ONE;
@@ -217,6 +227,8 @@ public class GL11 implements JSObject {
 	public static final int GL_GEQUAL = RealOpenGLEnums.GL_GEQUAL;
 	public static final int GL_LESS = RealOpenGLEnums.GL_LESS;
 	public static final int GL_POINTS = RealOpenGLEnums.GL_POINTS;
+	public static final int GL_RGBA8 = RealOpenGLEnums.GL_RGBA8;
+	public static final int GL_CLAMP_TO_EDGE = RealOpenGLEnums.GL_CLAMP_TO_EDGE;
 
 	static final GLObjectMap<TextureGL> texObjects = new GLObjectMap(256);
 
@@ -314,17 +326,16 @@ public class GL11 implements JSObject {
 	public static float texQ_Z = 0.0f;
 	public static float texQ_W = 0.0f;
 
-	public static int fogColorSerial = 0;
-	public static float fogColorR = 1.0f;
-	public static float fogColorG = 1.0f;
-	public static float fogColorB = 1.0f;
-	public static float fogColorA = 1.0f;
-	public static int fogCfgSerial = 0;
-	public static int fogMode = 1;
-	static boolean fogEnabled = false;
-	public static float fogStart = 1.0f;
-	public static float fogEnd = 1.0f;
-	public static float fogDensity = 1.0f;
+	public static boolean stateFog = false;
+	public static boolean stateFogEXP = false;
+	public static float stateFogDensity = 1.0f;
+	public static float stateFogStart = 0.0f;
+	public static float stateFogEnd = 1.0f;
+	public static float stateFogColorR = 1.0f;
+	public static float stateFogColorG = 1.0f;
+	public static float stateFogColorB = 1.0f;
+	public static float stateFogColorA = 1.0f;
+	public static int stateFogSerial = 0;
 
 	static int bytesUploaded = 0;
 	static int vertexDrawn = 0;
@@ -443,7 +454,7 @@ public class GL11 implements JSObject {
 			enableAlphaTest = true;
 			break;
 		case GL_FOG:
-			fogEnabled = true;
+			stateFog = true;
 			break;
 		case GL_COLOR_MATERIAL:
 			enableColorMaterial = true;
@@ -628,7 +639,7 @@ public class GL11 implements JSObject {
 			enableAlphaTest = false;
 			break;
 		case GL_FOG:
-			fogEnabled = false;
+			stateFog = false;
 			break;
 		case GL_COLOR_MATERIAL:
 			enableColorMaterial = false;
@@ -685,10 +696,6 @@ public class GL11 implements JSObject {
 		_wglTexImage2D(_wGL_TEXTURE_2D, p2, _wGL_RGBA8, p4, p5, p6, _wGL_RGBA, _wGL_UNSIGNED_BYTE, p9);
 	}
 
-	public static final void glLightModel(int p1, FloatBuffer p2) {
-
-	}
-
 	public static int lightPos0Serial = 0;
 	public static int lightPos1Serial = 0;
 	private static Vector4f lightPos0vec0 = new Vector4f();
@@ -699,38 +706,38 @@ public class GL11 implements JSObject {
 	private static float[] light0 = new float[4];
 	private static float[] light1 = new float[4];
 
-	public static final void glLight(int light, int pname, FloatBuffer param) {
-		if(pname == GL_POSITION) {
-			switch(light) {
-			case GL_LIGHT0:
-				try {
-					light0[0] = param.get(param.position());
-					light0[1] = param.get(param.position() + 1);
-					light0[2] = param.get(param.position() + 2);
-					light0[3] = param.get(param.position() + 3);
-				} catch(Exception e) {
-					System.err.println("Failed to shade model (GL_LIGHT0)");
-					light0[0] = 0.0F;
-					light0[1] = 0.0F;
-					light0[2] = 0.0F;
-					light0[3] = 0.0F;
-				}
-			case GL_LIGHT1:
-				try {
-					light1[0] = param.get(param.position());
-					light1[1] = param.get(param.position() + 1);
-					light1[2] = param.get(param.position() + 2);
-					light1[3] = param.get(param.position() + 3);
-				} catch(Exception e) {
-					System.err.println("Failed to shade model (GL_LIGHT1)");
-					light1[0] = 0.0F;
-					light1[1] = 0.0F;
-					light1[2] = 0.0F;
-					light1[3] = 0.0F;
-				}
-			}
-		}
-	}
+//	public static final void glLight(int light, int pname, FloatBuffer param) {
+//		if(pname == GL_POSITION) {
+//			switch(light) {
+//			case GL_LIGHT0:
+//				try {
+//					light0[0] = param.get(param.position());
+//					light0[1] = param.get(param.position() + 1);
+//					light0[2] = param.get(param.position() + 2);
+//					light0[3] = param.get(param.position() + 3);
+//				} catch(Exception e) {
+//					System.err.println("Failed to shade model (GL_LIGHT0)");
+//					light0[0] = 0.0F;
+//					light0[1] = 0.0F;
+//					light0[2] = 0.0F;
+//					light0[3] = 0.0F;
+//				}
+//			case GL_LIGHT1:
+//				try {
+//					light1[0] = param.get(param.position());
+//					light1[1] = param.get(param.position() + 1);
+//					light1[2] = param.get(param.position() + 2);
+//					light1[3] = param.get(param.position() + 3);
+//				} catch(Exception e) {
+//					System.err.println("Failed to shade model (GL_LIGHT1)");
+//					light1[0] = 0.0F;
+//					light1[1] = 0.0F;
+//					light1[2] = 0.0F;
+//					light1[3] = 0.0F;
+//				}
+//			}
+//		}
+//	}
 
 	public static final void copyModelToLightMatrix() {
 		++lightPos0Serial;
@@ -1311,7 +1318,8 @@ public class GL11 implements JSObject {
 		int mode = 0;
 		mode = (mode | (enableTexGen ? FixedFunctionShader.TEXGEN : 0));
 		mode = (mode | ((enableColorMaterial && enableLighting) ? FixedFunctionShader.LIGHTING : 0));
-		mode = (mode | (fogEnabled ? FixedFunctionShader.FOG : 0));
+		mode = (mode | ((stateFog && stateFogDensity > 0.0f) ? FixedFunctionShader.FOG : 0));
+		//mode = (mode | (fogEnabled ? FixedFunctionShader.FOG : 0));
 		mode = (mode | (enableAlphaTest ? FixedFunctionShader.ALPHATEST : 0));
 		mode = (mode | (enableTexture2D ? FixedFunctionShader.UNIT0 : 0));
 		mode = (mode | (enableTexture2D_1 ? FixedFunctionShader.UNIT1 : 0));
@@ -1330,7 +1338,8 @@ public class GL11 implements JSObject {
 		mode = (mode | (enableTex1Array ? FixedFunctionShader.TEXTURE1 : 0));
 		mode = (mode | (enableTexGen ? FixedFunctionShader.TEXGEN : 0));
 		mode = (mode | ((enableColorMaterial && enableLighting) ? FixedFunctionShader.LIGHTING : 0));
-		mode = (mode | (fogEnabled ? FixedFunctionShader.FOG : 0));
+		mode = (mode | ((stateFog && stateFogDensity > 0.0f) ? FixedFunctionShader.FOG : 0));
+		//mode = (mode | (fogEnabled ? FixedFunctionShader.FOG : 0));
 		mode = (mode | (enableAlphaTest ? FixedFunctionShader.ALPHATEST : 0));
 		mode = (mode | (enableTexture2D ? FixedFunctionShader.UNIT0 : 0));
 		mode = (mode | (enableTexture2D_1 ? FixedFunctionShader.UNIT1 : 0));
@@ -1436,7 +1445,9 @@ public class GL11 implements JSObject {
 
 	private static final void _wglDrawQuadArrays(int p2, int p3) {
 		if (quadsToTrianglesBuffer == null) {
-			IntBuffer upload = IntBuffer.wrap(new int[98400 / 2]);
+			//IntBuffer upload = IntBuffer.wrap(new int[98400 / 2]);
+			//IntBuffer upload = EaglerArrayIntBuffer.wrap(new int[98400 / 2]);
+			IntBuffer upload = EaglerArrayBufferAllocator.allocateIntBuffer(98400 / 2);
 			for (int i = 0; i < 16384; ++i) {
 				int v1 = i * 4;
 				int v2 = i * 4 + 1;
@@ -1449,7 +1460,7 @@ public class GL11 implements JSObject {
 			upload.flip();
 			quadsToTrianglesBuffer = _wglCreateBuffer();
 			_wglBindBuffer(_wGL_ELEMENT_ARRAY_BUFFER, quadsToTrianglesBuffer);
-			_wglBufferData0(_wGL_ELEMENT_ARRAY_BUFFER, upload, _wGL_STATIC_DRAW);
+			_wglBufferData(_wGL_ELEMENT_ARRAY_BUFFER, upload, _wGL_STATIC_DRAW);
 		}
 		if (!currentArray.isQuadBufferBound) {
 			currentArray.isQuadBufferBound = true;
@@ -1463,64 +1474,6 @@ public class GL11 implements JSObject {
 	private static ProgramGL occlusion_program = null;
 	private static UniformGL occlusion_matrix_m = null;
 	private static UniformGL occlusion_matrix_p = null;
-
-	private static final void initializeOcclusionObjects() {
-		occlusion_vao = _wglCreateVertexArray();
-		occlusion_vbo = _wglCreateBuffer();
-
-		IntBuffer upload = IntBuffer.wrap(new int[108]);
-		float[] verts = new float[] { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-				0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-				1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-				1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-				1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-				1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-				1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f };
-		for (int i = 0; i < verts.length; i++) {
-			upload.put(Float.floatToRawIntBits(verts[i]));
-		}
-		upload.flip();
-
-		_wglBindVertexArray(occlusion_vao);
-		_wglBindBuffer(_wGL_ARRAY_BUFFER, occlusion_vbo);
-		_wglBufferData0(_wGL_ARRAY_BUFFER, upload, _wGL_STATIC_DRAW);
-		_wglEnableVertexAttribArray(0);
-		_wglVertexAttribPointer(0, 3, _wGL_FLOAT, false, 12, 0);
-
-		ShaderGL vert = _wglCreateShader(_wGL_VERTEX_SHADER);
-		ShaderGL frag = _wglCreateShader(_wGL_FRAGMENT_SHADER);
-
-		String src = fileContents("/glsl/occl.glsl");
-		_wglShaderSource(vert, _wgetShaderHeader() + "\n#define CC_VERT\n" + src);
-		_wglShaderSource(frag, _wgetShaderHeader() + "\n#define CC_FRAG\n" + src);
-
-		_wglCompileShader(vert);
-		if (!_wglGetShaderCompiled(vert))
-			System.err.println(("\n" + _wglGetShaderInfoLog(vert)).replace("\n", "\n[/glsl/occl.glsl][VERT] ") + "\n");
-
-		_wglCompileShader(frag);
-		if (!_wglGetShaderCompiled(frag))
-			System.err.println(("\n" + _wglGetShaderInfoLog(frag)).replace("\n", "\n[/glsl/occl.glsl][FRAG] ") + "\n");
-
-		occlusion_program = _wglCreateProgram();
-
-		_wglAttachShader(occlusion_program, vert);
-		_wglAttachShader(occlusion_program, frag);
-		_wglLinkProgram(occlusion_program);
-		_wglDetachShader(occlusion_program, vert);
-		_wglDetachShader(occlusion_program, frag);
-		_wglDeleteShader(vert);
-		_wglDeleteShader(frag);
-
-		if (!_wglGetProgramLinked(occlusion_program))
-			System.err.println(
-					("\n\n" + _wglGetProgramInfoLog(occlusion_program)).replace("\n", "\n[/glsl/occl.glsl][LINKER] "));
-
-		_wglUseProgram(occlusion_program);
-		occlusion_matrix_m = _wglGetUniformLocation(occlusion_program, "matrix_m");
-		occlusion_matrix_p = _wglGetUniformLocation(occlusion_program, "matrix_p");
-
-	}
 
 	private static final GLObjectMap<QueryGL> queryObjs = new GLObjectMap(256);
 
@@ -1539,18 +1492,6 @@ public class GL11 implements JSObject {
 	private static final Matrix4f cachedOcclusionP = (Matrix4f) (new Matrix4f()).setZero();
 	private static float[] occlusionModel = new float[16];
 	private static float[] occlusionProj = new float[16];
-
-	public static final void glBindOcclusionBB() {
-		if (occlusion_vao == null)
-			initializeOcclusionObjects();
-		_wglUseProgram(occlusion_program);
-		_wglBindVertexArray0(occlusion_vao);
-		if (!cachedOcclusionP.equals(matProjV[matProjPointer])) {
-			cachedOcclusionP.load(matProjV[matProjPointer]);
-			cachedOcclusionP.store(occlusionProj);
-			_wglUniformMat4fv(occlusion_matrix_p, occlusionProj);
-		}
-	}
 
 	public static final void glEndOcclusionBB() {
 
@@ -1596,6 +1537,10 @@ public class GL11 implements JSObject {
 		return texObjects.register(_wglGenTextures());
 	}
 	
+	public static final TextureGL glGetTextures(int tex) {
+		return texObjects.get(tex);
+	}
+	
 	public static final void glGenTextures(IntBuffer buf) {
 		for(int i = buf.position(); i < buf.limit(); i++) {
 			buf.put(i, glGenTextures());
@@ -1624,45 +1569,48 @@ public class GL11 implements JSObject {
 		if (p1 == GL_FOG_MODE) {
 			switch (p2) {
 			default:
-			case GL_LINEAR:
-				++fogCfgSerial;
-				fogMode = 1;
 				break;
 			case GL_EXP:
-				++fogCfgSerial;
-				fogMode = 2;
+				stateFogEXP = true;
+				++stateFogSerial;
 				break;
 			}
 		}
 	}
 
-	public static final void glFogf(int p1, float p2) {
+	public static final void glFogf(int p1, float param) {
 		switch (p1) {
 		case GL_FOG_START:
-			++fogCfgSerial;
-			fogStart = p2;
+			stateFogStart = param;
+			++stateFogSerial;
 			break;
 		case GL_FOG_END:
-			++fogCfgSerial;
-			fogEnd = p2;
+			stateFogEnd = param;
+			++stateFogSerial;
 			break;
 		case GL_FOG_DENSITY:
-			++fogCfgSerial;
-			fogDensity = p2;
+			stateFogDensity = param;
+			++stateFogSerial;
 			break;
 		default:
 			break;
 		}
 	}
 
-	public static final void glFog(int p1, FloatBuffer p2) {
-		if (p1 == GL_FOG_COLOR) {
-			++fogColorSerial;
-			fogColorR = p2.get();
-			fogColorG = p2.get();
-			fogColorB = p2.get();
-			fogColorA = p2.get();
+	public static final void glFog(int param, FloatBuffer valueBuffer) {
+		int pos = valueBuffer.position();
+		switch(param) {
+		case GL_FOG_COLOR:
+			stateFogColorR = valueBuffer.get();
+			stateFogColorG = valueBuffer.get();
+			stateFogColorB = valueBuffer.get();
+			stateFogColorA = valueBuffer.get();
+			++stateFogSerial;
+			break;
+		default:
+			throw new UnsupportedOperationException("Only GL_FOG_COLOR is configurable!");
 		}
+		valueBuffer.position(pos);
 	}
 
 	public static final void glDeleteLists(int p1, int p2) {
@@ -4355,9 +4303,7 @@ public class GL11 implements JSObject {
 		public static HTMLElement parent = null;
 		public static HTMLCanvasElement canvas = null;
 		public static WebGL2RenderingContext webgl = null;
-		public static FramebufferGL backBuffer = null;
-		public static RenderbufferGL backBufferColor = null;
-		public static RenderbufferGL backBufferDepth = null;
+		public static WebGLFramebuffer mainFramebuffer;
 		public static Window win = null;
 		private static byte[] loadedPackage = null;
 		private static EventListener contextmenu = null;
@@ -4417,6 +4363,20 @@ public class GL11 implements JSObject {
 			canvas.setWidth(sw);
 			canvas.setHeight(sh);
 			rootElement.appendChild(canvas);
+			
+			try {
+				win.addEventListener("message", windowMessageListener = new EventListener<MessageEvent>() {
+					@Override
+					public void handleEvent(MessageEvent evt) {
+						handleWindowMessage(evt);
+					}
+				});
+			}catch(Throwable t) {
+				throw new RuntimeException("Exception while registering window message event handlers", t);
+			}
+			
+			checkImmediateContinueSupport();
+			
 			try {
 				doc.exitPointerLock();
 			}catch(Throwable t) {
@@ -4428,10 +4388,10 @@ public class GL11 implements JSObject {
 				Client.showIncompatibleScreen("WebGL 2.0 is not supported on this device!");
 				throw new RuntimeException("WebGL 2.0 is not supported in your browser ("+getNavString("userAgent")+")");
 			}
-
-			setupBackBuffer();
-			resizeBackBuffer(sw, sh);
 			
+			mainFramebuffer = webgl.createFramebuffer();
+			WebGLBackBuffer.initBackBuffer(webgl, mainFramebuffer, new FramebufferGL(mainFramebuffer), sw, sh);
+
 			anisotropicFilteringSupported = webgl.getExtension("EXT_texture_filter_anisotropic") != null;
 			
 			win.addEventListener("contextmenu", contextmenu = new EventListener<MouseEvent>() {
@@ -4556,6 +4516,33 @@ public class GL11 implements JSObject {
 			
 			mouseEvents.clear();
 			keyEvents.clear();
+		}
+		
+		@JSBody(params = { "evt", "mainWin" }, script = "return evt.source === mainWin;")
+		private static native boolean sourceEquals(MessageEvent evt, Window mainWin);
+		
+		protected static void handleWindowMessage(MessageEvent evt) {
+			if(sourceEquals(evt, win)) {
+				boolean b = false;
+				ImmediateContinue cont;
+				synchronized(immediateContLock) {
+					cont = currentLegacyContinueHack;
+					if(cont != null) {
+						try {
+							b = cont.isValidToken(evt.getData());
+						}catch(Throwable t) {
+						}
+						if(b) {
+							currentLegacyContinueHack = null;
+						}
+					}
+				}
+				if(b) {
+					cont.execute();
+				}
+			}else {
+				PlatformWebView.onWindowMessageRecieved(evt);
+			}
 		}
 		
 		public static final void setListenerPos(float x, float y, float z, float vx, float vy, float vz, float pitch, float yaw) {
@@ -4920,21 +4907,12 @@ public class GL11 implements JSObject {
 			return webgl.getError();
 		}
 		public static final void _wglFlush() {
-			//webgl.flush();
+			webgl.flush();
 		}
-		private static Uint8Array uploadBuffer = Uint8Array.create(ArrayBuffer.create(4 * 1024 * 1024));
-		public static final void _wglTexImage2D(int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8, ByteBuffer p9) {
-			if(p9 == null) {
-				webgl.texImage2D(p1, p2, p3, p4, p5, p6, p7, p8, null);
-			}else {
-				int len = p9.remaining();
-				Uint8Array uploadBuffer1 = uploadBuffer;
-				for(int i = 0; i < len; ++i) {
-					uploadBuffer1.set(i, (short) ((int)p9.get() & 0xff));
-				}
-				Uint8Array data = Uint8Array.create(uploadBuffer.getBuffer(), 0, len);
-				webgl.texImage2D(p1, p2, p3, p4, p5, p6, p7, p8, data);
-			}
+		public static final void _wglTexImage2D(int target, int level, int internalFormat, int width,
+				int height, int border, int format, int type, ByteBuffer data) {
+			webgl.texImage2D(target, level, internalFormat, width, height, border, format, type,
+					data == null ? null : EaglerArrayBufferAllocator.getDataView8Unsigned(data));
 		}
 		public static final void _wglBlendFunc(int p1, int p2) {
 			webgl.blendFunc(p1, p2);
@@ -4963,23 +4941,15 @@ public class GL11 implements JSObject {
 		public static final void _wglTexParameterf(int p1, int p2, float p3) {
 			webgl.texParameterf(p1, p2, p3);
 		}
-		public static final void _wglTexImage2D(int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8, IntBuffer p9) {
-			int len = p9.remaining();
-			DataView deevis = DataView.create(uploadBuffer.getBuffer());
-			for(int i = 0; i < len; ++i) {
-				deevis.setInt32(i * 4, p9.get(), true);
-			}
-			Uint8Array data = Uint8Array.create(uploadBuffer.getBuffer(), 0, len*4);
-			webgl.texImage2D(p1, p2, p3, p4, p5, p6, p7, p8, data);
+		public static final void _wglTexImage2D(int target, int level, int internalFormat, int width,
+				int height, int border, int format, int type, IntBuffer data) {
+			webgl.texImage2D(target, level, internalFormat, width, height, border, format, type,
+					data == null ? null : EaglerArrayBufferAllocator.getDataView8Unsigned(data));
 		}
-		public static final void _wglTexSubImage2D(int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8, IntBuffer p9) {
-			int len = p9.remaining();
-			DataView deevis = DataView.create(uploadBuffer.getBuffer());
-			for(int i = 0; i < len; ++i) {
-				deevis.setInt32(i * 4, p9.get(), true);
-			}
-			Uint8Array data = Uint8Array.create(uploadBuffer.getBuffer(), 0, len*4);
-			webgl.texSubImage2D(p1, p2, p3, p4, p5, p6, p7, p8, data);
+		public static final void _wglTexSubImage2D(int target, int level, int xoffset, int yoffset,
+				int width, int height, int format, int type, ByteBuffer data) {
+			webgl.texSubImage2D(target, level, xoffset, yoffset, width, height, format, type,
+					data == null ? null : EaglerArrayBufferAllocator.getDataView8Unsigned(data));
 		}
 		public static final void _wglDeleteTextures(TextureGL p1) {
 			webgl.deleteTexture(p1.obj);
@@ -4993,14 +4963,10 @@ public class GL11 implements JSObject {
 		public static final TextureGL _wglGenTextures() {
 			return new TextureGL(webgl.createTexture());
 		}
-		public static final void _wglTexSubImage2D(int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8, ByteBuffer p9) {
-			int len = p9.remaining();
-			for(int i = 0; i < len; ++i) {
-				//uploadBuffer.set(swapEndian ? ((i >> 2) + (3 - (i & 3))) : i, (short) ((int)p9.get() & 0xff));
-				uploadBuffer.set(i, (short) ((int)p9.get() & 0xff));
-			}
-			Uint8Array data = Uint8Array.create(uploadBuffer.getBuffer(), 0, len);
-			webgl.texSubImage2D(p1, p2, p3, p4, p5, p6, p7, p8, data);
+		public static final void _wglTexSubImage2D(int target, int level, int xoffset, int yoffset,
+				int width, int height, int format, int type, IntBuffer data) {
+			webgl.texSubImage2D(target, level, xoffset, yoffset, width, height, format, type,
+					data == null ? null : EaglerArrayBufferAllocator.getDataView8Unsigned(data));
 		}
 		public static final void _wglActiveTexture(int p1) {
 			webgl.activeTexture(p1);
@@ -5053,32 +5019,38 @@ public class GL11 implements JSObject {
 		public static final void _wglBindBuffer(int p1, BufferGL p2) {
 			webgl.bindBuffer(p1, p2 == null ? null : p2.obj);
 		}
-		public static final void _wglBufferData0(int p1, IntBuffer p2, int p3) {
-			int len = p2.remaining();
-			DataView deevis = DataView.create(uploadBuffer.getBuffer());
-			for(int i = 0; i < len; ++i) {
-				deevis.setInt32(i * 4, p2.get(), true);
-			}
-			Uint8Array data = Uint8Array.create(uploadBuffer.getBuffer(), 0, len*4);
-			webgl.bufferData(p1, data, p3);
+		public static final void _wglBufferData(int target, ByteBuffer data, int usage) {
+			webgl.bufferData(target, EaglerArrayBufferAllocator.getDataView8(data), usage);
 		}
-		public static final void _wglBufferSubData0(int p1, int p2, IntBuffer p3) {
-			int len = p3.remaining();
-			DataView deevis = DataView.create(uploadBuffer.getBuffer());
-			for(int i = 0; i < len; ++i) {
-				deevis.setInt32(i * 4, p3.get(), true);
-			}
-			Uint8Array data = Uint8Array.create(uploadBuffer.getBuffer(), 0, len*4);
-			webgl.bufferSubData(p1, p2, data);
+		
+		public static final void _wglBufferData(int target, IntBuffer data, int usage) {
+			webgl.bufferData(target, EaglerArrayBufferAllocator.getDataView32(data), usage);
 		}
-		public static final void _wglBufferData(int p1, Object p2, int p3) {
-			webgl.bufferData(p1, (Int32Array)p2, p3);
+		
+		public static final void _wglBufferData(int target, FloatBuffer data, int usage) {
+			webgl.bufferData(target, EaglerArrayBufferAllocator.getDataView32F(data), usage);
 		}
-		public static final void _wglBufferData00(int p1, long len, int p3) {
-			webgl.bufferData(p1, (int)len, p3);
+		
+		public static final void _wglBufferData(int target, int size, int usage) {
+			webgl.bufferData(target, size, usage);
+		}
+		
+		public static final void _wglBufferSubData(int target, int offset, ByteBuffer data) {
+			webgl.bufferSubData(target, offset, EaglerArrayBufferAllocator.getDataView8(data));
+		}
+		
+		public static final void _wglBufferSubData(int target, int offset, IntBuffer data) {
+			webgl.bufferSubData(target, offset, EaglerArrayBufferAllocator.getDataView32(data));
+		}
+		
+		public static final void _wglBufferSubData(int target, int offset, FloatBuffer data) {
+			webgl.bufferSubData(target, offset, EaglerArrayBufferAllocator.getDataView32F(data));
 		}
 		public static final void _wglBufferSubData(int p1, int p2, Object p3) {
 			webgl.bufferSubData(p1, p2, (Int32Array)p3);
+		}
+		public static final void _wglBufferData(int p1, Object p2, int p3) {
+			webgl.bufferData(p1, (Int32Array)p2, p3);
 		}
 		public static final void _wglBindAttribLocation(ProgramGL p1, int p2, String p3) {
 			webgl.bindAttribLocation(p1.obj, p2, p3);
@@ -5157,7 +5129,12 @@ public class GL11 implements JSObject {
 			webgl.vertexAttribPointer(p1, p2, p3, p4, p5, p6);
 		}
 		public static final void _wglBindFramebuffer(int p1, FramebufferGL p2) {
-			webgl.bindFramebuffer(p1, p2 == null ? backBuffer.obj : p2.obj);
+			//webgl.bindFramebuffer(p1, p2 == null ? backBuffer.obj : p2.obj);
+			if(p2 == null) {
+				webgl.bindFramebuffer(p1, mainFramebuffer);
+			} else {
+				webgl.bindFramebuffer(p1, p2.obj);
+			}
 		}
 		public static final void _wglReadBuffer(int p1) {
 			webgl.readBuffer(p1);
@@ -5168,8 +5145,8 @@ public class GL11 implements JSObject {
 		public static final void _wglDeleteFramebuffer(FramebufferGL p1) {
 			webgl.deleteFramebuffer(p1.obj);
 		}
-		public static final void _wglFramebufferTexture2D(int p1, TextureGL p2) {
-			webgl.framebufferTexture2D(FRAMEBUFFER, p1, TEXTURE_2D, p2 == null ? null : p2.obj, 0);
+		public static final void _wglFramebufferTexture2D(int target, int p1, int framebufferTarget, TextureGL p2, int target2) {
+			webgl.framebufferTexture2D(target, p1, framebufferTarget, p2 == null ? null : p2.obj, target2);
 		}
 		public static final void _wglFramebufferTexture2D(int p1, TextureGL p2, int p3) {
 			webgl.framebufferTexture2D(FRAMEBUFFER, p1, TEXTURE_2D, p2 == null ? null : p2.obj, p3);
@@ -5204,14 +5181,17 @@ public class GL11 implements JSObject {
 		public static final RenderbufferGL _wglCreateRenderBuffer() {
 			return new RenderbufferGL(webgl.createRenderbuffer());
 		}
-		public static final void _wglBindRenderbuffer(RenderbufferGL p1) {
-			webgl.bindRenderbuffer(RENDERBUFFER, p1 == null ? null : p1.obj);
+		public static final void _wglBindRenderbuffer(int target, RenderbufferGL p1) {
+			webgl.bindRenderbuffer(target, p1 == null ? null : p1.obj);
 		}
-		public static final void _wglRenderbufferStorage(int p1, int p2, int p3) {
-			webgl.renderbufferStorage(RENDERBUFFER, p1, p2, p3);
+		public static final void _wglRenderbufferStorage(int target, int p1, int p2, int p3) {
+			webgl.renderbufferStorage(target, p1, p2, p3);
 		}
-		public static final void _wglFramebufferRenderbuffer(int p1, RenderbufferGL p2) {
-			webgl.framebufferRenderbuffer(FRAMEBUFFER, p1, RENDERBUFFER, p2 == null ? null : p2.obj);
+		public static final void _wglFramebufferRenderbuffer(int target, int p1, int renderbufferTarget, RenderbufferGL p2) {
+			webgl.framebufferRenderbuffer(target, p1, renderbufferTarget, p2 == null ? null : p2.obj);
+		}
+		public static final void _wglDrawBuffers(int buffer) {
+			webgl.drawBuffers(new int[] { buffer });
 		}
 		public static final void _wglDeleteRenderbuffer(RenderbufferGL p1) {
 			webgl.deleteRenderbuffer(p1.obj);
@@ -5432,54 +5412,323 @@ public class GL11 implements JSObject {
 			return false;
 		}
 		public static final void updateDisplay() {
-			double r = win.getDevicePixelRatio();
+//			double r = win.getDevicePixelRatio();
+//			int w = parent.getClientWidth();
+//			int h = parent.getClientHeight();
+//			int w2 = (int)(w * r);
+//			int h2 = (int)(h * r);
+//			if(canvas.getWidth() != w2) {
+//				canvas.setWidth(w2);
+//			}
+//			if(canvas.getHeight() != h2) {
+//				canvas.setHeight(h2);
+//			}
+//			webgl.bindFramebuffer(FRAMEBUFFER, null);
+//			webgl.bindFramebuffer(READ_FRAMEBUFFER, backBuffer.obj);
+//			webgl.bindFramebuffer(DRAW_FRAMEBUFFER, null);
+//			webgl.blitFramebuffer(0, 0, backBufferWidth, backBufferHeight, 0, 0, w2, h2, COLOR_BUFFER_BIT, NEAREST);
+//			webgl.bindFramebuffer(FRAMEBUFFER, backBuffer.obj);
+//			resizeBackBuffer(w2, h2);
+//			try {
+//				Thread.sleep(0l);
+//			} catch (InterruptedException e) {
+//				;
+//			}
+			double r = getDevicePixelRatio(win);
+			if(r < 0.01) r = 1.0;
 			int w = parent.getClientWidth();
 			int h = parent.getClientHeight();
-			int w2 = (int)(w * r);
-			int h2 = (int)(h * r);
+			int w2 = width = (int)(w * r);
+			int h2 = height = (int)(h * r);
 			if(canvas.getWidth() != w2) {
 				canvas.setWidth(w2);
 			}
 			if(canvas.getHeight() != h2) {
 				canvas.setHeight(h2);
 			}
-			webgl.bindFramebuffer(FRAMEBUFFER, null);
-			webgl.bindFramebuffer(READ_FRAMEBUFFER, backBuffer.obj);
-			webgl.bindFramebuffer(DRAW_FRAMEBUFFER, null);
-			webgl.blitFramebuffer(0, 0, backBufferWidth, backBufferHeight, 0, 0, w2, h2, COLOR_BUFFER_BIT, NEAREST);
-			webgl.bindFramebuffer(FRAMEBUFFER, backBuffer.obj);
-			resizeBackBuffer(w2, h2);
+			WebGLBackBuffer.flipBuffer(w2, h2);
+			if(getVisibilityState(win.getDocument())) {
+				swapDelayTeaVM();
+			} else {
+				try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+				}
+			}
+		}
+		
+		static boolean useDelayOnSwap = false;
+		static boolean immediateContinueSupport = false;
+		static MessageChannel immediateContinueChannel = null;
+		static Runnable currentMsgChannelContinueHack = null;
+		static ImmediateContinue currentLegacyContinueHack = null;
+		private static final Object immediateContLock = new Object();
+		
+		private static String windowMessagePostOrigin = null;
+		private static EventListener<MessageEvent> windowMessageListener = null;
+		
+		public static void swapDelayTeaVM() {
+			if(!useDelayOnSwap && immediateContinueSupport) {
+				immediateContinueTeaVM0();
+			}else {
+				try {
+					Thread.sleep(0l);
+				} catch (InterruptedException e) {
+				}
+			}
+		}
+		
+		@Async
+		private static native void immediateContinueTeaVM0();
+
+		private static void immediateContinueTeaVM0(final AsyncCallback<Void> cb) {
+			synchronized(immediateContLock) {
+				if(immediateContinueChannel != null) {
+					if(currentMsgChannelContinueHack != null) {
+						cb.error(new IllegalStateException("Main thread is already waiting for an immediate continue callback!"));
+						return;
+					}
+					currentMsgChannelContinueHack = () -> {
+						cb.complete(null);
+					};
+					try {
+						immediateContinueChannel.getPort2().postMessage(emptyJSString);
+					}catch(Throwable t) {
+						currentMsgChannelContinueHack = null;
+						System.err.println("Caught error posting immediate continue, using setTimeout instead");
+						Window.setTimeout(() -> cb.complete(null), 0);
+					}
+				}else {
+					if(currentLegacyContinueHack != null) {
+						cb.error(new IllegalStateException("Main thread is already waiting for an immediate continue callback!"));
+						return;
+					}
+					final JSString token = JSString.valueOf(EaglercraftUUID.randomUUID().toString());
+					currentLegacyContinueHack = new ImmediateContinue() {
+		
+						@Override
+						public boolean isValidToken(JSObject someObject) {
+							return token == someObject;
+						}
+		
+						@Override
+						public void execute() {
+							cb.complete(null);
+						}
+		
+					};
+					try {
+						win.postMessage(token, windowMessagePostOrigin);
+					}catch(Throwable t) {
+						currentLegacyContinueHack = null;
+						System.err.println("Caught error posting immediate continue, using setTimeout instead");
+						Window.setTimeout(() -> cb.complete(null), 0);
+					}
+				}
+			}
+		}
+		
+		@JSBody(params = { }, script = "try { return window.self !== window.top; } catch(e) { return true; }")
+		private static native boolean isFrame();
+
+		private static void checkImmediateContinueSupport() {
+			
 			try {
-				Thread.sleep(0l);
-			} catch (InterruptedException e) {
-				;
+				if(Window.current() != Window.current().getTop()) {
+					immediateContinueSupport = false;
+					return;
+				}
+			} catch(Throwable t) {
+				immediateContinueSupport = false;
+				return;
+			}
+			
+			immediateContinueSupport = false;
+			windowMessagePostOrigin = getOriginForPost(win);
+
+			int stat = checkImmediateContinueSupport0();
+			if(stat == IMMEDIATE_CONT_SUPPORTED) {
+				immediateContinueSupport = true;
+				return;
+			}else if(stat == IMMEDIATE_CONT_FAILED_NOT_ASYNC) {
+			}else if(stat == IMMEDIATE_CONT_FAILED_NOT_CONT) {
+			}else if(stat == IMMEDIATE_CONT_FAILED_EXCEPTIONS) {
+			}
+			System.out.println("Note: Using legacy fast immediate continue based on window.postMessage instead");
+			stat = checkLegacyImmediateContinueSupport0();
+			if(stat == IMMEDIATE_CONT_SUPPORTED) {
+				immediateContinueSupport = true;
+				return;
+			}else if(stat == IMMEDIATE_CONT_FAILED_NOT_ASYNC) {
+				return;
+			}
+			windowMessagePostOrigin = "*";
+			stat = checkLegacyImmediateContinueSupport0();
+			if(stat == IMMEDIATE_CONT_SUPPORTED) {
+				immediateContinueSupport = true;
+			}else if(stat == IMMEDIATE_CONT_FAILED_NOT_ASYNC) {
+			}else if(stat == IMMEDIATE_CONT_FAILED_NOT_CONT) {
+			}else if(stat == IMMEDIATE_CONT_FAILED_EXCEPTIONS) {
 			}
 		}
-		public static final void setupBackBuffer() {
-			backBuffer = _wglCreateFramebuffer();
-			_wglBindFramebuffer(_wGL_FRAMEBUFFER, null);
-			backBufferColor = _wglCreateRenderBuffer();
-			_wglBindRenderbuffer(backBufferColor);
-			_wglFramebufferRenderbuffer(_wGL_COLOR_ATTACHMENT0, backBufferColor);
-			backBufferDepth = _wglCreateRenderBuffer();
-			_wglBindRenderbuffer(backBufferDepth);
-			_wglFramebufferRenderbuffer(_wGL_DEPTH_ATTACHMENT, backBufferDepth);
-		}
-		private static int backBufferWidth = -1;
-		private static int backBufferHeight = -1;
-		public static final void resizeBackBuffer(int w, int h) {
-			if(w != backBufferWidth || h != backBufferHeight) {
-				_wglBindRenderbuffer(backBufferColor);
-				_wglRenderbufferStorage(_wGL_RGBA8, w, h);
-				_wglBindRenderbuffer(backBufferDepth);
-				_wglRenderbufferStorage(_wGL_DEPTH_COMPONENT32F, w, h);
-				backBufferWidth = w;
-				backBufferHeight = h;
+
+		private static final JSString emptyJSString = JSString.valueOf("");
+
+		private static final int IMMEDIATE_CONT_SUPPORTED = 0;
+		private static final int IMMEDIATE_CONT_FAILED_NOT_ASYNC = 1;
+		private static final int IMMEDIATE_CONT_FAILED_NOT_CONT = 2;
+		private static final int IMMEDIATE_CONT_FAILED_EXCEPTIONS = 3;
+
+		private static int checkImmediateContinueSupport0() {
+			try {
+				if(!MessageChannel.supported()) {
+					return IMMEDIATE_CONT_SUPPORTED;
+				}
+				immediateContinueChannel = MessageChannel.create();
+				immediateContinueChannel.getPort1().addEventListener("message", new EventListener<MessageEvent>() {
+					@Override
+					public void handleEvent(MessageEvent evt) {
+						Runnable toRun;
+						synchronized(immediateContLock) {
+							toRun = currentMsgChannelContinueHack;
+							currentMsgChannelContinueHack = null;
+						}
+						if(toRun != null) {
+							toRun.run();
+						}
+					}
+				});
+				immediateContinueChannel.getPort1().start();
+				immediateContinueChannel.getPort2().start();
+				final boolean[] checkMe = new boolean[1];
+				checkMe[0] = false;
+				currentMsgChannelContinueHack = () -> {
+					checkMe[0] = true;
+				};
+				immediateContinueChannel.getPort2().postMessage(emptyJSString);
+				if(checkMe[0]) {
+					currentMsgChannelContinueHack = null;
+					if(immediateContinueChannel != null) {
+						safeShutdownChannel(immediateContinueChannel);
+					}
+					immediateContinueChannel = null;
+					return IMMEDIATE_CONT_FAILED_NOT_ASYNC;
+				}
+				Thread.sleep(10l);
+				currentMsgChannelContinueHack = null;
+				if(!checkMe[0]) {
+					if(immediateContinueChannel != null) {
+						safeShutdownChannel(immediateContinueChannel);
+					}
+					immediateContinueChannel = null;
+					return IMMEDIATE_CONT_FAILED_NOT_CONT;
+				}else {
+					return IMMEDIATE_CONT_SUPPORTED;
+				}
+			}catch(Throwable t) {
+				currentMsgChannelContinueHack = null;
+				if(immediateContinueChannel != null) {
+					safeShutdownChannel(immediateContinueChannel);
+				}
+				immediateContinueChannel = null;
+				return IMMEDIATE_CONT_FAILED_EXCEPTIONS;
 			}
 		}
-		public static final float getContentScaling() {
-			 return (float)win.getDevicePixelRatio();
+		
+		private static int checkLegacyImmediateContinueSupport0() {
+			try {
+				final JSString token = JSString.valueOf(EaglercraftUUID.randomUUID().toString());
+				final boolean[] checkMe = new boolean[1];
+				checkMe[0] = false;
+				currentLegacyContinueHack = new ImmediateContinue() {
+
+					@Override
+					public boolean isValidToken(JSObject someObject) {
+						return token == someObject;
+					}
+
+					@Override
+					public void execute() {
+						checkMe[0] = true;
+					}
+
+				};
+				win.postMessage(token, windowMessagePostOrigin);
+				if(checkMe[0]) {
+					currentLegacyContinueHack = null;
+					return IMMEDIATE_CONT_FAILED_NOT_ASYNC;
+				}
+				Thread.sleep(10l);
+				currentLegacyContinueHack = null;
+				if(!checkMe[0]) {
+					return IMMEDIATE_CONT_FAILED_NOT_CONT;
+				}else {
+					return IMMEDIATE_CONT_SUPPORTED;
+				}
+			}catch(Throwable t) {
+				currentLegacyContinueHack = null;
+				return IMMEDIATE_CONT_FAILED_EXCEPTIONS;
+			}
 		}
+
+		private static void safeShutdownChannel(MessageChannel chan) {
+			try {
+				chan.getPort1().close();
+			}catch(Throwable tt) {
+			}
+			try {
+				chan.getPort2().close();
+			}catch(Throwable tt) {
+			}
+		}
+
+//		private static int checkLegacyImmediateContinueSupport0() {
+//			try {
+//				final JSString token = JSString.valueOf(EaglercraftUUID.randomUUID().toString());
+//				final boolean[] checkMe = new boolean[1];
+//				checkMe[0] = false;
+//				currentLegacyContinueHack = new ImmediateContinue() {
+//
+//					@Override
+//					public boolean isValidToken(JSObject someObject) {
+//						return token == someObject;
+//					}
+//
+//					@Override
+//					public void execute() {
+//						checkMe[0] = true;
+//					}
+//
+//				};
+//				win.postMessage(token, windowMessagePostOrigin);
+//				if(checkMe[0]) {
+//					currentLegacyContinueHack = null;
+//					return IMMEDIATE_CONT_FAILED_NOT_ASYNC;
+//				}
+//				sleep(10);
+//				currentLegacyContinueHack = null;
+//				if(!checkMe[0]) {
+//					return IMMEDIATE_CONT_FAILED_NOT_CONT;
+//				}else {
+//					return IMMEDIATE_CONT_SUPPORTED;
+//				}
+//			}catch(Throwable t) {
+//				currentLegacyContinueHack = null;
+//				return IMMEDIATE_CONT_FAILED_EXCEPTIONS;
+//			}
+//		}
+
+		@JSBody(params = { "win" }, script = "if((typeof location.origin === \"string\") && location.origin.length > 0) {"
+				+ "var orig = location.origin; if(orig.indexOf(\"file:\") === 0) orig = \"null\"; return orig; }"
+				+ "else return \"*\";")
+		private static native String getOriginForPost(Window win);
+		
+		@JSBody(params = { "doc" }, script = "return (typeof doc.visibilityState !== \"string\") || (doc.visibilityState === \"visible\");")
+		private static native boolean getVisibilityState(JSObject doc);
+		
+		@JSBody(params = { "win" }, script = "return (typeof win.devicePixelRatio === \"number\") ? win.devicePixelRatio : 1.0;")
+		static native double getDevicePixelRatio(Window win);
+		
 		public static final void setVSyncEnabled(boolean p1) {
 			
 		} 
@@ -5692,9 +5941,7 @@ public class GL11 implements JSObject {
 		private static native void nativeBinarySend(WebSocket sock, ArrayBuffer buffer);
 		public static final void writePacket(byte[] packet) {
 			if(sock != null && !sockIsConnecting) {
-				Uint8Array arr = Uint8Array.create(packet.length);
-				arr.set(packet);
-				nativeBinarySend(sock, arr.getBuffer());
+				sock.send(TeaVMUtils.unwrapArrayBuffer(packet));
 			}
 		}
 		public static final byte[] readPacket() {
@@ -5926,6 +6173,7 @@ public class GL11 implements JSObject {
 			private static boolean lostFocus = false;
 			
 			public static final void removeEventHandlers() {
+				immediateContinueSupport = false;
 				try {
 					win.removeEventListener("contextmenu", contextmenu);
 					canvas.removeEventListener("mousedown", mousedown);
@@ -5935,6 +6183,11 @@ public class GL11 implements JSObject {
 					win.removeEventListener("keyup", keyup);
 					win.removeEventListener("keypress", keypress);
 					canvas.removeEventListener("wheel", wheel);
+					
+					if(windowMessageListener != null) {
+						win.removeEventListener("message", windowMessageListener);
+						windowMessageListener = null;
+					}
 				}catch(Throwable t) {
 				}
 				try {
@@ -6025,13 +6278,34 @@ public class GL11 implements JSObject {
 				return res;
 			}
 			
-			private static class TeaVMUtils {
-				@JSBody(params = { "buf" }, script = "return $rt_createByteArray(buf.buffer)")
-				private static native JSObject wrapByteArray0(JSObject buf);
+			public static class TeaVMUtils {
+
+				@GeneratedBy(TeaVMUtilsUnwrapGenerator.WrapArrayBufferView.class)
+				public static native byte[] wrapUnsignedByteArray(Uint8Array buf);
 				
-				public static byte[] wrapUnsignedByteArray(Uint8Array buf) {
-					return (byte[])(Object)wrapByteArray0(buf);
-				}
+				@InjectedBy(TeaVMUtilsUnwrapGenerator.UnwrapArrayBuffer.class)
+				public static native ArrayBuffer unwrapArrayBuffer(byte[] buf);
+				
+				@InjectedBy(TeaVMUtilsUnwrapGenerator.UnwrapArrayBuffer.class)
+				public static native ArrayBuffer unwrapArrayBuffer(int[] buf);
+				
+				@InjectedBy(TeaVMUtilsUnwrapGenerator.UnwrapArrayBuffer.class)
+				public static native ArrayBuffer unwrapArrayBuffer(float[] buf);
+				
+				@InjectedBy(TeaVMUtilsUnwrapGenerator.UnwrapArrayBuffer.class)
+				public static native ArrayBuffer unwrapArrayBuffer(short[] buf);
+				
+				@InjectedBy(TeaVMUtilsUnwrapGenerator.UnwrapTypedArray.class)
+				public static native ArrayBufferView unwrapArrayBufferView(byte[] buf);
+				
+				@InjectedBy(TeaVMUtilsUnwrapGenerator.UnwrapTypedArray.class)
+				public static native ArrayBufferView unwrapArrayBufferView(int[] buf);
+				
+				@InjectedBy(TeaVMUtilsUnwrapGenerator.UnwrapTypedArray.class)
+				public static native ArrayBufferView unwrapArrayBufferView(float[] buf);
+				
+				@InjectedBy(TeaVMUtilsUnwrapGenerator.UnwrapTypedArray.class)
+				public static native ArrayBufferView unwrapArrayBufferView(short[] buf);
 			}
 	}
 	
@@ -8180,7 +8454,7 @@ public class GL11 implements JSObject {
 				
 			vbo = _wglCreateBuffer();
 			_wglBindBuffer(_wGL_ARRAY_BUFFER, vbo);
-			_wglBufferData0(_wGL_ARRAY_BUFFER, upload, _wGL_STATIC_DRAW);
+			_wglBufferData(_wGL_ARRAY_BUFFER, upload, _wGL_STATIC_DRAW);
 
 			ShaderGL vert = _wglCreateShader(_wGL_VERTEX_SHADER);
 			_wglShaderSource(vert, _wgetShaderHeader()+"\nprecision lowp float; in vec2 a_pos; out vec2 v_pos; void main() { gl_Position = vec4(((v_pos = a_pos) - 0.5) * vec2(2.0, -2.0), 0.0, 1.0); }");

@@ -27,10 +27,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,20 +55,27 @@ import org.lwjgl.util.glu.GLU;
 import net.PeytonPlayz585.util.vector.Matrix4f;
 import net.PeytonPlayz585.util.vector.Vector3f;
 import net.PeytonPlayz585.util.vector.Vector4f;
+import net.lax1dude.eaglercraft.internal.buffer.ByteBuffer;
+import net.lax1dude.eaglercraft.internal.buffer.EaglerLWJGLAllocator;
+import net.lax1dude.eaglercraft.internal.buffer.FloatBuffer;
+import net.lax1dude.eaglercraft.internal.buffer.IntBuffer;
 
 import com.jcraft.jzlib.InflaterInputStream;
 
 import de.cuina.fireandfuel.CodecJLayerMP3;
+import net.PeytonPlayz585.BufferUtils;
 import net.PeytonPlayz585.GameWindowListener;
 import net.PeytonPlayz585.awt.image.BufferedImage;
 import net.PeytonPlayz585.awt.image.ImageIO;
 import net.PeytonPlayz585.fileutils.FileChooserResult;
 import net.PeytonPlayz585.glemu.FixedFunctionShader;
 import net.PeytonPlayz585.glemu.StreamBuffer.StreamBufferInstance;
+import net.PeytonPlayz585.opengl.GL11_1.EaglerAdapterImpl2.TextureGL;
 import net.minecraft.src.MathHelper;
 import net.minecraft.src.Tessellator;
 import paulscode.sound.SoundSystem;
 import paulscode.sound.SoundSystemConfig;
+import paulscode.sound.codecs.CodecJOrbis;
 import paulscode.sound.libraries.LibraryLWJGLOpenAL;
 
 import org.lwjgl.opengl.ARBDebugOutput;
@@ -87,7 +91,9 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL21;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL31;
 import org.lwjgl.opengl.PixelFormat;
 
 import static net.PeytonPlayz585.opengl.GL11_1.EaglerAdapterImpl2.*;
@@ -213,6 +219,8 @@ public class GL11_1 {
 	public static final int GL_GEQUAL = RealOpenGLEnums.GL_GEQUAL;
 	public static final int GL_LESS = RealOpenGLEnums.GL_LESS;
 	public static final int GL_POINTS = RealOpenGLEnums.GL_POINTS;
+	public static final int GL_RGBA8 = RealOpenGLEnums.GL_RGBA8;
+	public static final int GL_CLAMP_TO_EDGE = RealOpenGLEnums.GL_CLAMP_TO_EDGE;
 
 	static final GLObjectMap<TextureGL> texObjects = new GLObjectMap(256);
 
@@ -310,17 +318,16 @@ public class GL11_1 {
 	public static float texQ_Z = 0.0f;
 	public static float texQ_W = 0.0f;
 
-	public static int fogColorSerial = 0;
-	public static float fogColorR = 1.0f;
-	public static float fogColorG = 1.0f;
-	public static float fogColorB = 1.0f;
-	public static float fogColorA = 1.0f;
-	public static int fogCfgSerial = 0;
-	public static int fogMode = 1;
-	static boolean fogEnabled = false;
-	public static float fogStart = 1.0f;
-	public static float fogEnd = 1.0f;
-	public static float fogDensity = 1.0f;
+	public static boolean stateFog = false;
+	public static boolean stateFogEXP = false;
+	public static float stateFogDensity = 1.0f;
+	public static float stateFogStart = 0.0f;
+	public static float stateFogEnd = 1.0f;
+	public static float stateFogColorR = 1.0f;
+	public static float stateFogColorG = 1.0f;
+	public static float stateFogColorB = 1.0f;
+	public static float stateFogColorA = 1.0f;
+	public static int stateFogSerial = 0;
 
 	static int bytesUploaded = 0;
 	static int vertexDrawn = 0;
@@ -441,7 +448,7 @@ public class GL11_1 {
 			enableAlphaTest = true;
 			break;
 		case GL_FOG:
-			fogEnabled = true;
+			stateFog = true;
 			break;
 		case GL_COLOR_MATERIAL:
 			enableColorMaterial = true;
@@ -626,7 +633,7 @@ public class GL11_1 {
 			enableAlphaTest = false;
 			break;
 		case GL_FOG:
-			fogEnabled = false;
+			stateFog = false;
 			break;
 		case GL_COLOR_MATERIAL:
 			enableColorMaterial = false;
@@ -683,10 +690,6 @@ public class GL11_1 {
 		_wglTexImage2D(_wGL_TEXTURE_2D, p2, _wGL_RGBA8, p4, p5, p6, _wGL_RGBA, _wGL_UNSIGNED_BYTE, p9);
 	}
 
-	public static final void glLightModel(int p1, FloatBuffer p2) {
-
-	}
-
 	public static int lightPos0Serial = 0;
 	public static int lightPos1Serial = 0;
 	private static Vector4f lightPos0vec0 = new Vector4f();
@@ -696,39 +699,6 @@ public class GL11_1 {
 	
 	private static float[] light0 = new float[4];
 	private static float[] light1 = new float[4];
-
-	public static final void glLight(int light, int pname, FloatBuffer param) {
-		if(pname == GL_POSITION) {
-			switch(light) {
-			case GL_LIGHT0:
-				try {
-					light0[0] = param.get(param.position());
-					light0[1] = param.get(param.position() + 1);
-					light0[2] = param.get(param.position() + 2);
-					light0[3] = param.get(param.position() + 3);
-				} catch(Exception e) {
-					System.err.println("Failed to shade model (GL_LIGHT0)");
-					light0[0] = 0.0F;
-					light0[1] = 0.0F;
-					light0[2] = 0.0F;
-					light0[3] = 0.0F;
-				}
-			case GL_LIGHT1:
-				try {
-					light1[0] = param.get(param.position());
-					light1[1] = param.get(param.position() + 1);
-					light1[2] = param.get(param.position() + 2);
-					light1[3] = param.get(param.position() + 3);
-				} catch(Exception e) {
-					System.err.println("Failed to shade model (GL_LIGHT1)");
-					light1[0] = 0.0F;
-					light1[1] = 0.0F;
-					light1[2] = 0.0F;
-					light1[3] = 0.0F;
-				}
-			}
-		}
-	}
 
 	public static final void copyModelToLightMatrix() {
 		++lightPos0Serial;
@@ -1309,7 +1279,8 @@ public class GL11_1 {
 		int mode = 0;
 		mode = (mode | (enableTexGen ? FixedFunctionShader.TEXGEN : 0));
 		mode = (mode | ((enableColorMaterial && enableLighting) ? FixedFunctionShader.LIGHTING : 0));
-		mode = (mode | (fogEnabled ? FixedFunctionShader.FOG : 0));
+		mode = (mode | ((stateFog && stateFogDensity > 0.0f) ? FixedFunctionShader.FOG : 0));
+		//mode = (mode | (fogEnabled ? FixedFunctionShader.FOG : 0));
 		mode = (mode | (enableAlphaTest ? FixedFunctionShader.ALPHATEST : 0));
 		mode = (mode | (enableTexture2D ? FixedFunctionShader.UNIT0 : 0));
 		mode = (mode | (enableTexture2D_1 ? FixedFunctionShader.UNIT1 : 0));
@@ -1328,7 +1299,8 @@ public class GL11_1 {
 		mode = (mode | (enableTex1Array ? FixedFunctionShader.TEXTURE1 : 0));
 		mode = (mode | (enableTexGen ? FixedFunctionShader.TEXGEN : 0));
 		mode = (mode | ((enableColorMaterial && enableLighting) ? FixedFunctionShader.LIGHTING : 0));
-		mode = (mode | (fogEnabled ? FixedFunctionShader.FOG : 0));
+		mode = (mode | ((stateFog && stateFogDensity > 0.0f) ? FixedFunctionShader.FOG : 0));
+		//mode = (mode | (fogEnabled ? FixedFunctionShader.FOG : 0));
 		mode = (mode | (enableAlphaTest ? FixedFunctionShader.ALPHATEST : 0));
 		mode = (mode | (enableTexture2D ? FixedFunctionShader.UNIT0 : 0));
 		mode = (mode | (enableTexture2D_1 ? FixedFunctionShader.UNIT1 : 0));
@@ -1434,8 +1406,9 @@ public class GL11_1 {
 
 	private static final void _wglDrawQuadArrays(int p2, int p3) {
 		if (quadsToTrianglesBuffer == null) {
-			IntBuffer upload = isWebGL ? IntBuffer.wrap(new int[98400 / 2])
-					: ByteBuffer.allocateDirect(98400 * 2).order(ByteOrder.nativeOrder()).asIntBuffer();
+			//IntBuffer upload = isWebGL ? IntBuffer.wrap(new int[98400 / 2])
+					//: ByteBuffer.allocateDirect(98400 * 2).order(ByteOrder.nativeOrder()).asIntBuffer();
+			IntBuffer upload = BufferUtils.createIntBuffer(98400 * 2);
 			for (int i = 0; i < 16384; ++i) {
 				int v1 = i * 4;
 				int v2 = i * 4 + 1;
@@ -1467,8 +1440,9 @@ public class GL11_1 {
 		occlusion_vao = _wglCreateVertexArray();
 		occlusion_vbo = _wglCreateBuffer();
 
-		IntBuffer upload = (isWebGL ? IntBuffer.wrap(new int[108])
-				: ByteBuffer.allocateDirect(108 << 2).order(ByteOrder.nativeOrder()).asIntBuffer());
+		//IntBuffer upload = (isWebGL ? IntBuffer.wrap(new int[108])
+				//: ByteBuffer.allocateDirect(108 << 2).order(ByteOrder.nativeOrder()).asIntBuffer());
+		IntBuffer upload = BufferUtils.createIntBuffer(98400 / 2);
 		float[] verts = new float[] { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
 				0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
 				1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
@@ -1596,6 +1570,10 @@ public class GL11_1 {
 		return texObjects.register(_wglGenTextures());
 	}
 	
+	public static final TextureGL glGetTextures(int tex) {
+		return texObjects.get(tex);
+	}
+	
 	public static final void glGenTextures(IntBuffer buf) {
 		for(int i = buf.position(); i < buf.limit(); i++) {
 			buf.put(i, glGenTextures());
@@ -1624,45 +1602,48 @@ public class GL11_1 {
 		if (p1 == GL_FOG_MODE) {
 			switch (p2) {
 			default:
-			case GL_LINEAR:
-				++fogCfgSerial;
-				fogMode = 1;
 				break;
 			case GL_EXP:
-				++fogCfgSerial;
-				fogMode = 2;
+				stateFogEXP = true;
+				++stateFogSerial;
 				break;
 			}
 		}
 	}
 
-	public static final void glFogf(int p1, float p2) {
+	public static final void glFogf(int p1, float param) {
 		switch (p1) {
 		case GL_FOG_START:
-			++fogCfgSerial;
-			fogStart = p2;
+			stateFogStart = param;
+			++stateFogSerial;
 			break;
 		case GL_FOG_END:
-			++fogCfgSerial;
-			fogEnd = p2;
+			stateFogEnd = param;
+			++stateFogSerial;
 			break;
 		case GL_FOG_DENSITY:
-			++fogCfgSerial;
-			fogDensity = p2;
+			stateFogDensity = param;
+			++stateFogSerial;
 			break;
 		default:
 			break;
 		}
 	}
 
-	public static final void glFog(int p1, FloatBuffer p2) {
-		if (p1 == GL_FOG_COLOR) {
-			++fogColorSerial;
-			fogColorR = p2.get();
-			fogColorG = p2.get();
-			fogColorB = p2.get();
-			fogColorA = p2.get();
+	public static final void glFog(int param, FloatBuffer valueBuffer) {
+		int pos = valueBuffer.position();
+		switch(param) {
+		case GL_FOG_COLOR:
+			stateFogColorR = valueBuffer.get();
+			stateFogColorG = valueBuffer.get();
+			stateFogColorB = valueBuffer.get();
+			stateFogColorA = valueBuffer.get();
+			++stateFogSerial;
+			break;
+		default:
+			throw new UnsupportedOperationException("Only GL_FOG_COLOR is configurable!");
 		}
+		valueBuffer.position(pos);
 	}
 
 	public static final void glDeleteLists(int p1, int p2) {
@@ -4513,8 +4494,10 @@ public class GL11_1 {
 		public static final void _wglFlush() {
 			GL11.glFlush();
 		}
-		public static final void _wglTexImage2D(int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8, ByteBuffer p9) {
-			GL11.glTexImage2D(p1, p2, p3, p4, p5, p6, p7, p8, p9);
+		public static final void _wglTexImage2D(int target, int level, int internalFormat, int width, int height,
+				int border, int format, int type, ByteBuffer data) {
+			GL11.glTexImage2D(target, level, internalFormat, width, height, border, format, type,
+					data == null ? 0l : EaglerLWJGLAllocator.getAddress(data));
 		}
 		public static final void _wglBlendFunc(int p1, int p2) {
 			GL11.glBlendFunc(p1, p2);
@@ -4543,11 +4526,15 @@ public class GL11_1 {
 		public static final void _wglTexParameterf(int p1, int p2, int p3) {
 			GL11.glTexParameterf(p1, p2, p3);
 		}
-		public static final void _wglTexImage2D(int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8, IntBuffer p9) {
-			GL11.glTexImage2D(p1, p2, p3, p4, p5, p6, p7, p8, p9);
+		public static final void _wglTexImage2D(int target, int level, int internalFormat, int width, int height,
+				int border, int format, int type, IntBuffer data) {
+			GL11.glTexImage2D(target, level, internalFormat, width, height, border, format, type,
+					data == null ? 0l : EaglerLWJGLAllocator.getAddress(data));
 		}
-		public static final void _wglTexSubImage2D(int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8, IntBuffer p9) {
-			GL11.glTexSubImage2D(p1, p2, p3, p4, p5, p6, p7, p8, p9);
+		public static final void _wglTexSubImage2D(int target, int level, int xoffset, int yoffset, int width, int height,
+				int format, int type, ByteBuffer data) {
+			GL11.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type,
+					data == null ? 0l : EaglerLWJGLAllocator.getAddress(data));
 		}
 		public static final void _wglDeleteTextures(TextureGL p1) {
 			GL11.glDeleteTextures(p1.obj);
@@ -4561,11 +4548,10 @@ public class GL11_1 {
 		public static final TextureGL _wglGenTextures() {
 			return new TextureGL(GL11.glGenTextures());
 		}
-		public static final void _wglTexSubImage2D(int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8, ByteBuffer p9) {
-			GL11.glTexSubImage2D(p1, p2, p3, p4, p5, p6, p7, p8, p9);
-		}
-		public static final void _wglTexImage3D(int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8, int p9, ByteBuffer p10) {
-			GL12.glTexImage3D(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10);
+		public static final void _wglTexSubImage2D(int target, int level, int xoffset, int yoffset, int width, int height,
+				int format, int type, IntBuffer data) {
+			GL11.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type,
+					data == null ? 0l : EaglerLWJGLAllocator.getAddress(data));
 		}
 		public static final void _wglTexParameterf(int p1, int p2, float p3) {
 			GL11.glTexParameterf(p1, p2, p3);
@@ -4634,19 +4620,61 @@ public class GL11_1 {
 			GL15.glBindBuffer(p1, p2 == null ? 0 : p2.obj);
 		}
 		public static final void _wglBufferData(int p1, Object p2, int p3) {
-			GL15.glBufferData(p1, (IntBuffer)p2, p3);
+			if(p2 != null) {
+				IntBuffer buf1 = (IntBuffer)p2;
+				int size = buf1.remaining() << 2;
+				java.nio.IntBuffer buf = java.nio.ByteBuffer.allocateDirect(size).order(ByteOrder.nativeOrder()).asIntBuffer();
+				while(buf1.hasRemaining()) {
+					buf.put(buf1.get());
+				}
+				GL15.glBufferData(p1, buf, p3);
+			} else {
+				GL15.glBufferData(p1, (java.nio.IntBuffer)null, p3);
+			}
 		}
 		public static final void _wglBufferSubData(int p1, int p2, Object p3) {
-			GL15.glBufferSubData(p1, p2, (IntBuffer)p3);
+			if(p3 != null) {
+				IntBuffer buf1 = (IntBuffer)p3;
+				int size = buf1.remaining() << 2;
+				java.nio.IntBuffer buf = java.nio.ByteBuffer.allocateDirect(size).order(ByteOrder.nativeOrder()).asIntBuffer();
+				while(buf1.hasRemaining()) {
+					buf.put(buf1.get());
+				}
+				GL15.glBufferSubData(p1, p2, buf);
+			} else {
+				GL15.glBufferSubData(p1, p2, (java.nio.IntBuffer)null);
+			}
 		}
 		public static final void _wglBufferData0(int p1, IntBuffer p2, int p3) {
-			GL15.glBufferData(p1, p2, p3);
+			//GL15.glBufferData(p1, p2, p3);
+			if(p2 != null) {
+				IntBuffer buf1 = (IntBuffer)p2;
+				int size = buf1.remaining() << 2;
+				java.nio.IntBuffer buf = java.nio.ByteBuffer.allocateDirect(size).order(ByteOrder.nativeOrder()).asIntBuffer();
+				while(buf1.hasRemaining()) {
+					buf.put(buf1.get());
+				}
+				GL15.glBufferData(p1, buf, p3);
+			} else {
+				GL15.glBufferData(p1, (java.nio.IntBuffer)null, p3);
+			}
 		}
 		public static final void _wglBufferData00(int p1, long len, int p3) {
 			GL15.glBufferData(p1, len, p3);
 		}
 		public static final void _wglBufferSubData0(int p1, int p2, IntBuffer p3) {
-			GL15.glBufferSubData(p1, p2, p3);
+			//GL15.glBufferSubData(p1, p2, p3);
+			if(p3 != null) {
+				IntBuffer buf1 = (IntBuffer)p3;
+				int size = buf1.remaining() << 2;
+				java.nio.IntBuffer buf = java.nio.ByteBuffer.allocateDirect(size).order(ByteOrder.nativeOrder()).asIntBuffer();
+				while(buf1.hasRemaining()) {
+					buf.put(buf1.get());
+				}
+				GL15.glBufferSubData(p1, p2, buf);
+			} else {
+				GL15.glBufferSubData(p1, p2, (java.nio.IntBuffer)null);
+			}
 		}
 		public static final void _wglBindAttribLocation(int p1, int p2, String p3) {
 			GL20.glBindAttribLocation(p1, p2, p3);
@@ -4688,7 +4716,7 @@ public class GL11_1 {
 		public static final void _wglUniform4i(UniformGL p1, int p2, int p3, int p4, int p5) {
 			if(p1 != null) GL20.glUniform4i(p1.obj, p2, p3, p4, p5);
 		}
-		private static final FloatBuffer matUpload = ByteBuffer.allocateDirect(16 << 2).order(ByteOrder.nativeOrder()).asFloatBuffer();
+		private static final java.nio.FloatBuffer matUpload = java.nio.ByteBuffer.allocateDirect(16 << 2).order(ByteOrder.nativeOrder()).asFloatBuffer();
 		public static final void _wglUniformMat2fv(UniformGL p1, float[] mat) {
 			matUpload.clear();
 			matUpload.put(mat);
@@ -4745,8 +4773,8 @@ public class GL11_1 {
 		public static final void _wglDeleteFramebuffer(FramebufferGL p1) {
 			GL30.glDeleteFramebuffers(p1.obj);
 		}
-		public static final void _wglFramebufferTexture2D(int p1, TextureGL p2) {
-			GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, p1, GL11.GL_TEXTURE_2D, p2.obj, 0);
+		public static final void _wglFramebufferTexture2D(int target1, int p1, int target2, TextureGL p2, int target3) {
+			GL30.glFramebufferTexture2D(target1, p1, target2, p2.obj, target3);
 		}
 		public static final void _wglFramebufferTexture2D(int p1, TextureGL p2, int lvl) {
 			GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, p1, GL11.GL_TEXTURE_2D, p2.obj, lvl);
@@ -4757,17 +4785,17 @@ public class GL11_1 {
 		public static final void _wglDeleteRenderbuffer(RenderbufferGL p1) {
 			GL30.glDeleteRenderbuffers(p1.obj);
 		}
-		public static final void _wglBindRenderbuffer(RenderbufferGL p1) {
-			GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, p1 == null ? 0 : p1.obj);
+		public static final void _wglBindRenderbuffer(int target, RenderbufferGL p1) {
+			GL30.glBindRenderbuffer(target, p1 == null ? 0 : p1.obj);
 		}
-		public static final void _wglRenderbufferStorage(int p1, int p2, int p3) {
-			GL30.glRenderbufferStorage(GL30.GL_RENDERBUFFER, p1, p2, p3);
+		public static final void _wglRenderbufferStorage(int target, int p1, int p2, int p3) {
+			GL30.glRenderbufferStorage(target, p1, p2, p3);
 		}
 		public static final void _wglRenderbufferStorageMultisample(int p1, int p2, int p3, int p4) {
 			GL30.glRenderbufferStorageMultisample(GL30.GL_RENDERBUFFER, p1, p2, p3, p4);
 		}
-		public static final void _wglFramebufferRenderbuffer(int p1, RenderbufferGL p2) {
-			GL30.glFramebufferRenderbuffer(GL30.GL_FRAMEBUFFER, p1, GL30.GL_RENDERBUFFER, p2.obj);
+		public static final void _wglFramebufferRenderbuffer(int target1, int p1, int target2, RenderbufferGL p2) {
+			GL30.glFramebufferRenderbuffer(target1, p1, target2, p2.obj);
 		}
 		public static final QueryGL _wglCreateQuery() {
 			return new QueryGL(GL15.glGenQueries());
@@ -5036,6 +5064,7 @@ public class GL11_1 {
 			
 			try {
 				SoundSystemConfig.addLibrary(LibraryLWJGLOpenAL.class);
+				SoundSystemConfig.setCodec("ogg", CodecJOrbis.class);
 				SoundSystemConfig.setCodec("mp3", CodecJLayerMP3.class);
 				ss = new SoundSystem();
 			}catch(Throwable t) {
@@ -5253,7 +5282,7 @@ public class GL11_1 {
 			}
 
 			@Override
-			public void onMessage(ByteBuffer arg0) {
+			public void onMessage(java.nio.ByteBuffer arg0) {
 				wasAbleToConnect = true;
 				synchronized(socketSync) {
 					readPackets.add(arg0.array());
@@ -5299,7 +5328,7 @@ public class GL11_1 {
 		}
 		public static final void writePacket(byte[] packet) {
 			if(clientSocket != null && clientSocket.isOpen()) {
-				clientSocket.send(ByteBuffer.wrap(packet));
+				clientSocket.send(java.nio.ByteBuffer.wrap(packet));
 			}
 		}
 		public static final byte[] readPacket() {
@@ -5495,7 +5524,7 @@ public class GL11_1 {
 				ss.setVolume(name, volume);
 				ss.play(name);
 			}else {
-				System.err.println("unknown sound event "+fileName);
+				return -1;
 			}
 			return id;
 		}
@@ -5513,7 +5542,7 @@ public class GL11_1 {
 				ss.setVolume(name, volume);
 				ss.play(name);
 			}else {
-				System.err.println("unknown sound event "+fileName);
+				return -1;
 			}
 			return id;
 		}
@@ -5572,7 +5601,7 @@ public class GL11_1 {
 			return ((IntBuffer)obj).remaining() * 4;
 		}
 		public static final Object _wCreateLowLevelIntBuffer(int len) {
-			return ByteBuffer.allocateDirect(len*4).order(ByteOrder.nativeOrder()).asIntBuffer();
+			return BufferUtils.createIntBuffer(len*4);
 		}
 		
 		private static final IntBuffer appendbuffer = (IntBuffer) _wCreateLowLevelIntBuffer(525000);

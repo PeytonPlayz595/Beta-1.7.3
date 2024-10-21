@@ -1,6 +1,5 @@
 package net.minecraft.src;
 
-import java.nio.FloatBuffer;
 import java.util.List;
 
 import net.PeytonPlayz585.glemu.GameOverlayFramebuffer;
@@ -9,6 +8,7 @@ import net.PeytonPlayz585.input.Mouse;
 import net.PeytonPlayz585.opengl.Display;
 import net.PeytonPlayz585.opengl.GL11;
 import net.PeytonPlayz585.util.glu.GLU;
+import net.lax1dude.eaglercraft.internal.buffer.FloatBuffer;
 import net.minecraft.client.Minecraft;
 
 public class EntityRenderer {
@@ -434,7 +434,7 @@ public class EntityRenderer {
 						this.mc.ingameGUI.renderVignette(this.mc.thePlayer.getEntityBrightness(var1), var14, var15);
 					}
 					this.mc.ingameGUI.renderCrossHairs(var14, var15);
-					this.overlayFramebuffer.bindTexture();
+					GL11.glBindTexture(this.overlayFramebuffer.getTexture());
 					GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 					GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 					GL11.glDisable(GL11.GL_ALPHA_TEST);

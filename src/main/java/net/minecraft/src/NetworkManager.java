@@ -16,9 +16,6 @@ import net.PeytonPlayz585.socket.Socket;
 import net.PeytonPlayz585.socket.SocketException;
 
 public class NetworkManager {
-	public static final Object threadSyncObject = new Object();
-	public static int numReadThreads;
-	public static int numWriteThreads;
 	private Object sendQueueLock = new Object();
 	private Socket networkSocket;
 	private boolean isRunning = true;

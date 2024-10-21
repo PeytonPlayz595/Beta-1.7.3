@@ -1,10 +1,10 @@
 package net.minecraft.src;
 
-import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
+
 import net.PeytonPlayz585.opengl.GL11;
+import net.lax1dude.eaglercraft.internal.buffer.ByteBuffer;
+import net.lax1dude.eaglercraft.internal.buffer.IntBuffer;
 
 public class Tessellator {
 	private ByteBuffer byteBuffer;

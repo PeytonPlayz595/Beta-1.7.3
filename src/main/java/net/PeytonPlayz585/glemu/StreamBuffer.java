@@ -61,7 +61,7 @@ public class StreamBuffer {
 		if(next.vertexBufferSize < requiredMemory) {
 			int newSize = (requiredMemory & 0xFFFFF000) + 0x2000;
 			_wglBindBuffer(_wGL_ARRAY_BUFFER, next.vertexBuffer);
-			_wglBufferData00(_wGL_ARRAY_BUFFER, newSize, _wGL_STREAM_DRAW);
+			_wglBufferData(_wGL_ARRAY_BUFFER, newSize, _wGL_STREAM_DRAW);
 			next.vertexBufferSize = newSize;
 		}
 		return next;
