@@ -480,7 +480,7 @@ public class RenderGlobal implements IWorldAccess {
 	}
 
 	public void updateClouds() {
-		++this.cloudOffsetX;
+		this.cloudOffsetX++;
 	}
 
 	public void renderSky(float var1) {
@@ -672,7 +672,7 @@ public class RenderGlobal implements IWorldAccess {
 		Tessellator var3 = Tessellator.instance;
 		float var4 = 12.0F;
 		float var5 = 4.0F;
-		double var6 = (this.mc.renderViewEntity.prevPosX + (this.mc.renderViewEntity.posX - this.mc.renderViewEntity.prevPosX) * (double)var1 + (double)(((float)this.cloudOffsetX + var1) * 0.03F)) / (double)var4;
+		double var6 = this.mc.renderViewEntity.prevPosX + (this.mc.renderViewEntity.posX - this.mc.renderViewEntity.prevPosX) * (double)var1 + (double)(((float)this.cloudOffsetX + var1) * 0.03F);
 		double var8 = (this.mc.renderViewEntity.prevPosZ + (this.mc.renderViewEntity.posZ - this.mc.renderViewEntity.prevPosZ) * (double)var1) / (double)var4 + (double)0.33F;
 		float var10 = this.worldObj.worldProvider.getCloudHeight() - var2 + 0.33F;
 		int var11 = MathHelper.floor_double(var6 / 2048.0D);
