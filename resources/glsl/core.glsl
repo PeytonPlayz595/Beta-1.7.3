@@ -189,8 +189,9 @@ void main(){
 	vec3 normal = normalUniform;
 #endif
 	normal = normalize(mat3(matrix_m) * normal);
-	float ins = max(dot(normal, -light0Pos), 0.0) + max(dot(normal, -light1Pos), 0.0);
-	color.rgb *= min((0.4 + ins * 0.6), 1.0);
+	float lightContribution = max(dot(normal, -light0Pos), 0.0) + max(dot(normal, -light1Pos), 0.0);
+	float intensity = min(0.4 + lightContribution * 0.6, 1.0);
+	color.rgb *= intensity;
 #endif
 	
 #ifdef CC_fog
@@ -199,14 +200,13 @@ void main(){
 	float fogDensity = fogParam.y;
 	float fogStart = fogParam.z;
 	float fogEnd = fogParam.w;
-	//float f = fogParam.x == 1.0 ? 1.0 - exp(-fogDensity * dist) :
-		//(dist - fogStart) / (fogEnd - fogStart);
-	float f = ((dist * fogDensity) - fogStart) / (fogEnd - fogStart);
-	color.rgb = mix(color.rgb, fogColor.rgb, clamp(f, 0.0, 1.0) * fogColor.a);
+	float scaledDist = dist * fogDensity;
+	float normalizedDist = (scaledDist - fogStart) / (fogEnd - fogStart);
+	float fogFactor = clamp(normalizedDist, 0.0, 1.0) * fogColor.a;
+	color.rgb = mix(color.rgb, fogColor.rgb, fogFactor);
 #endif
 	
 	fragColor = color;
 }
 
 #endif
-
