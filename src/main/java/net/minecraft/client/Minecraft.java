@@ -131,6 +131,8 @@ public class Minecraft implements Runnable {
 	private int joinPlayerCounter = 0;
 	
 	public static int debugFPS;
+
+	public boolean hasRefreshed = false;
 	
 	private static final TextureLocation terrainTexture = new TextureLocation("/terrain.png");
 
@@ -723,8 +725,13 @@ public class Minecraft implements Runnable {
 		}
 
 		terrainTexture.bindTexture();
-		if(!this.isGamePaused) {
+		if(!this.isGamePaused && this.renderEngine != null) {
 			this.renderEngine.updateDynamicTextures();
+		}
+
+		if(!this.hasRefreshed && this.renderEngine != null) {
+			this.renderEngine.refreshTextures();
+			this.hasRefreshed = true;
 		}
 
 		if(this.currentScreen == null && this.thePlayer != null) {
